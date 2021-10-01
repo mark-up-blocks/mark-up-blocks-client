@@ -7,6 +7,7 @@ import GlobalStyle from "./theme/global";
 
 import { setChallenge } from "./features/challenge";
 import { getChallenge } from "./api";
+import TargetPage from "./components/TargetPage";
 
 const AppWrapper = styled.div`
   display: grid;
@@ -51,7 +52,7 @@ function App() {
             <>
               <div>
                 <div>current page</div>
-                <div>target page</div>
+                <TargetPage />
               </div>
               <div>
                 <div>tag blocks</div>
