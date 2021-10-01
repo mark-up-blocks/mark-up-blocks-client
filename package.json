@@ -23,6 +23,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.21.4",
+    "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.5",
@@ -62,7 +63,15 @@
         "error",
         "double"
       ],
-      "import/prefer-default-export": "off"
+      "import/prefer-default-export": "off",
+      "no-underscore-dangle": [
+        "error",
+        {
+          "allow": [
+            "_id"
+          ]
+        }
+      ]
     },
     "overrides": [
       {
