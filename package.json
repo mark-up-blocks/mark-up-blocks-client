@@ -64,6 +64,25 @@
         "double"
       ],
       "import/prefer-default-export": "off",
+      "import/no-extraneous-dependencies": [
+        "error",
+        {
+          "devDependencies": [
+            "**/*.stories.jsx",
+            "**/*.spec.jsx",
+            "**/*.spec.js"
+          ]
+        }
+      ],
+      "no-console": [
+        "error",
+        {
+          "allow": [
+            "warn",
+            "error"
+          ]
+        }
+      ],
       "no-underscore-dangle": [
         "error",
         {
