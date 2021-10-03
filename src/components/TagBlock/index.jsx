@@ -1,36 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useDrag } from "react-dnd";
-import styled from "styled-components";
+import Draggable from "../Draggable";
 
-const TagBlockWrapper = styled.div`
-  margin: 10px;
-  padding: 10px;
-  border: 1px solid gray;
-  cursor: pointer;
-`;
-
-function TagBlock({ _id, block, childTrees }) {
+function TagBlock({ _id, block }) {
   const { tagName, isContainer, property } = block;
   const content = isContainer
     ? `<${tagName} />`
     : `<${tagName}>${property.text}</${tagName}>`;
 
-  const [, dragRef] = useDrag(
-    () => ({
-      type: isContainer ? "tag" : "container",
-      item: { _id, block, childTrees },
-    }), [_id, content],
-  );
-
   return (
-    <TagBlockWrapper ref={dragRef}>
-      {content}
-    </TagBlockWrapper>
+    <Draggable _id={_id} type={isContainer ? "tag" : "container"}>
+      <span>{content}</span>
+    </Draggable>
   );
 }
 
-const tagBlockTreeShape = {
+TagBlock.propTypes = {
   _id: PropTypes.string.isRequired,
   block: PropTypes.shape({
     _id: PropTypes.string.isRequired,
@@ -43,17 +28,6 @@ const tagBlockTreeShape = {
       ]).isRequired,
     ).isRequired,
   }).isRequired,
-};
-
-TagBlock.propTypes = {
-  ...tagBlockTreeShape,
-  childTrees: PropTypes.arrayOf(PropTypes.shape({
-    ...tagBlockTreeShape,
-  })),
-};
-
-TagBlock.defaultProps = {
-  childTrees: [],
 };
 
 export default TagBlock;
