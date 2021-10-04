@@ -9,6 +9,8 @@ import { setChallenge } from "./features/challenge";
 import { getChallenge } from "./api";
 import ResultPage from "./components/ResultPage";
 import TargetPage from "./components/TargetPage";
+import TagBlockContainer from "./components/TagBlockContainer";
+import HTMLViewer from "./components/HTMLViewer";
 
 const AppWrapper = styled.div`
   display: grid;
@@ -56,8 +58,8 @@ function App() {
                 <TargetPage />
               </div>
               <div>
-                <div>tag blocks</div>
-                <div>HTML viewer</div>
+                <TagBlockContainer />
+                <HTMLViewer />
               </div>
             </>
           )}

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { findBlockTreeById, findBlockTree, findTagBlockById } from "../utils/selectData";
 
 export const challengeSlice = createSlice({
   name: "challenge",
@@ -16,13 +17,48 @@ export const challengeSlice = createSlice({
 
       return {
         title,
-        tagBlocks,
+        tagBlocks: tagBlocks.map((child) => ({ ...child, childTrees: [], hasUsed: false })),
         boilerplate,
         answer,
       };
     },
+    addChildTree(state, { payload }) {
+      const { containerId, itemId, index } = payload;
+      const prevContainer = findBlockTree(
+        state.boilerplate, (block) => findTagBlockById(block.childTrees, itemId),
+      );
+      const tagBlock = findTagBlockById(state.tagBlocks, itemId);
+      const blockTree = prevContainer
+        ? findBlockTreeById(prevContainer, itemId)
+        : { ...tagBlock, _id: itemId };
+      const container = findBlockTreeById(state.boilerplate, containerId);
+
+      if (findBlockTreeById(blockTree, container._id)) {
+        return;
+      }
+
+      container.childTrees = [
+        ...container.childTrees.slice(0, index),
+        blockTree,
+        ...container.childTrees.slice(index),
+      ];
+
+      if (prevContainer) {
+        prevContainer.childTrees = prevContainer.childTrees.filter(
+          (child, childIndex) => {
+            const isDifferentBlock = child._id !== itemId;
+            const isCurrentBlock = prevContainer === container
+              && child._id === itemId && childIndex === index;
+
+            return isDifferentBlock || isCurrentBlock;
+          },
+        );
+      } else {
+        tagBlock.hasUsed = true;
+      }
+    },
   },
 });
 
-export const { setChallenge } = challengeSlice.actions;
+export const { setChallenge, addChildTree } = challengeSlice.actions;
 export default challengeSlice.reducer;
