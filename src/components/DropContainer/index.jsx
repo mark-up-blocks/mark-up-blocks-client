@@ -5,10 +5,10 @@ import Draggable from "../Draggable";
 import Droppable from "../Droppable";
 import TagBlock from "../TagBlock";
 
-function DropContainer({ _id, childTrees }) {
+function DropContainer({ _id, tagName, childTrees }) {
   return (
     <div>
-      <span>&lt;div&gt;</span>
+      <span>{`<${tagName}>`}</span>
       <>
         <Droppable _id={_id} index={0}>
           <div />
@@ -17,7 +17,13 @@ function DropContainer({ _id, childTrees }) {
           <Draggable key={child._id} _id={child._id} type={child.block.isContainer ? "container" : "tag"}>
             <>
               {child.block.isContainer
-                ? <DropContainer _id={child._id} childTrees={child.childTrees} />
+                ? (
+                  <DropContainer
+                    _id={child._id}
+                    childTrees={child.childTrees}
+                    tagName={child.block.tagName}
+                  />
+                )
                 : <span>{`<${child.block.tagName}>${child.block.property.text}</${child.block.tagName}>`}</span>}
               <Droppable _id={_id} index={index + 1}>
                 <div />
@@ -26,13 +32,14 @@ function DropContainer({ _id, childTrees }) {
           </Draggable>
         ))}
       </>
-      <span>&lt;/div&gt;</span>
+      <span>{`</${tagName}>`}</span>
     </div>
   );
 }
 
 DropContainer.propTypes = {
   _id: PropTypes.string.isRequired,
+  tagName: PropTypes.string.isRequired,
   childTrees: PropTypes.arrayOf(
     PropTypes.shape(TagBlock.propTypes),
   ).isRequired,

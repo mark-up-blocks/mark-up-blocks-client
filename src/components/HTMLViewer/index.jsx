@@ -21,7 +21,13 @@ function HTMLViewer() {
   return (
     <HTMLViewerWrapper>
       {boilerplate
-        ? <DropContainer _id={boilerplate._id} childTrees={boilerplate.childTrees} />
+        ? (
+          <DropContainer
+            _id={boilerplate._id}
+            childTrees={boilerplate.childTrees}
+            tagName={boilerplate.block.tagName}
+          />
+        )
         : <div>로딩 중입니다.</div>}
     </HTMLViewerWrapper>
   );
