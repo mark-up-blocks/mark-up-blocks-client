@@ -2,20 +2,35 @@ import React, { createElement } from "react";
 import PropTypes from "prop-types";
 
 function ElementBlock({ _id, block, childTrees }) {
-  const { tagName, property } = block;
+  const { tagName, property, isContainer } = block;
+
+  if (isContainer) {
+    return createElement(
+      tagName,
+      { ...property, key: _id },
+      property.text,
+      childTrees.map((child) => (
+        <ElementBlock
+          key={child._id}
+          _id={child._id}
+          block={child.block}
+          childTrees={child.childTrees}
+        />
+      )),
+    );
+  }
+
+  if (property.text) {
+    return createElement(
+      tagName,
+      { ...property, key: _id },
+      property.text,
+    );
+  }
 
   return createElement(
     tagName,
     { ...property, key: _id },
-    property.text,
-    childTrees.map((child) => (
-      <ElementBlock
-        key={child._id}
-        _id={child._id}
-        block={child.block}
-        childTrees={child.childTrees}
-      />
-    )),
   );
 }
 
@@ -23,6 +38,7 @@ const blockTreeShape = {
   _id: PropTypes.string.isRequired,
   block: PropTypes.shape({
     tagName: PropTypes.string.isRequired,
+    isContainer: PropTypes.bool.isRequired,
     property: PropTypes.objectOf(
       PropTypes.oneOfType([
         PropTypes.string,
