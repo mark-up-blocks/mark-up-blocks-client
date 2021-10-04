@@ -7,6 +7,7 @@ import GlobalStyle from "./theme/global";
 
 import { setChallenge } from "./features/challenge";
 import { getChallenge } from "./api";
+import ResultPage from "./components/ResultPage";
 import TargetPage from "./components/TargetPage";
 
 const AppWrapper = styled.div`
@@ -51,7 +52,7 @@ function App() {
           : (
             <>
               <div>
-                <div>current page</div>
+                <ResultPage />
                 <TargetPage />
               </div>
               <div>
