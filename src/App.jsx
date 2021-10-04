@@ -8,6 +8,8 @@ import GlobalStyle from "./theme/global";
 import { setChallenge } from "./features/challenge";
 import { getChallenge } from "./api";
 import TargetPage from "./components/TargetPage";
+import TagBlockContainer from "./components/TagBlockContainer";
+import HTMLViewer from "./components/HTMLViewer";
 
 const AppWrapper = styled.div`
   display: grid;
@@ -51,12 +53,12 @@ function App() {
           : (
             <>
               <div>
-                <div>current page</div>
+                <div>Result Page</div>
                 <TargetPage />
               </div>
               <div>
-                <div>tag blocks</div>
-                <div>HTML viewer</div>
+                <TagBlockContainer />
+                <HTMLViewer />
               </div>
             </>
           )}
