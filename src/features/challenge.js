@@ -23,24 +23,37 @@ export const challengeSlice = createSlice({
       };
     },
     addChildTree(state, { payload }) {
-      const { containerId, itemId } = payload;
+      const { containerId, itemId, index } = payload;
       const prevContainer = findBlockTree(
         state.boilerplate, (block) => findTagBlockById(block.childTrees, itemId),
       );
+      const tagBlock = findTagBlockById(state.tagBlocks, itemId);
+      const blockTree = prevContainer
+        ? findBlockTreeById(prevContainer, itemId)
+        : { ...tagBlock, _id: itemId };
+      const container = findBlockTreeById(state.boilerplate, containerId);
+
+      if (findBlockTreeById(blockTree, container._id)) {
+        return;
+      }
+
+      container.childTrees = [
+        ...container.childTrees.slice(0, index),
+        blockTree,
+        ...container.childTrees.slice(index),
+      ];
 
       if (prevContainer) {
-        const tagBlock = findBlockTreeById(state.boilerplate, itemId);
-        const container = findBlockTreeById(state.boilerplate, containerId);
-
         prevContainer.childTrees = prevContainer.childTrees.filter(
-          (child) => child._id !== itemId,
-        );
-        container.childTrees.push(tagBlock);
-      } else {
-        const container = findBlockTreeById(state.boilerplate, containerId);
-        const tagBlock = findTagBlockById(state.tagBlocks, itemId);
+          (child, childIndex) => {
+            const isDifferentBlock = child._id !== itemId;
+            const isCurrentBlock = prevContainer === container
+              && child._id === itemId && childIndex === index;
 
-        container.childTrees.push({ ...tagBlock, _id: itemId });
+            return isDifferentBlock || isCurrentBlock;
+          },
+        );
+      } else {
         tagBlock.hasUsed = true;
       }
     },
