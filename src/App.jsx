@@ -7,6 +7,7 @@ import GlobalStyle from "./theme/global";
 
 import { setChallenge } from "./features/challenge";
 import { getChallenge } from "./api";
+import ResultPage from "./components/ResultPage";
 import TargetPage from "./components/TargetPage";
 import TagBlockContainer from "./components/TagBlockContainer";
 import HTMLViewer from "./components/HTMLViewer";
@@ -53,7 +54,7 @@ function App() {
           : (
             <>
               <div>
-                <div>Result Page</div>
+                <ResultPage />
                 <TargetPage />
               </div>
               <div>
