@@ -51,12 +51,42 @@ function compareChildTreeIds(left, right) {
     return false;
   }
 
-  if (left.childTrees.length === 0 && right.childTrees.length === 0) {
-    return true;
+  if (left.childTrees.length !== right.childTrees.length) {
+    return false;
   }
 
   return left.childTrees.every(
     (child, index) => compareChildTreeIds(child, right.childTrees[index]),
+  );
+}
+
+function compareChildTreeByBlockIds(left, right) {
+  if (left === null && right === null) {
+    return true;
+  }
+
+  if (left === null || right === null) {
+    return false;
+  }
+
+  if (!left?.block?._id || !right?.block?._id) {
+    return false;
+  }
+
+  if (left.block?._id !== right.block?._id) {
+    return false;
+  }
+
+  if (!left?.childTrees || !right?.childTrees) {
+    return false;
+  }
+
+  if (left.childTrees.length !== right.childTrees.length) {
+    return false;
+  }
+
+  return left.childTrees.every(
+    (child, index) => compareChildTreeByBlockIds(child, right.childTrees[index]),
   );
 }
 
@@ -65,4 +95,5 @@ export {
   findBlockTreeById,
   findTagBlockById,
   compareChildTreeIds,
+  compareChildTreeByBlockIds,
 };
