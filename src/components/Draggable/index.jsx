@@ -4,23 +4,23 @@ import { useDrag } from "react-dnd";
 import styled from "styled-components";
 
 const DraggableWrapper = styled.div`
-  margin: 2px 10px;
+  margin: 1px 20px;
   padding: 2px;
   cursor: pointer;
-  border: 1px solid transparent;
-
-  &:hover {
-    border: 1px solid gray;
-  }
+  border: ${({ isDragging }) => (isDragging ? "1px solid gray" : "1px solid transparent")};
 `;
 
 function Draggable({ children, _id, type }) {
-  const [, dragRef] = useDrag(
-    () => ({ type, item: { itemId: _id } }),
+  const [{ isDragging }, dragRef] = useDrag(
+    () => ({
+      type,
+      item: { itemId: _id },
+      collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+    }),
   );
 
   return (
-    <DraggableWrapper ref={dragRef}>
+    <DraggableWrapper ref={dragRef} isDragging={isDragging}>
       {children}
     </DraggableWrapper>
   );
