@@ -8,16 +8,17 @@ import { addChildTree } from "../../features/challenge";
 
 const DroppableWrapper = styled.div`
   display: grid;
+  margin: 1px 0;
+  padding: 2px 0;
   align-content: space-between;
-  padding: 5px 0;
-  background-color: #bbb5b359;
+  background-color: ${({ hovered }) => (hovered ? "salmon" : "transparent")};
 `;
 
-function Droppable({ children, _id }) {
+function Droppable({ children, _id, index }) {
   const dispatch = useDispatch();
-  const [, dropRef] = useDrop(() => ({
+  const [{ hovered }, dropRef] = useDrop(() => ({
     accept: ["tag", "container"],
-    drop: ({ itemId }, monitor) => {
+    drop({ itemId }, monitor) {
       if (monitor.didDrop()) {
         return;
       }
@@ -26,12 +27,15 @@ function Droppable({ children, _id }) {
         return;
       }
 
-      dispatch(addChildTree({ itemId, containerId: _id }));
+      dispatch(addChildTree({ itemId, containerId: _id, index }));
     },
-  }), [_id]);
+    collect(monitor) {
+      return { hovered: monitor.isOver({ shallow: true }) };
+    },
+  }), [_id, index]);
 
   return (
-    <DroppableWrapper ref={dropRef}>
+    <DroppableWrapper ref={dropRef} hovered={hovered}>
       {children}
     </DroppableWrapper>
   );
@@ -43,6 +47,11 @@ Droppable.propTypes = {
     PropTypes.element,
     PropTypes.arrayOf(PropTypes.element),
   ]).isRequired,
+  index: PropTypes.number,
+};
+
+Droppable.defaultProps = {
+  index: -1,
 };
 
 export default Droppable;

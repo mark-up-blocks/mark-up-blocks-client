@@ -7,19 +7,27 @@ import TagBlock from "../TagBlock";
 
 function DropContainer({ _id, childTrees }) {
   return (
-    <Droppable _id={_id}>
+    <div>
       <span>&lt;div&gt;</span>
       <>
-        {childTrees.map((child) => (
+        <Droppable _id={_id} index={0}>
+          <div />
+        </Droppable>
+        {childTrees.map((child, index) => (
           <Draggable key={child._id} _id={child._id} type={child.block.isContainer ? "container" : "tag"}>
-            {child.block.isContainer
-              ? <DropContainer _id={child._id} childTrees={child.childTrees} />
-              : <span>{`<${child.block.tagName}>${child.block.property.text}</${child.block.tagName}>`}</span>}
+            <>
+              {child.block.isContainer
+                ? <DropContainer _id={child._id} childTrees={child.childTrees} />
+                : <span>{`<${child.block.tagName}>${child.block.property.text}</${child.block.tagName}>`}</span>}
+              <Droppable _id={_id} index={index + 1}>
+                <div />
+              </Droppable>
+            </>
           </Draggable>
         ))}
       </>
       <span>&lt;/div&gt;</span>
-    </Droppable>
+    </div>
   );
 }
 
