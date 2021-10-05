@@ -51,7 +51,7 @@ function ElementBlock({ _id, block, childTrees }) {
 
   return createElement(
     tagName,
-    { ...property, key: _id, ...preventedHandlers },
+    property,
   );
 }
 
