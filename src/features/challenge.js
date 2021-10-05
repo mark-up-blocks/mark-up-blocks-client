@@ -15,9 +15,24 @@ export const challengeSlice = createSlice({
         title, tagBlocks, boilerplate, answer,
       } = payload;
 
+      const formattedTagBlocks = tagBlocks.map(
+        (child) => {
+          if (child.isElementCluster) {
+            return {
+              ...child,
+              childTrees: (findBlockTree(answer,
+                (block) => block.block._id === child.block._id)).childTrees,
+              hasUsed: false,
+            };
+          }
+
+          return { ...child, childTrees: [], hasUsed: false };
+        },
+      );
+
       return {
         title,
-        tagBlocks: tagBlocks.map((child) => ({ ...child, childTrees: [], hasUsed: false })),
+        tagBlocks: formattedTagBlocks,
         boilerplate,
         answer,
       };
