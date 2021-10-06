@@ -6,7 +6,7 @@ import Droppable from "../Droppable";
 import TagBlock from "../TagBlock";
 
 function DropContainer({ _id, tagName, childTrees }) {
-  function getValue(child) {
+  function getTextValue(child) {
     return child.isElementCluster
       ? `<${child.block.tagName} />`
       : `<${child.block.tagName}>${child.block.property.text}</${child.block.tagName}>`;
@@ -30,7 +30,7 @@ function DropContainer({ _id, tagName, childTrees }) {
                     tagName={child.block.tagName}
                   />
                 )
-                : <span>{getValue(child)}</span>}
+                : <span>{getTextValue(child)}</span>}
               <Droppable _id={_id} index={index + 1}>
                 <div />
               </Droppable>

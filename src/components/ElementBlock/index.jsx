@@ -2,13 +2,30 @@ import React, { createElement } from "react";
 import PropTypes from "prop-types";
 
 function ElementBlock({ _id, block, childTrees }) {
-  const { tagName, property, isContainer } = block;
+  const { tagName, isContainer } = block;
+
+  function preventDefault(event) {
+    event.preventDefault();
+  }
+
+  const eventHandlers = Object.keys(block.property).filter((attribute) => attribute.startsWith("on"));
+  const preventedHandlers = eventHandlers.reduce(
+    (accumulator, handler) => ({ ...accumulator, [handler]: preventDefault }),
+    {},
+  );
+
+  const property = {
+    ...block.property, key: _id, ...preventedHandlers, text: null,
+  };
+
+  if (tagName === "form") {
+    property.onSubmit = preventDefault;
+  }
 
   if (isContainer) {
     return createElement(
       tagName,
-      { ...property, key: _id },
-      property.text,
+      property,
       childTrees.map((child) => (
         <ElementBlock
           key={child._id}
@@ -20,17 +37,21 @@ function ElementBlock({ _id, block, childTrees }) {
     );
   }
 
-  if (property.text) {
+  if (["input", "textarea"].includes(tagName)) {
+    property.readOnly = true;
+  }
+
+  if (block.property.text) {
     return createElement(
       tagName,
-      { ...property, key: _id },
-      property.text,
+      property,
+      block.property.text,
     );
   }
 
   return createElement(
     tagName,
-    { ...property, key: _id },
+    property,
   );
 }
 
