@@ -1,18 +1,75 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { findBlockTreeById, findBlockTree, findTagBlockById } from "../utils/selectData";
+import {
+  findBlockTreeById, findBlockTree, findTagBlockById, findChallengeById,
+} from "../utils/selectData";
 
 export const challengeSlice = createSlice({
   name: "challenge",
   initialState: {
+    challengeId: "",
     title: "",
     tagBlocks: [],
     boilerplate: null,
     answer: null,
+    isCompleted: false,
+    stageInfo: {
+      rootChallenge: {
+        name: "",
+        _id: "",
+        data: null,
+      },
+    },
   },
   reducers: {
+    setStageInfo(state, { payload }) {
+      const { _id, name, stage } = payload;
+
+      Object.assign(state, {
+        challengeId: _id,
+        stageInfo: {
+          rootChallenge: {
+            name,
+            _id,
+            data: stage,
+          },
+        },
+      });
+    },
+    changeStage(state, { payload }) {
+      const challengeId = payload;
+      const previousChallenge = findChallengeById(
+        state.stageInfo.rootChallenge.data, state.challengeId,
+      );
+      const selectedChallenge = findChallengeById(
+        state.stageInfo.rootChallenge.data,
+        challengeId,
+      );
+
+      previousChallenge.data = {
+        tagBlocks: state.tagBlocks,
+        boilerplate: state.boilerplate,
+        answer: state.answer,
+        isLoaded: true,
+        isCompleted: state.isCompleted,
+      };
+
+      if (!selectedChallenge.data) {
+        Object.assign(state, {
+          challengeId,
+          isLoaded: false,
+        });
+        return;
+      }
+
+      Object.assign(state, {
+        ...selectedChallenge.data,
+        challengeId: selectedChallenge._id,
+        title: selectedChallenge.title,
+      });
+    },
     setChallenge(state, { payload }) {
       const {
-        title, tagBlocks, boilerplate, answer,
+        _id, title, tagBlocks, boilerplate, answer,
       } = payload;
 
       const formattedTagBlocks = tagBlocks.map(
@@ -30,12 +87,25 @@ export const challengeSlice = createSlice({
         },
       );
 
-      return {
+      Object.assign(state, {
+        challengeId: _id,
         title,
         tagBlocks: formattedTagBlocks,
         boilerplate,
         answer,
-      };
+        isLoaded: true,
+      });
+    },
+    markStageCompleted(state) {
+      if (!state.challengeId) {
+        return;
+      }
+
+      if (state.isCompleted) {
+        return;
+      }
+
+      Object.assign(state, { isCompleted: true });
     },
     addChildTree(state, { payload }) {
       const { containerId, itemId, index } = payload;
@@ -75,5 +145,7 @@ export const challengeSlice = createSlice({
   },
 });
 
-export const { setChallenge, addChildTree } = challengeSlice.actions;
+export const {
+  setStageInfo, changeStage, setChallenge, markStageCompleted, addChildTree,
+} = challengeSlice.actions;
 export default challengeSlice.reducer;
