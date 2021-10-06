@@ -90,10 +90,31 @@ function compareChildTreeByBlockIds(left, right) {
   );
 }
 
+function findChallengeById(root, challengeId) {
+  const queue = [root];
+
+  while (queue.length) {
+    const currentNode = queue.shift();
+
+    if (currentNode) {
+      if (currentNode._id === challengeId) {
+        return currentNode;
+      }
+
+      if (currentNode.childChallenges) {
+        queue.push(...currentNode.childChallenges);
+      }
+    }
+  }
+
+  return null;
+}
+
 export {
   findBlockTree,
   findBlockTreeById,
   findTagBlockById,
   compareChildTreeIds,
   compareChildTreeByBlockIds,
+  findChallengeById,
 };
