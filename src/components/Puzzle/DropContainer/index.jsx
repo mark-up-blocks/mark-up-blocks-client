@@ -5,7 +5,9 @@ import Draggable from "../Draggable";
 import Droppable from "../Droppable";
 import TagBlock from "../TagBlock";
 
-function DropContainer({ _id, tagName, childTrees }) {
+function DropContainer({
+  _id, tagName, childTrees, onDrop,
+}) {
   function getTextValue(child) {
     return child.isChallenge
       ? `<${child.block.tagName} />`
@@ -16,7 +18,7 @@ function DropContainer({ _id, tagName, childTrees }) {
     <div>
       <span>{`<${tagName}>`}</span>
       <>
-        <Droppable _id={_id} index={0}>
+        <Droppable _id={_id} index={0} onDrop={onDrop}>
           <div />
         </Droppable>
         {childTrees.map((child, index) => (
@@ -28,10 +30,11 @@ function DropContainer({ _id, tagName, childTrees }) {
                     _id={child._id}
                     childTrees={child.childTrees}
                     tagName={child.block.tagName}
+                    onDrop={onDrop}
                   />
                 )
                 : <span>{getTextValue(child)}</span>}
-              <Droppable _id={_id} index={index + 1}>
+              <Droppable _id={_id} index={index + 1} onDrop={onDrop}>
                 <div />
               </Droppable>
             </>
@@ -49,6 +52,7 @@ DropContainer.propTypes = {
   childTrees: PropTypes.arrayOf(
     PropTypes.shape(TagBlock.propTypes),
   ).isRequired,
+  onDrop: PropTypes.func.isRequired,
 };
 
 export default DropContainer;
