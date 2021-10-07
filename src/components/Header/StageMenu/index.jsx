@@ -1,13 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
-import { changeStage } from "../../features/challenge";
-
-function StageMenu({ _id, title, childChallenges }) {
-  const dispatch = useDispatch();
-  const handleClick = () => dispatch(changeStage(_id));
+function StageMenu({
+  _id, title, childChallenges, onClick,
+}) {
+  const handleClick = () => onClick(_id);
 
   return (
     <Li>
@@ -22,6 +20,7 @@ function StageMenu({ _id, title, childChallenges }) {
               _id={child._id}
               title={child.title}
               childChallenges={child.childChallenges}
+              onClick={onClick}
             />
           ))}
         </ol>
@@ -40,6 +39,7 @@ StageMenu.propTypes = {
   childChallenges: PropTypes.arrayOf(
     PropTypes.shape(menuSchema),
   ).isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default StageMenu;
