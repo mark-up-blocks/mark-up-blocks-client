@@ -7,7 +7,7 @@ import TagBlock from "../TagBlock";
 
 function DropContainer({ _id, tagName, childTrees }) {
   function getTextValue(child) {
-    return child.isElementCluster
+    return child.isChallenge
       ? `<${child.block.tagName} />`
       : `<${child.block.tagName}>${child.block.property.text}</${child.block.tagName}>`;
   }
@@ -22,7 +22,7 @@ function DropContainer({ _id, tagName, childTrees }) {
         {childTrees.map((child, index) => (
           <Draggable key={child._id} _id={child._id} type={child.block.isContainer ? "container" : "tag"}>
             <>
-              {child.block.isContainer && !child.isElementCluster
+              {child.block.isContainer && !child.isChallenge
                 ? (
                   <DropContainer
                     _id={child._id}
