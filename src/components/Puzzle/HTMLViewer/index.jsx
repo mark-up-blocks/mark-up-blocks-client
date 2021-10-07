@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 import DropContainer from "../DropContainer";
-import { compareChildTreeIds } from "../../utils/selectData";
+import { compareChildTreeIds } from "../../../utils/selectData";
 
 const HTMLViewerWrapper = styled.div`
   display: grid;

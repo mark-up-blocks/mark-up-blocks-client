@@ -4,7 +4,7 @@ import { useDrop } from "react-dnd";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
-import { addChildTree } from "../../features/challenge";
+import { addChildTree } from "../../../features/challenge";
 
 const DroppableWrapper = styled.div`
   display: grid;
