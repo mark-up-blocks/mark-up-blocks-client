@@ -12,6 +12,17 @@ const GlobalStyle = createGlobalStyle`
   a {
     text-decoration: none;
   }
+
+  button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+
+  @font-face {
+    font-family: "Noto Sans Display";
+    src: url("https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@100&display=swap");
+  }
 `;
 
 export default GlobalStyle;
