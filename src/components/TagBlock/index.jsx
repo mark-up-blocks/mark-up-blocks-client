@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import Draggable from "../Draggable";
 
-function TagBlock({ _id, isElementCluster, block }) {
+function TagBlock({ _id, isChallenge, block }) {
   const { tagName, isContainer, property } = block;
-  const content = isContainer || isElementCluster
+  const content = isContainer || isChallenge
     ? `<${tagName} />`
     : `<${tagName}>${property.text}</${tagName}>`;
 
@@ -17,7 +17,7 @@ function TagBlock({ _id, isElementCluster, block }) {
 
 TagBlock.propTypes = {
   _id: PropTypes.string.isRequired,
-  isElementCluster: PropTypes.bool.isRequired,
+  isChallenge: PropTypes.bool.isRequired,
   block: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     tagName: PropTypes.string.isRequired,

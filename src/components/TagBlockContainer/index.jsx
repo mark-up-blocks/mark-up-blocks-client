@@ -19,14 +19,14 @@ function TagBlockContainer() {
   return (
     <ContainerWrapper>
       {tagBlocks.map(({
-        _id, block, hasUsed, isElementCluster,
+        _id, block, hasUsed, isChallenge,
       }) => (
         !hasUsed && (
         <TagBlock
           key={_id}
           _id={_id}
           block={block}
-          isElementCluster={isElementCluster}
+          isChallenge={isChallenge}
         />
         )
       ))}

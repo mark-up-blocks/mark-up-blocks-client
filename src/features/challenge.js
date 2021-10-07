@@ -25,7 +25,7 @@ export const challengeSlice = createSlice({
       const { _id, name, stage } = payload;
 
       Object.assign(state, {
-        challengeId: _id,
+        challengeId: stage._id,
         stageInfo: {
           rootChallenge: {
             name,
@@ -74,7 +74,7 @@ export const challengeSlice = createSlice({
 
       const formattedTagBlocks = tagBlocks.map(
         (child) => {
-          if (child.isElementCluster) {
+          if (child.isChallenge) {
             return {
               ...child,
               childTrees: (findBlockTree(answer,
