@@ -110,6 +110,26 @@ function findChallengeById(root, challengeId) {
   return null;
 }
 
+function findNextUncompletedChallenge(root, id) {
+  const queue = [root];
+
+  while (queue.length) {
+    const currentNode = queue.shift();
+
+    if (currentNode) {
+      if (currentNode._id !== id && (!currentNode?.data || !currentNode?.data.isCompleted)) {
+        return currentNode._id;
+      }
+
+      if (currentNode.childChallenges) {
+        queue.push(...currentNode.childChallenges);
+      }
+    }
+  }
+
+  return null;
+}
+
 export {
   findBlockTree,
   findBlockTreeById,
@@ -117,4 +137,5 @@ export {
   compareChildTreeIds,
   compareChildTreeByBlockIds,
   findChallengeById,
+  findNextUncompletedChallenge,
 };
