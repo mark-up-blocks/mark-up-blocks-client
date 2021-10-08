@@ -9,8 +9,9 @@ import TargetPage from "./TargetPage";
 import TagBlock from "./TagBlock";
 import DropContainer from "./DropContainer";
 
-import { setChallenge, markStageCompleted, addChildTree } from "../../features/challenge";
-import { getChallenge } from "../../api";
+import {
+  setChallenge, markStageCompleted, addChildTree,
+} from "../../features/challenge";
 import { compareChildTreeIds, compareChildTreeByBlockIds } from "../../utils/selectData";
 
 import { MESSAGE } from "../../constants";
@@ -18,8 +19,7 @@ import { MESSAGE } from "../../constants";
 function Puzzle({ notifyError }) {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const { challengeId } = useSelector((state) => state.challenge);
-  const { tagBlocks } = useSelector((state) => state.challenge);
+  const { challengeId, tagBlocks, isCompleted } = useSelector((state) => state.challenge);
   const boilerplate = useSelector((state) => state.challenge.boilerplate, compareChildTreeIds);
   const answer = useSelector((state) => state.challenge.answer, compareChildTreeIds);
   const isCorrect = compareChildTreeByBlockIds(boilerplate, answer);
@@ -28,30 +28,28 @@ function Puzzle({ notifyError }) {
   };
 
   useEffect(() => {
-    async function fetchChallenge() {
-      try {
-        const challenge = await getChallenge(id);
-
-        dispatch(setChallenge(challenge));
-      } catch (err) {
-        notifyError(err);
-      }
-    }
-
     if (id === challengeId) {
       return;
     }
 
-    fetchChallenge();
+    dispatch(setChallenge({ id, notifyError }));
   }, [dispatch, notifyError, id, challengeId]);
 
   useEffect(() => {
+    if (isCompleted) {
+      return;
+    }
+
     if (!isCorrect) {
       return;
     }
 
+    if (!answer) {
+      return;
+    }
+
     dispatch(markStageCompleted());
-  }, [dispatch, isCorrect]);
+  }, [dispatch, isCorrect, answer, isCompleted]);
 
   return (
     <div>
