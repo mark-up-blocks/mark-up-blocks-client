@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 
-import StageMenu from "../StageMenu";
+import StageMenu from "./StageMenu";
 
-function Header() {
+function Header({ onMenuClick }) {
   const { title: stageTitle, stageInfo } = useSelector((state) => state.challenge);
   const [isStageMenuOpen, setIsStageMenuOpen] = useState(false);
   const stageData = useSelector((state) => state.challenge.stageInfo.rootChallenge.data);
@@ -19,6 +20,7 @@ function Header() {
             _id={stageData._id}
             title={stageData.title}
             childChallenges={stageData.childChallenges}
+            onClick={onMenuClick}
           />
         </MenuWrapper>
         )}
@@ -28,6 +30,10 @@ function Header() {
     </HeaderWrapper>
   );
 }
+
+Header.propTypes = {
+  onMenuClick: PropTypes.func.isRequired,
+};
 
 export default Header;
 

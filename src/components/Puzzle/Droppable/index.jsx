@@ -1,10 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useDrop } from "react-dnd";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
-
-import { addChildTree } from "../../features/challenge";
 
 const DroppableWrapper = styled.div`
   display: grid;
@@ -14,8 +11,9 @@ const DroppableWrapper = styled.div`
   background-color: ${({ hovered }) => (hovered ? "salmon" : "transparent")};
 `;
 
-function Droppable({ children, _id, index }) {
-  const dispatch = useDispatch();
+function Droppable({
+  children, _id, index, onDrop,
+}) {
   const [{ hovered }, dropRef] = useDrop(() => ({
     accept: ["tag", "container"],
     drop({ itemId }, monitor) {
@@ -27,7 +25,7 @@ function Droppable({ children, _id, index }) {
         return;
       }
 
-      dispatch(addChildTree({ itemId, containerId: _id, index }));
+      onDrop({ itemId, containerId: _id, index });
     },
     collect(monitor) {
       return { hovered: monitor.isOver({ shallow: true }) };
@@ -48,6 +46,7 @@ Droppable.propTypes = {
     PropTypes.arrayOf(PropTypes.element),
   ]).isRequired,
   index: PropTypes.number,
+  onDrop: PropTypes.func.isRequired,
 };
 
 Droppable.defaultProps = {

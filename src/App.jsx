@@ -1,29 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Route, Switch, useHistory } from "react-router-dom";
 
 import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
 import GlobalStyle from "./theme/global";
 
-import { setChallenge, setStageInfo, markStageCompleted } from "./features/challenge";
-import { getChallengeList, getChallenge } from "./api";
+import { setStageInfo } from "./features/challenge";
+import { getChallengeList } from "./api";
 import Header from "./components/Header";
-import ResultPage from "./components/ResultPage";
-import TargetPage from "./components/TargetPage";
-import TagBlockContainer from "./components/TagBlockContainer";
-import HTMLViewer from "./components/HTMLViewer";
-
-import { compareChildTreeIds, compareChildTreeByBlockIds } from "./utils/selectData";
-import { MESSAGE } from "./constants";
+import Puzzle from "./components/Puzzle";
+import { findNextUncompletedChallenge } from "./utils/selectData";
 
 function App() {
   const dispatch = useDispatch();
+  const history = useHistory();
+  const challenge = useSelector((state) => state.challenge);
+  const [isDone, setIsDone] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const { challengeId, isLoaded } = useSelector((state) => state.challenge);
-  const boilerplate = useSelector((state) => state.challenge.boilerplate, compareChildTreeIds);
-  const answer = useSelector((state) => state.challenge.answer, compareChildTreeIds);
-  const isCorrect = compareChildTreeByBlockIds(boilerplate, answer);
   const [selectedOption] = useState(0);
+
+  const handleMenuClick = (_id) => history.push(`/${_id}`);
+  const notifyError = (err) => {
+    if (process.env.NODE_ENV === "development") {
+      console.error(err);
+    }
+
+    setHasError(true);
+  };
+  const handleFinishQuiz = (_id) => {
+    const nextChallengeId = findNextUncompletedChallenge(
+      challenge.stageInfo?.rootChallenge.data, _id,
+    );
+
+    if (nextChallengeId) {
+      history.push(`/${nextChallengeId}`);
+    } else {
+      setIsDone(true);
+    }
+  };
 
   useEffect(() => {
     async function fetchRootChallenge() {
@@ -33,69 +48,33 @@ function App() {
 
         dispatch(setStageInfo(rootChallenge));
       } catch (err) {
-        if (process.env.NODE_ENV === "development") {
-          console.error(err);
-        }
-
-        setHasError(true);
+        notifyError(err);
       }
     }
 
     fetchRootChallenge();
   }, [dispatch, selectedOption]);
 
-  useEffect(() => {
-    async function fetchChallenge() {
-      try {
-        const challenge = await getChallenge(challengeId);
-
-        dispatch(setChallenge(challenge));
-      } catch (err) {
-        if (process.env.NODE_ENV === "development") {
-          console.error(err);
-        }
-
-        setHasError(true);
-      }
-    }
-
-    if (!challengeId || isLoaded) {
-      return;
-    }
-
-    fetchChallenge();
-  }, [dispatch, isLoaded, challengeId]);
-
-  useEffect(() => {
-    if (!isCorrect) {
-      return;
-    }
-
-    dispatch(markStageCompleted());
-  }, [dispatch, isCorrect]);
-
   return (
     <ThemeProvider theme={theme}>
       <AppWrapper>
-        <Header />
+        <Header onMenuClick={handleMenuClick} />
         {hasError
           ? <div>현재 사이트 이용이 불가능합니다.</div>
           : (
-            <>
-              <PageContainer hasSingleChild={isCorrect}>
-                <ResultPage />
-                {!isCorrect && <TargetPage />}
-              </PageContainer>
-              {isCorrect
-                ? <MessageContainer>{MESSAGE.SUCCESS}</MessageContainer>
-                : (
-                  <DndInterface>
-                    <TagBlockContainer />
-                    <HTMLViewer />
-                  </DndInterface>
-                )}
-            </>
+            <Switch>
+              <Route path="/:id">
+                <Puzzle
+                  notifyError={notifyError}
+                  onFinish={handleFinishQuiz}
+                />
+              </Route>
+              <Route path="*">
+                <div>404 not found</div>
+              </Route>
+            </Switch>
           )}
+        {isDone && <div>모두 완료하셨네요!!</div>}
       </AppWrapper>
       <GlobalStyle />
     </ThemeProvider>
@@ -109,21 +88,4 @@ const AppWrapper = styled.div`
   width: 100%;
   height: 100%;
   grid-template-rows: 50px 4fr 3fr;
-`;
-
-const PageContainer = styled.div`
-  display: grid;
-  grid-template-columns: ${({ hasSingleChild }) => (hasSingleChild ? "1fr" : "1fr 1fr")};
-  margin: ${({ hasSingleChild }) => (hasSingleChild ? "0 auto" : "0")};
-`;
-
-const DndInterface = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-`;
-
-const MessageContainer = styled.pre`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
