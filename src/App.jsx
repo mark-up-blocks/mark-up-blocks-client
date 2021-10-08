@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory } from "react-router-dom";
 
 import styled, { ThemeProvider } from "styled-components";
@@ -10,10 +10,13 @@ import { setStageInfo } from "./features/challenge";
 import { getChallengeList } from "./api";
 import Header from "./components/Header";
 import Puzzle from "./components/Puzzle";
+import { findNextUncompletedChallenge } from "./utils/selectData";
 
 function App() {
   const dispatch = useDispatch();
   const history = useHistory();
+  const challenge = useSelector((state) => state.challenge);
+  const [isDone, setIsDone] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [selectedOption] = useState(0);
 
@@ -24,6 +27,17 @@ function App() {
     }
 
     setHasError(true);
+  };
+  const handleFinishQuiz = (_id) => {
+    const nextChallengeId = findNextUncompletedChallenge(
+      challenge.stageInfo?.rootChallenge.data, _id,
+    );
+
+    if (nextChallengeId) {
+      history.push(`/${nextChallengeId}`);
+    } else {
+      setIsDone(true);
+    }
   };
 
   useEffect(() => {
@@ -50,13 +64,17 @@ function App() {
           : (
             <Switch>
               <Route path="/:id">
-                <Puzzle notifyError={notifyError} />
+                <Puzzle
+                  notifyError={notifyError}
+                  onFinish={handleFinishQuiz}
+                />
               </Route>
               <Route path="*">
                 <div>404 not found</div>
               </Route>
             </Switch>
           )}
+        {isDone && <div>모두 완료하셨네요!!</div>}
       </AppWrapper>
       <GlobalStyle />
     </ThemeProvider>

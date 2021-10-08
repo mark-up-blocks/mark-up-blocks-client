@@ -8,6 +8,7 @@ import ResultPage from "./ResultPage";
 import TargetPage from "./TargetPage";
 import TagBlock from "./TagBlock";
 import DropContainer from "./DropContainer";
+import ArrowButton from "../Button/Arrow";
 
 import {
   setChallenge, markStageCompleted, addChildTree,
@@ -16,7 +17,7 @@ import { compareChildTreeIds, compareChildTreeByBlockIds } from "../../utils/sel
 
 import { MESSAGE } from "../../constants";
 
-function Puzzle({ notifyError }) {
+function Puzzle({ notifyError, onFinish }) {
   const dispatch = useDispatch();
   const { id } = useParams();
   const { challengeId, tagBlocks, isCompleted } = useSelector((state) => state.challenge);
@@ -58,7 +59,12 @@ function Puzzle({ notifyError }) {
         {!isCorrect && <TargetPage />}
       </PageContainer>
       {isCorrect
-        ? <MessageContainer>{MESSAGE.SUCCESS}</MessageContainer>
+        ? (
+          <div>
+            <MessageContainer>{MESSAGE.SUCCESS}</MessageContainer>
+            <ArrowButton onClick={() => onFinish(id)} />
+          </div>
+        )
         : (
           <DndInterface>
             <TagBlockContainer>
@@ -93,6 +99,7 @@ function Puzzle({ notifyError }) {
 
 Puzzle.propTypes = {
   notifyError: PropTypes.func.isRequired,
+  onFinish: PropTypes.func.isRequired,
 };
 
 export default Puzzle;
