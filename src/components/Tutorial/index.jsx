@@ -44,7 +44,7 @@ function Tutorial({ onFinish }) {
   };
 
   return (
-    <Grid>
+    <div>
       {isDone
         ? (
           <div>
@@ -59,7 +59,7 @@ function Tutorial({ onFinish }) {
         : (
           <>
             <div>Mark Up Blocks에 오신 것을 환영합니다! 아래 태그 블록을 div 안으로 옮겨볼까요?</div>
-            <div className="grid">
+            <DnDInterface>
               <TagBlockContainer>
                 {tutorialBlocks.map(({
                   _id, block, hasUsed, isChallenge,
@@ -82,10 +82,10 @@ function Tutorial({ onFinish }) {
                   onDrop={handleDrop}
                 />
               </HTMLViewer>
-            </div>
+            </DnDInterface>
           </>
         )}
-    </Grid>
+    </div>
   );
 }
 
@@ -95,23 +95,12 @@ Tutorial.propTypes = {
 
 export default Tutorial;
 
-const Grid = styled.div`
+const DnDInterface = styled.div`
   display: grid;
-  width: 80%;
-  height: 80%;
-
-  .grid {
-    display: grid;
-    width: 100%;
-    height: 100%;
-    margin: auto;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .preview-container {
-    width: 200px;
-    height: 100px;
-  }
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  grid-template-columns: 1fr 1fr;
 `;
 
 const TagBlockContainer = styled.div`

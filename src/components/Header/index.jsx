@@ -5,14 +5,14 @@ import styled from "styled-components";
 
 import StageMenu from "./StageMenu";
 
-function Header({ onMenuClick }) {
+function Header({ onTitleClick, onMenuClick }) {
   const { title: stageTitle, stageInfo } = useSelector((state) => state.challenge);
   const [isStageMenuOpen, setIsStageMenuOpen] = useState(false);
   const stageData = useSelector((state) => state.challenge.stageInfo.rootChallenge.data);
 
   return (
     <HeaderWrapper>
-      <Title>Mark Up Blocks</Title>
+      <Title onClick={onTitleClick}>Mark Up Blocks</Title>
       <Nav>
         {isStageMenuOpen && (
         <MenuWrapper>
@@ -32,6 +32,7 @@ function Header({ onMenuClick }) {
 }
 
 Header.propTypes = {
+  onTitleClick: PropTypes.func.isRequired,
   onMenuClick: PropTypes.func.isRequired,
 };
 
@@ -50,6 +51,7 @@ const HeaderWrapper = styled.header`
 const Title = styled.h2`
   margin: 10px;
   font-size: 1.8rem;
+  cursor: pointer;
 `;
 
 const Nav = styled.nav`
