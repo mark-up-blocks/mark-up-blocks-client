@@ -10,8 +10,8 @@ import { setStageInfo } from "./features/challenge";
 import { getChallengeList } from "./api";
 import Header from "./components/Header";
 import Puzzle from "./components/Puzzle";
-import { findNextUncompletedChallenge } from "./utils/selectData";
 import Tutorial from "./components/Tutorial";
+import { findNextUncompletedChallenge } from "./utils/selectData";
 
 function App() {
   const dispatch = useDispatch();
