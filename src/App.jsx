@@ -10,6 +10,7 @@ import { setStageInfo } from "./features/challenge";
 import { getChallengeList } from "./api";
 import Header from "./components/Header";
 import Puzzle from "./components/Puzzle";
+import Tutorial from "./components/Tutorial";
 import { findNextUncompletedChallenge } from "./utils/selectData";
 
 function App() {
@@ -39,6 +40,10 @@ function App() {
       setIsDone(true);
     }
   };
+  const handleTitleClick = () => {
+    history.push("/");
+    setHasError(false);
+  };
 
   useEffect(() => {
     async function fetchRootChallenge() {
@@ -58,11 +63,14 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <AppWrapper>
-        <Header onMenuClick={handleMenuClick} />
+        <Header onMenuClick={handleMenuClick} onTitleClick={handleTitleClick} />
         {hasError
           ? <div>현재 사이트 이용이 불가능합니다.</div>
           : (
             <Switch>
+              <Route exact path="/">
+                <Tutorial onFinish={handleFinishQuiz} />
+              </Route>
               <Route path="/:id">
                 <Puzzle
                   notifyError={notifyError}
