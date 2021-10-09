@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 import StageMenu from "./StageMenu";
+import Button from "../shared/Button";
 
 function Header({ onTitleClick, onMenuClick }) {
   const { title: stageTitle, stageInfo } = useSelector((state) => state.challenge);
@@ -25,7 +26,7 @@ function Header({ onTitleClick, onMenuClick }) {
         </MenuWrapper>
         )}
         <ChallengeName>{stageInfo.rootChallenge.name}</ChallengeName>
-        <Stage onClick={() => setIsStageMenuOpen((prev) => !prev)}>{stageTitle || "Stage"}</Stage>
+        <StageButton onClick={() => setIsStageMenuOpen((prev) => !prev)} value={stageTitle || "Stage"} />
       </Nav>
     </HeaderWrapper>
   );
@@ -65,7 +66,7 @@ const ChallengeName = styled.h3`
   font-size: 1.3rem;
 `;
 
-const Stage = styled.button`
+const StageButton = styled(Button)`
   width: 100px;
   margin: 10px;
   padding: 5px 10px;

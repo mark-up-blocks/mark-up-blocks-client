@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import Button from "../../shared/Button";
 
 function StageMenu({
   _id, title, childChallenges, onClick,
@@ -9,9 +10,7 @@ function StageMenu({
 
   return (
     <Li>
-      <StageButton type="button" onClick={handleClick}>
-        {title}
-      </StageButton>
+      <StageButton onClick={handleClick} value={title} />
       {childChallenges.length ? (
         <ol>
           {childChallenges.map((child) => (
@@ -48,7 +47,7 @@ const Li = styled.li`
   margin: 5px 0px 5px 15px;
 `;
 
-const StageButton = styled.button`
+const StageButton = styled(Button)`
   width: 100%;
   padding: 5px;
   color: ${({ theme }) => theme.color.text};

@@ -5,7 +5,8 @@ import { DndInterface, TagBlockContainer, HTMLViewer } from "../Puzzle";
 
 import DropContainer from "../Puzzle/DropContainer";
 import TagBlock from "../Puzzle/TagBlock";
-import ArrowButton from "../Button/Arrow";
+import Button from "../shared/Button";
+import ArrowButton from "../shared/Button/Arrow";
 
 const sampleBlock = {
   _id: "tutorial1",
@@ -50,7 +51,7 @@ function Tutorial({ onFinish }) {
         ? (
           <div>
             <p>좋아요 !</p>
-            <button type="button" onClick={handleReset}>한번 더?</button>
+            <Button onClick={handleReset} value="한번 더?" />
             <div className="grid">
               <span>다음 스테이지</span>
               <ArrowButton onClick={onFinish} />

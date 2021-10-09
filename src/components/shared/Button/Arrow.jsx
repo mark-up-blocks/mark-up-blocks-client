@@ -1,10 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import Button from "./index";
 
 function Arrow({ onClick }) {
   return (
-    <Wrapper type="button" onClick={onClick} />
+    <Wrapper onClick={onClick} />
   );
 }
 
@@ -14,7 +15,7 @@ Arrow.propTypes = {
 
 export default Arrow;
 
-const Wrapper = styled.button`
+const Wrapper = styled(Button)`
   box-sizing: border-box;
   width: 0;
   height: 0;
