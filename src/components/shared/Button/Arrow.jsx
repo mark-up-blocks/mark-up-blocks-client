@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 function Arrow({ onClick }) {
   return (
-    <Wrapper onClick={onClick} />
+    <Wrapper type="button" onClick={onClick} />
   );
 }
 

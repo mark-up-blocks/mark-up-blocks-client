@@ -8,7 +8,7 @@ import ResultPage from "./ResultPage";
 import TargetPage from "./TargetPage";
 import TagBlock from "./TagBlock";
 import DropContainer from "./DropContainer";
-import ArrowButton from "../Button/Arrow";
+import ArrowButton from "../shared/Button/Arrow";
 
 import {
   setChallenge, markStageCompleted, addChildTree,
