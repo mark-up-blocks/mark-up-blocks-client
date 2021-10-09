@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import debounce from "lodash.debounce";
 import styled from "styled-components";
 import Draggable from "../Draggable";
-import ElementBlock from "../ElementBlock";
-import { convertCamelToKebab, calcPosition } from "../../../utils/formatData";
+import ElementBlock from "../../Display/ElementBlock";
+import { convertCamelToKebab, calcPosition } from "../../../../utils/formatData";
 
 function TagBlock({ _id, isChallenge, block }) {
   const ref = useRef(null);
