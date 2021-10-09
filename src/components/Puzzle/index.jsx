@@ -110,7 +110,7 @@ const PageContainer = styled.div`
   margin: ${({ hasSingleChild }) => (hasSingleChild ? "0 auto" : "0")};
 `;
 
-const DndInterface = styled.div`
+export const DndInterface = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
 `;
@@ -121,7 +121,7 @@ const MessageContainer = styled.pre`
   align-items: center;
 `;
 
-const TagBlockContainer = styled.div`
+export const TagBlockContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin: 10px;
@@ -130,7 +130,7 @@ const TagBlockContainer = styled.div`
   border: ${({ theme }) => theme.border.page};
 `;
 
-const HTMLViewer = styled.div`
+export const HTMLViewer = styled.div`
   display: grid;
   align-items: center;
   margin: 10px;

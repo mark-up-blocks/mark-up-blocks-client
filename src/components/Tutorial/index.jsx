@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { DndInterface, TagBlockContainer, HTMLViewer } from "../Puzzle";
 
 import DropContainer from "../Puzzle/DropContainer";
 import TagBlock from "../Puzzle/TagBlock";
@@ -59,7 +60,7 @@ function Tutorial({ onFinish }) {
         : (
           <>
             <div>Mark Up Blocks에 오신 것을 환영합니다! 아래 태그 블록을 div 안으로 옮겨볼까요?</div>
-            <DnDInterface>
+            <WideDndInterface>
               <TagBlockContainer>
                 {tutorialBlocks.map(({
                   _id, block, hasUsed, isChallenge,
@@ -82,7 +83,7 @@ function Tutorial({ onFinish }) {
                   onDrop={handleDrop}
                 />
               </HTMLViewer>
-            </DnDInterface>
+            </WideDndInterface>
           </>
         )}
     </div>
@@ -95,26 +96,7 @@ Tutorial.propTypes = {
 
 export default Tutorial;
 
-const DnDInterface = styled.div`
-  display: grid;
+const WideDndInterface = styled(DndInterface)`
   width: 100%;
   height: 100%;
-  margin: auto;
-  grid-template-columns: 1fr 1fr;
-`;
-
-const TagBlockContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin: 10px;
-  justify-content: center;
-  align-items: center;
-  border: ${({ theme }) => theme.border.page};
-`;
-
-const HTMLViewer = styled.div`
-  display: grid;
-  align-items: center;
-  margin: 10px;
-  border: ${({ theme }) => theme.border.page};
 `;
