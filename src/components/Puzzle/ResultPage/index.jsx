@@ -4,14 +4,6 @@ import styled from "styled-components";
 
 import ElementBlock from "../ElementBlock";
 
-const ResultPageWrapper = styled.div`
-  display: flex;
-  margin: 10px;
-  justify-content: center;
-  align-items: center;
-  border: ${({ theme }) => theme.border.page};
-`;
-
 function ResultPage() {
   const boilerplate = useSelector((state) => state.challenge.boilerplate);
 
@@ -29,3 +21,11 @@ function ResultPage() {
 }
 
 export default ResultPage;
+
+const ResultPageWrapper = styled.div`
+  display: flex;
+  margin: 10px;
+  justify-content: center;
+  align-items: center;
+  border: ${({ theme }) => theme.border.page};
+`;

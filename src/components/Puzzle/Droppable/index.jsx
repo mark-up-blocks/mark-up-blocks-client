@@ -3,14 +3,6 @@ import PropTypes from "prop-types";
 import { useDrop } from "react-dnd";
 import styled from "styled-components";
 
-const DroppableWrapper = styled.div`
-  display: grid;
-  margin: 1px 0;
-  padding: 2px 0;
-  align-content: space-between;
-  background-color: ${({ hovered }) => (hovered ? "salmon" : "transparent")};
-`;
-
 function Droppable({
   children, _id, index, onDrop,
 }) {
@@ -54,3 +46,11 @@ Droppable.defaultProps = {
 };
 
 export default Droppable;
+
+const DroppableWrapper = styled.div`
+  display: grid;
+  margin: 1px 0;
+  padding: 2px 0;
+  align-content: space-between;
+  background-color: ${({ hovered }) => (hovered ? "salmon" : "transparent")};
+`;

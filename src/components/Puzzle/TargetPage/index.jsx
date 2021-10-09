@@ -4,14 +4,6 @@ import styled from "styled-components";
 
 import ElementBlock from "../ElementBlock";
 
-const TargetPageWrapper = styled.div`
-  display: flex;
-  margin: 10px;
-  justify-content: center;
-  align-items: center;
-  border: ${({ theme }) => theme.border.page};
-`;
-
 function TargetPage() {
   const { answer } = useSelector((state) => state.challenge);
 
@@ -29,3 +21,11 @@ function TargetPage() {
 }
 
 export default TargetPage;
+
+const TargetPageWrapper = styled.div`
+  display: flex;
+  margin: 10px;
+  justify-content: center;
+  align-items: center;
+  border: ${({ theme }) => theme.border.page};
+`;
