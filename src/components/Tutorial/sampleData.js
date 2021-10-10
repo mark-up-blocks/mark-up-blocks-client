@@ -19,7 +19,7 @@ const sampleBlock = {
 
 const sampleBoilerplate = {
   _id: "tutorialBox",
-  block: { tagName: "div" },
+  block: { _id: "tutorialBoxBlock", tagName: "div" },
   childTrees: [],
 };
 
