@@ -3,13 +3,6 @@ import PropTypes from "prop-types";
 import { useDrag } from "react-dnd";
 import styled from "styled-components";
 
-const DraggableWrapper = styled.div`
-  margin: 1px 20px;
-  padding: 2px;
-  cursor: pointer;
-  border: ${({ isDragging }) => (isDragging ? "1px solid gray" : "1px solid transparent")};
-`;
-
 function Draggable({ children, _id, type }) {
   const [{ isDragging }, dragRef] = useDrag(
     () => ({
@@ -36,3 +29,10 @@ Draggable.propTypes = {
 };
 
 export default Draggable;
+
+const DraggableWrapper = styled.div`
+  margin: 1px 20px;
+  padding: 2px;
+  cursor: pointer;
+  border: ${({ isDragging }) => (isDragging ? "1px solid gray" : "1px solid transparent")};
+`;

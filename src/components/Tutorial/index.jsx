@@ -1,46 +1,29 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import DndInterface from "../Puzzle/DndInterface";
 
-import DropContainer from "../Puzzle/DropContainer";
-import TagBlock from "../Puzzle/TagBlock";
-import ArrowButton from "../Button/Arrow";
+import Button from "../shared/Button";
+import ArrowButton from "../shared/Button/Arrow";
 
-const sampleBlock = {
-  _id: "tutorial1",
-  block: {
-    _id: "tutorial1",
-    tagName: "p",
-    isContainer: false,
-    property: {
-      text: "Move me",
-      style: {
-        width: "100px",
-        height: "30px",
-        backgroundColor: "gold",
-      },
-    },
-  },
-  hasUsed: false,
-  isChallenge: false,
-};
+import { sampleBlock, sampleBoilerplate } from "./sampleData";
 
 function Tutorial({ onFinish }) {
   const [isDone, setIsDone] = useState(false);
   const [tutorialBlocks, setTutorialBlocks] = useState([sampleBlock]);
-  const [childTrees, setChildTrees] = useState([]);
+  const [boilerplate, setBoilerplate] = useState(sampleBoilerplate);
   const handleDrop = () => {
     setTutorialBlocks(() => [{
       ...sampleBlock,
       hasUsed: true,
     }]);
-    setChildTrees([sampleBlock]);
+    setBoilerplate((prev) => ({ ...prev, childTrees: [sampleBlock] }));
     setIsDone(true);
   };
   const handleReset = () => {
     setIsDone(false);
     setTutorialBlocks([sampleBlock]);
-    setChildTrees([]);
+    setBoilerplate(sampleBoilerplate);
   };
 
   return (
@@ -49,7 +32,7 @@ function Tutorial({ onFinish }) {
         ? (
           <div>
             <p>좋아요 !</p>
-            <button type="button" onClick={handleReset}>한번 더?</button>
+            <Button onClick={handleReset} value="한번 더?" />
             <div className="grid">
               <span>다음 스테이지</span>
               <ArrowButton onClick={onFinish} />
@@ -59,30 +42,11 @@ function Tutorial({ onFinish }) {
         : (
           <>
             <div>Mark Up Blocks에 오신 것을 환영합니다! 아래 태그 블록을 div 안으로 옮겨볼까요?</div>
-            <DnDInterface>
-              <TagBlockContainer>
-                {tutorialBlocks.map(({
-                  _id, block, hasUsed, isChallenge,
-                }) => (
-                  !hasUsed && (
-                  <TagBlock
-                    key={_id}
-                    _id={_id}
-                    block={block}
-                    isChallenge={isChallenge}
-                  />
-                  )
-                ))}
-              </TagBlockContainer>
-              <HTMLViewer>
-                <DropContainer
-                  _id="tutorialBox"
-                  tagName="div"
-                  childTrees={childTrees}
-                  onDrop={handleDrop}
-                />
-              </HTMLViewer>
-            </DnDInterface>
+            <WideDndInterface
+              tagBlocks={tutorialBlocks}
+              boilerplate={boilerplate}
+              onDrop={handleDrop}
+            />
           </>
         )}
     </div>
@@ -95,26 +59,7 @@ Tutorial.propTypes = {
 
 export default Tutorial;
 
-const DnDInterface = styled.div`
-  display: grid;
+const WideDndInterface = styled(DndInterface)`
   width: 100%;
   height: 100%;
-  margin: auto;
-  grid-template-columns: 1fr 1fr;
-`;
-
-const TagBlockContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin: 10px;
-  justify-content: center;
-  align-items: center;
-  border: ${({ theme }) => theme.border.page};
-`;
-
-const HTMLViewer = styled.div`
-  display: grid;
-  align-items: center;
-  margin: 10px;
-  border: ${({ theme }) => theme.border.page};
 `;
