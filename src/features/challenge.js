@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  findBlockTreeById, findBlockTree, findTagBlockById, findChallengeById,
+  findBlockTreeById, findContainerByChildId, findChallengeById,
 } from "../utils/selectData";
 import { getChallenge } from "../api";
 
@@ -31,7 +31,7 @@ export const challengeSlice = createSlice({
   initialState: {
     challengeId: "",
     title: "",
-    tagBlocks: [],
+    tagBlockContainer: null,
     boilerplate: null,
     answer: null,
     isCompleted: false,
@@ -63,16 +63,14 @@ export const challengeSlice = createSlice({
     },
     addChildTree(state, { payload }) {
       const { containerId, itemId, index } = payload;
-      const prevContainer = findBlockTree(
-        state.boilerplate, (block) => findTagBlockById(block.childTrees, itemId),
-      );
-      const tagBlock = findTagBlockById(state.tagBlocks, itemId);
-      const blockTree = prevContainer
-        ? findBlockTreeById(prevContainer, itemId)
-        : { ...tagBlock, _id: itemId };
-      const container = findBlockTreeById(state.boilerplate, containerId);
+      const prevContainer = findContainerByChildId(state.boilerplate, itemId)
+        || findContainerByChildId(state.tagBlockContainer, itemId);
+      const blockTree = findBlockTreeById(prevContainer, itemId);
+      const container = containerId === "tagBlockContainer" ? state.tagBlockContainer : findBlockTreeById(state.boilerplate, containerId);
+      const isSameContainer = prevContainer._id === container._id;
+      const isInvalidContainer = findBlockTreeById(blockTree, container._id);
 
-      if (findBlockTreeById(blockTree, container._id)) {
+      if (isSameContainer || isInvalidContainer) {
         return;
       }
 
@@ -82,19 +80,15 @@ export const challengeSlice = createSlice({
         ...container.childTrees.slice(index),
       ];
 
-      if (prevContainer) {
-        prevContainer.childTrees = prevContainer.childTrees.filter(
-          (child, childIndex) => {
-            const isDifferentBlock = child._id !== itemId;
-            const isCurrentBlock = prevContainer === container
+      prevContainer.childTrees = prevContainer.childTrees.filter(
+        (child, childIndex) => {
+          const isDifferentBlock = child._id !== itemId;
+          const isCurrentBlock = prevContainer === container
               && child._id === itemId && childIndex === index;
 
-            return isDifferentBlock || isCurrentBlock;
-          },
-        );
-      } else {
-        tagBlock.hasUsed = true;
-      }
+          return isDifferentBlock || isCurrentBlock;
+        },
+      );
     },
   },
   extraReducers: {
@@ -109,7 +103,7 @@ export const challengeSlice = createSlice({
       if (previousChallenge) {
         Object.assign(previousChallenge, {
           data: {
-            tagBlocks: state.tagBlocks,
+            tagBlockContainer: state.tagBlockContainer,
             boilerplate: state.boilerplate,
             answer: state.answer,
             isLoaded: true,
@@ -118,25 +112,23 @@ export const challengeSlice = createSlice({
         });
       }
 
-      const formattedTagBlocks = tagBlocks.map(
-        (child) => {
-          if (child.isChallenge) {
-            return {
-              ...child,
-              childTrees: (findBlockTree(answer,
-                (block) => block.block._id === child.block._id)).childTrees,
-              hasUsed: false,
-            };
-          }
+      const formattedTagBlocks = tagBlocks.map((child) => ({
+        ...child,
+        childTrees: child.isChallenge
+          ? findBlockTreeById(answer, child.block._id).childTrees
+          : [],
+      }));
 
-          return { ...child, childTrees: [], hasUsed: false };
-        },
-      );
+      const tagBlockContainer = {
+        _id: "tagBlockContainer",
+        tagName: "div",
+        childTrees: formattedTagBlocks,
+      };
 
       Object.assign(state, {
         challengeId: _id,
         title,
-        tagBlocks: formattedTagBlocks,
+        tagBlockContainer,
         boilerplate,
         answer,
         isLoaded: true,
