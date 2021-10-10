@@ -26,8 +26,14 @@ function findBlockTreeById(root, _id) {
   return findBlockTree(root, (block) => block._id === _id);
 }
 
-function findTagBlockById(tagBlocks, _id) {
-  return tagBlocks.find((tagBlock) => tagBlock._id === _id);
+function findContainerByChildId(root, _id) {
+  if (!_id) {
+    return null;
+  }
+
+  return findBlockTree(root, (block) => block.childTrees.find(
+    (childBlock) => childBlock._id === _id,
+  ), _id);
 }
 
 function compareChildTreeIds(left, right) {
@@ -133,7 +139,7 @@ function findNextUncompletedChallenge(root, id) {
 export {
   findBlockTree,
   findBlockTreeById,
-  findTagBlockById,
+  findContainerByChildId,
   compareChildTreeIds,
   compareChildTreeByBlockIds,
   findChallengeById,

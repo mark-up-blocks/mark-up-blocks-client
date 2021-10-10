@@ -3,10 +3,11 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import TagBlock from "./TagBlock";
+import Droppable from "./Droppable";
 import DropContainer from "./DropContainer";
 
 function DndInterface({
-  tagBlocks, boilerplate, onDrop, className,
+  tagBlockContainer, boilerplate, onDrop, className,
 }) {
   const handleDrop = ({ itemId, containerId, index }) => {
     onDrop({ itemId, containerId, index });
@@ -14,18 +15,14 @@ function DndInterface({
 
   return (
     <DndInterfaceWrapper className={className}>
-      <TagBlockContainer>
-        {tagBlocks.map(({
-          _id, block, hasUsed, isChallenge,
-        }) => (
-          !hasUsed && (
+      <TagBlockContainer _id="tagBlockContainer" onDrop={onDrop}>
+        {tagBlockContainer.childTrees.map(({ _id, isChallenge, block }) => (
           <TagBlock
             key={_id}
             _id={_id}
             block={block}
             isChallenge={isChallenge}
           />
-          )
         ))}
       </TagBlockContainer>
       <HTMLViewer>
@@ -41,9 +38,13 @@ function DndInterface({
 }
 
 DndInterface.propTypes = {
-  tagBlocks: PropTypes.arrayOf(
-    PropTypes.shape(TagBlock.propTypes),
-  ).isRequired,
+  tagBlockContainer: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    tagName: PropTypes.string.isRequired,
+    childTrees: PropTypes.arrayOf(
+      PropTypes.shape(TagBlock.propTypes),
+    ).isRequired,
+  }).isRequired,
   boilerplate: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     childTrees: PropTypes.arrayOf(
@@ -69,7 +70,7 @@ const DndInterfaceWrapper = styled.div`
   grid-template-columns: 1fr 1fr;
 `;
 
-const TagBlockContainer = styled.div`
+const TagBlockContainer = styled(Droppable)`
   display: flex;
   flex-wrap: wrap;
   margin: 10px;

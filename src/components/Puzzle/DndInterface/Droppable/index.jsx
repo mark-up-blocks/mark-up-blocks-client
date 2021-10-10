@@ -4,7 +4,7 @@ import { useDrop } from "react-dnd";
 import styled from "styled-components";
 
 function Droppable({
-  children, _id, index, onDrop,
+  children, _id, index, onDrop, className,
 }) {
   const [{ hovered }, dropRef] = useDrop(() => ({
     accept: ["tag", "container"],
@@ -25,13 +25,14 @@ function Droppable({
   }), [_id, index]);
 
   return (
-    <DroppableWrapper ref={dropRef} hovered={hovered}>
+    <DroppableWrapper className={className} ref={dropRef} hovered={hovered}>
       {children}
     </DroppableWrapper>
   );
 }
 
 Droppable.propTypes = {
+  className: PropTypes.string,
   _id: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([
     PropTypes.element,
@@ -42,6 +43,7 @@ Droppable.propTypes = {
 };
 
 Droppable.defaultProps = {
+  className: "",
   index: -1,
 };
 

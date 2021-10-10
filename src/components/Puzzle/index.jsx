@@ -16,7 +16,7 @@ import { MESSAGE } from "../../constants";
 function Puzzle({ notifyError, onFinish }) {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const { challengeId, tagBlocks, isCompleted } = useSelector((state) => state.challenge);
+  const { challengeId, tagBlockContainer, isCompleted } = useSelector((state) => state.challenge);
   const boilerplate = useSelector((state) => state.challenge.boilerplate, compareChildTreeIds);
   const answer = useSelector((state) => state.challenge.answer, compareChildTreeIds);
   const isCorrect = compareChildTreeByBlockIds(boilerplate, answer);
@@ -65,7 +65,7 @@ function Puzzle({ notifyError, onFinish }) {
               )
               : (
                 <DndInterface
-                  tagBlocks={tagBlocks}
+                  tagBlockContainer={tagBlockContainer}
                   boilerplate={boilerplate}
                   onDrop={handleDrop}
                 />

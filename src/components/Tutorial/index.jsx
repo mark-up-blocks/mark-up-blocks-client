@@ -43,7 +43,7 @@ function Tutorial({ onFinish }) {
           <>
             <div>Mark Up Blocks에 오신 것을 환영합니다! 아래 태그 블록을 div 안으로 옮겨볼까요?</div>
             <WideDndInterface
-              tagBlocks={tutorialBlocks}
+              tagBlockContainer={{ _id: "tagBlockContainer", tagName: "div", childTrees: tutorialBlocks }}
               boilerplate={boilerplate}
               onDrop={handleDrop}
             />
