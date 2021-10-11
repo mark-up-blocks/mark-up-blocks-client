@@ -3,11 +3,12 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import ElementBlock from "./ElementBlock";
+import { TYPE } from "../../../constants";
 
 function Display({ boilerplate, elementTree, isDone }) {
   const pages = isDone
-    ? [{ ...boilerplate, key: "boilerplate" }]
-    : [{ ...boilerplate, key: "boilerplate" }, { ...elementTree, key: "elementTree" }];
+    ? [{ ...boilerplate, key: TYPE.BOILERPLATE }]
+    : [{ ...boilerplate, key: TYPE.BOILERPLATE }, { ...elementTree, key: TYPE.ELEMENT_TREE }];
 
   return (
     <Container hasSingleChild={isDone}>

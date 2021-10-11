@@ -6,6 +6,8 @@ import Draggable from "../Draggable";
 import ElementBlock from "../../Display/ElementBlock";
 import { convertCamelToKebab, calcPosition } from "../../../../helpers/dataFormatters";
 
+import { DRAGGABLE_TYPE } from "../../../../constants";
+
 function TagBlock({
   _id, isSubChallenge, block, containerId,
 }) {
@@ -33,7 +35,11 @@ function TagBlock({
 
   return (
     <TagBlockWrapper top={top} left={left}>
-      <Draggable _id={_id} type={isContainer ? "container" : "tag"} containerId={containerId}>
+      <Draggable
+        _id={_id}
+        type={isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
+        containerId={containerId}
+      >
         <span>{content}</span>
       </Draggable>
       <Preview ref={ref} className="preview">

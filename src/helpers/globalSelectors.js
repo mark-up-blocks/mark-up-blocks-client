@@ -1,4 +1,5 @@
 import { findBlockTreeById } from "./blockTreeHandlers";
+import { TYPE } from "../constants";
 
 function selectSelectedSubChallenge(state) {
   const challenge = state.challenges[state.selectedIndex];
@@ -9,7 +10,7 @@ function selectSelectedSubChallenge(state) {
 }
 
 function selectContainer(selectedSubChallenge, containerId) {
-  if (containerId === "tagBlockContainer") {
+  if (containerId === TYPE.TAG_BLOCK_CONTAINER) {
     return selectedSubChallenge.tagBlockContainer;
   }
 

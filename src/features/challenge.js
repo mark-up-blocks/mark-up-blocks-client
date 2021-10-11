@@ -4,6 +4,7 @@ import { generateBlocks } from "../helpers/tagBlockGenerators";
 import { findBlockTreeById } from "../helpers/blockTreeHandlers";
 import { selectSelectedSubChallenge, selectContainer } from "../helpers/globalSelectors";
 import tutorialData from "../components/Tutorial/tutorialData";
+import { TYPE } from "../constants";
 
 const challengeSlice = createSlice({
   name: "challenge",
@@ -64,7 +65,7 @@ const challengeSlice = createSlice({
 
       selectedSubChallenge.boilerplate = { ...selectedSubChallenge, childTrees: [] };
       selectedSubChallenge.tagBlockContainer = {
-        _id: "tagBlockContainer",
+        _id: TYPE.TAG_BLOCK_CONTAINER,
         childTrees: generateBlocks(selectedSubChallenge, true),
       };
 

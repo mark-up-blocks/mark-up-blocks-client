@@ -1,6 +1,21 @@
 const MESSAGE = {
   SUCCESS: "You did it!\nYou rock at MarkUp.",
   LOADING: "Loading...",
+  NOT_FOUND: "페이지를 찾을 수 없습니다.",
+  ENDING: "모두 완료하셨네요! 축하드립니다!",
+  LOADING_CHALLENGE_LIST: "챌린지 목록을 불러오는중...",
+  INTERNAL_SERVER_ERROR: "현재 사이트 이용이 불가능합니다.",
 };
 
-export { MESSAGE };
+const TYPE = {
+  BOILERPLATE: "boilerplate",
+  ELEMENT_TREE: "elementTree",
+  TAG_BLOCK_CONTAINER: "tagBlockContainer",
+};
+
+const DRAGGABLE_TYPE = {
+  TAG: "tag",
+  CONTAINER: "container",
+};
+
+export { MESSAGE, TYPE, DRAGGABLE_TYPE };

@@ -11,6 +11,8 @@ import Tutorial from "./components/Tutorial";
 import Header from "./components/Header";
 import Puzzle from "./components/Puzzle";
 import { findNextUncompletedChallenge } from "./helpers/blockTreeHandlers";
+import route from "./route";
+import { MESSAGE } from "./constants";
 
 function App() {
   const dispatch = useDispatch();
@@ -19,7 +21,7 @@ function App() {
   const [isDone, setIsDone] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const handleMenuClick = (_id) => history.push(`/${selectedIndex}/${_id}`);
+  const handleMenuClick = (_id) => history.push(route.selectedChallenge(selectedIndex, _id));
   const notifyError = (err) => {
     if (process.env.NODE_ENV === "development") {
       console.error(err);
@@ -33,20 +35,20 @@ function App() {
     );
 
     if (nextSubChallengeId) {
-      history.push(`/${selectedIndex}/${nextSubChallengeId}`);
+      history.push(route.selectedChallenge(selectedIndex, nextSubChallengeId));
       return;
     }
 
     if (selectedIndex + 1 >= challenges.length - 1) {
       dispatch(updateChallenge({ index: selectedIndex + 1, notifyError }));
-      history.push(`/${selectedIndex + 1}`);
+      history.push(route.nextIndex(selectedIndex));
       return;
     }
 
     setIsDone(true);
   };
   const handleTitleClick = () => {
-    history.push("/");
+    history.push(route.home);
     setHasError(false);
   };
 
@@ -59,24 +61,24 @@ function App() {
       <AppWrapper>
         <Header onMenuClick={handleMenuClick} onTitleClick={handleTitleClick} />
         {hasError || isLoading
-          ? <div>{hasError ? "현재 사이트 이용이 불가능합니다." : "챌린지 목록을 불러오는중..."}</div>
+          ? <div>{hasError ? MESSAGE.INTERNAL_SERVER_ERROR : MESSAGE.LOADING_CHALLENGE_LIST}</div>
           : (
             <Switch>
-              <Route exact path="/">
+              <Route exact path={route.home}>
                 <Tutorial onFinish={handleFinishQuiz} />
               </Route>
-              <Route exact path="/:index/:id?">
+              <Route exact path={route.puzzle}>
                 <Puzzle
                   notifyError={notifyError}
                   onFinish={handleFinishQuiz}
                 />
               </Route>
               <Route path="*">
-                <div>404 not found</div>
+                <div>{MESSAGE.NOT_FOUND}</div>
               </Route>
             </Switch>
           )}
-        {isDone && <div>모두 완료하셨네요!!</div>}
+        {isDone && <div>{MESSAGE.ENDING}</div>}
       </AppWrapper>
       <GlobalStyle />
     </ThemeProvider>

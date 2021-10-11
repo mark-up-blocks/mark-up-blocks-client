@@ -6,19 +6,21 @@ import TagBlock from "./TagBlock";
 import Droppable from "./Droppable";
 import DropContainer from "./DropContainer";
 
+import { TYPE } from "../../../constants";
+
 function DndInterface({
   tagBlockContainer, boilerplate, onDrop, className,
 }) {
   return (
     <DndInterfaceWrapper className={className}>
-      <TagBlockContainer _id="tagBlockContainer" onDrop={onDrop}>
+      <TagBlockContainer _id={TYPE.TAG_BLOCK_CONTAINER} onDrop={onDrop}>
         {tagBlockContainer.childTrees.map(({ _id, isSubChallenge, block }) => (
           <TagBlock
             key={_id}
             _id={_id}
             block={block}
             isSubChallenge={isSubChallenge}
-            containerId="tagBlockContainer"
+            containerId={TYPE.TAG_BLOCK_CONTAINER}
           />
         ))}
       </TagBlockContainer>

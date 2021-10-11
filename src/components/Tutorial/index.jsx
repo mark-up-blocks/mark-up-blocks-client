@@ -7,6 +7,7 @@ import Button from "../shared/Button";
 import ArrowButton from "../shared/Button/Arrow";
 
 import { sampleBlock, sampleBoilerplate } from "./tutorialData";
+import { TYPE } from "../../constants";
 
 function Tutorial({ onFinish }) {
   const [isDone, setIsDone] = useState(false);
@@ -43,7 +44,7 @@ function Tutorial({ onFinish }) {
           <>
             <div>Mark Up Blocks에 오신 것을 환영합니다! 아래 태그 블록을 div 안으로 옮겨볼까요?</div>
             <WideDndInterface
-              tagBlockContainer={{ _id: "tagBlockContainer", tagName: "div", childTrees: tutorialBlocks }}
+              tagBlockContainer={{ _id: TYPE.TAG_BLOCK_CONTAINER, tagName: "div", childTrees: tutorialBlocks }}
               boilerplate={boilerplate}
               onDrop={handleDrop}
             />
