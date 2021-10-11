@@ -16,12 +16,12 @@ function DndInterface({
   return (
     <DndInterfaceWrapper className={className}>
       <TagBlockContainer _id="tagBlockContainer" onDrop={onDrop}>
-        {tagBlockContainer.childTrees.map(({ _id, isChallenge, block }) => (
+        {tagBlockContainer.childTrees.map(({ _id, isSubChallenge, block }) => (
           <TagBlock
             key={_id}
             _id={_id}
             block={block}
-            isChallenge={isChallenge}
+            isSubChallenge={isSubChallenge}
           />
         ))}
       </TagBlockContainer>
@@ -40,7 +40,6 @@ function DndInterface({
 DndInterface.propTypes = {
   tagBlockContainer: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    tagName: PropTypes.string.isRequired,
     childTrees: PropTypes.arrayOf(
       PropTypes.shape(TagBlock.propTypes),
     ).isRequired,

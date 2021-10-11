@@ -6,10 +6,10 @@ import Draggable from "../Draggable";
 import ElementBlock from "../../Display/ElementBlock";
 import { convertCamelToKebab, calcPosition } from "../../../../utils/formatData";
 
-function TagBlock({ _id, isChallenge, block }) {
+function TagBlock({ _id, isSubChallenge, block }) {
   const ref = useRef(null);
   const { tagName, isContainer, property } = block;
-  const content = isContainer || isChallenge
+  const content = isContainer || isSubChallenge
     ? `<${tagName} />`
     : `<${tagName}>${property.text}</${tagName}>`;
   const [{ top, left }, setPosition] = useState({ top: 0, left: 0 });
@@ -54,7 +54,7 @@ function TagBlock({ _id, isChallenge, block }) {
 
 TagBlock.propTypes = {
   _id: PropTypes.string.isRequired,
-  isChallenge: PropTypes.bool.isRequired,
+  isSubChallenge: PropTypes.bool.isRequired,
   block: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     tagName: PropTypes.string.isRequired,

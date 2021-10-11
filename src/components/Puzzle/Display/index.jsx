@@ -4,10 +4,10 @@ import styled from "styled-components";
 
 import ElementBlock from "./ElementBlock";
 
-function Display({ boilerplate, answer, isDone }) {
+function Display({ boilerplate, elementTree, isDone }) {
   const pages = isDone
     ? [{ ...boilerplate, key: "boilerplate" }]
-    : [{ ...boilerplate, key: "boilerplate" }, { ...answer, key: "answer" }];
+    : [{ ...boilerplate, key: "boilerplate" }, { ...elementTree, key: "elementTree" }];
 
   return (
     <Container hasSingleChild={isDone}>
@@ -28,7 +28,7 @@ function Display({ boilerplate, answer, isDone }) {
 
 Display.propTypes = {
   boilerplate: PropTypes.shape(ElementBlock.propTypes).isRequired,
-  answer: PropTypes.shape(ElementBlock.propTypes).isRequired,
+  elementTree: PropTypes.shape(ElementBlock.propTypes).isRequired,
   isDone: PropTypes.bool.isRequired,
 };
 
