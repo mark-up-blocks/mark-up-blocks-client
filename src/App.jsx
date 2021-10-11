@@ -6,22 +6,20 @@ import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
 import GlobalStyle from "./theme/global";
 
-import { setStageInfo } from "./features/challenge";
-import { getChallengeList } from "./api";
+import { fetchChallenges, updateChallenge } from "./features/challenge";
+import Tutorial from "./components/Tutorial";
 import Header from "./components/Header";
 import Puzzle from "./components/Puzzle";
-import Tutorial from "./components/Tutorial";
 import { findNextUncompletedChallenge } from "./utils/selectData";
 
 function App() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const challenge = useSelector((state) => state.challenge);
+  const { isLoading, challenges, selectedIndex } = useSelector((state) => state.challenge);
   const [isDone, setIsDone] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [selectedOption] = useState(0);
 
-  const handleMenuClick = (_id) => history.push(`/${_id}`);
+  const handleMenuClick = (_id) => history.push(`/${selectedIndex}/${_id}`);
   const notifyError = (err) => {
     if (process.env.NODE_ENV === "development") {
       console.error(err);
@@ -30,15 +28,22 @@ function App() {
     setHasError(true);
   };
   const handleFinishQuiz = (_id) => {
-    const nextChallengeId = findNextUncompletedChallenge(
-      challenge.stageInfo?.rootChallenge.data, _id,
+    const nextSubChallengeId = findNextUncompletedChallenge(
+      challenges[selectedIndex]?.elementTree, _id,
     );
 
-    if (nextChallengeId) {
-      history.push(`/${nextChallengeId}`);
-    } else {
-      setIsDone(true);
+    if (nextSubChallengeId) {
+      history.push(`/${selectedIndex}/${nextSubChallengeId}`);
+      return;
     }
+
+    if (selectedIndex + 1 >= challenges.length - 1) {
+      dispatch(updateChallenge({ index: selectedIndex + 1, notifyError }));
+      history.push(`/${selectedIndex + 1}`);
+      return;
+    }
+
+    setIsDone(true);
   };
   const handleTitleClick = () => {
     history.push("/");
@@ -46,32 +51,21 @@ function App() {
   };
 
   useEffect(() => {
-    async function fetchRootChallenge() {
-      try {
-        const { challenges } = await getChallengeList();
-        const rootChallenge = challenges[selectedOption];
-
-        dispatch(setStageInfo(rootChallenge));
-      } catch (err) {
-        notifyError(err);
-      }
-    }
-
-    fetchRootChallenge();
-  }, [dispatch, selectedOption]);
+    dispatch(fetchChallenges({ notifyError }));
+  }, [dispatch]);
 
   return (
     <ThemeProvider theme={theme}>
       <AppWrapper>
         <Header onMenuClick={handleMenuClick} onTitleClick={handleTitleClick} />
-        {hasError
-          ? <div>현재 사이트 이용이 불가능합니다.</div>
+        {hasError || isLoading
+          ? <div>{hasError ? "현재 사이트 이용이 불가능합니다." : "챌린지 목록을 불러오는중..."}</div>
           : (
             <Switch>
               <Route exact path="/">
                 <Tutorial onFinish={handleFinishQuiz} />
               </Route>
-              <Route path="/:id">
+              <Route exact path="/:index/:id?">
                 <Puzzle
                   notifyError={notifyError}
                   onFinish={handleFinishQuiz}

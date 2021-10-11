@@ -7,9 +7,9 @@ import StageMenu from "./StageMenu";
 import Button from "../shared/Button";
 
 function Header({ onTitleClick, onMenuClick }) {
-  const { title: stageTitle, stageInfo } = useSelector((state) => state.challenge);
+  const { challenges, selectedIndex } = useSelector((state) => state.challenge);
+  const challenge = challenges[selectedIndex];
   const [isStageMenuOpen, setIsStageMenuOpen] = useState(false);
-  const stageData = useSelector((state) => state.challenge.stageInfo.rootChallenge.data);
 
   return (
     <HeaderWrapper>
@@ -17,16 +17,20 @@ function Header({ onTitleClick, onMenuClick }) {
       <Nav>
         {isStageMenuOpen && (
         <MenuWrapper>
+          {challenge.elementTree?.childTrees
+          && (
           <StageMenu
-            _id={stageData._id}
-            title={stageData.title}
-            childChallenges={stageData.childChallenges}
+            _id={challenge.elementTree._id}
+            title={challenge.elementTree.title}
+            childTrees={challenge.elementTree.childTrees}
             onClick={onMenuClick}
+            isCompleted={Boolean(challenge.elementTree.isCompleted)}
           />
+          )}
         </MenuWrapper>
         )}
-        <ChallengeName>{stageInfo.rootChallenge.name}</ChallengeName>
-        <StageButton onClick={() => setIsStageMenuOpen((prev) => !prev)} value={stageTitle || "Stage"} />
+        <ChallengeName>{challenge.name}</ChallengeName>
+        <StageButton onClick={() => setIsStageMenuOpen((prev) => !prev)} value={challenge.name} />
       </Nav>
     </HeaderWrapper>
   );
