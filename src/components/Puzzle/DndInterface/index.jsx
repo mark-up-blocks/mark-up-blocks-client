@@ -9,10 +9,6 @@ import DropContainer from "./DropContainer";
 function DndInterface({
   tagBlockContainer, boilerplate, onDrop, className,
 }) {
-  const handleDrop = ({ itemId, containerId, index }) => {
-    onDrop({ itemId, containerId, index });
-  };
-
   return (
     <DndInterfaceWrapper className={className}>
       <TagBlockContainer _id="tagBlockContainer" onDrop={onDrop}>
@@ -22,6 +18,7 @@ function DndInterface({
             _id={_id}
             block={block}
             isSubChallenge={isSubChallenge}
+            containerId="tagBlockContainer"
           />
         ))}
       </TagBlockContainer>
@@ -30,7 +27,7 @@ function DndInterface({
           _id={boilerplate._id}
           childTrees={boilerplate.childTrees}
           tagName={boilerplate.block.tagName}
-          onDrop={handleDrop}
+          onDrop={onDrop}
         />
       </HTMLViewer>
     </DndInterfaceWrapper>
@@ -41,13 +38,13 @@ DndInterface.propTypes = {
   tagBlockContainer: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     childTrees: PropTypes.arrayOf(
-      PropTypes.shape(TagBlock.propTypes),
+      PropTypes.shape({ ...TagBlock.propTypes, containerId: null }),
     ).isRequired,
   }).isRequired,
   boilerplate: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     childTrees: PropTypes.arrayOf(
-      PropTypes.shape(TagBlock.propTypes),
+      PropTypes.shape({ ...TagBlock.propTypes, containerId: null }),
     ).isRequired,
     block: PropTypes.shape({
       _id: PropTypes.string.isRequired,

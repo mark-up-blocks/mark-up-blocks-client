@@ -10,7 +10,7 @@ import { fetchChallenges, updateChallenge } from "./features/challenge";
 import Tutorial from "./components/Tutorial";
 import Header from "./components/Header";
 import Puzzle from "./components/Puzzle";
-import { findNextUncompletedChallenge } from "./utils/selectData";
+import { findNextUncompletedChallenge } from "./helpers/blockTreeHandlers";
 
 function App() {
   const dispatch = useDispatch();

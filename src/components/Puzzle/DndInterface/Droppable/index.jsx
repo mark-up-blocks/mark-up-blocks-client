@@ -8,7 +8,7 @@ function Droppable({
 }) {
   const [{ hovered }, dropRef] = useDrop(() => ({
     accept: ["tag", "container"],
-    drop({ itemId }, monitor) {
+    drop({ itemId, prevContainerId }, monitor) {
       if (monitor.didDrop()) {
         return;
       }
@@ -17,7 +17,9 @@ function Droppable({
         return;
       }
 
-      onDrop({ itemId, containerId: _id, index });
+      onDrop({
+        itemId, containerId: _id, index, prevContainerId,
+      });
     },
     collect(monitor) {
       return { hovered: monitor.isOver({ shallow: true }) };

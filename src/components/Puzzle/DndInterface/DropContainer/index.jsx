@@ -22,7 +22,7 @@ function DropContainer({
           <div />
         </Droppable>
         {childTrees.map((child, index) => (
-          <Draggable key={child._id} _id={child._id} type={child.block.isContainer ? "container" : "tag"}>
+          <Draggable key={child._id} _id={child._id} type={child.block.isContainer ? "container" : "tag"} containerId={_id}>
             <>
               {child.block.isContainer && !child.isSubChallenge
                 ? (
@@ -50,7 +50,7 @@ DropContainer.propTypes = {
   _id: PropTypes.string.isRequired,
   tagName: PropTypes.string.isRequired,
   childTrees: PropTypes.arrayOf(
-    PropTypes.shape(TagBlock.propTypes),
+    PropTypes.shape({ ...TagBlock.propTypes, containerId: null }),
   ).isRequired,
   onDrop: PropTypes.func.isRequired,
 };

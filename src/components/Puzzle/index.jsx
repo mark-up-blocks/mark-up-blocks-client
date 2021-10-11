@@ -8,10 +8,9 @@ import Display from "./Display";
 import DndInterface from "./DndInterface";
 import ArrowButton from "../shared/Button/Arrow";
 
-import {
-  updateChallenge, markStageCompleted, addChildTree, selectChallenge,
-} from "../../features/challenge";
-import { compareChildTreeByBlockIds } from "../../utils/selectData";
+import { updateChallenge, markStageCompleted, addChildTree } from "../../features/challenge";
+import { compareChildTreeByBlockIds } from "../../helpers/blockTreeHandlers";
+import { selectChallenge } from "../../helpers/globalSelectors";
 
 import { MESSAGE } from "../../constants";
 
@@ -23,8 +22,12 @@ function Puzzle({ notifyError, onFinish }) {
   } = useSelector(selectChallenge);
   const isLoading = !boilerplate || !elementTree;
   const isCorrect = compareChildTreeByBlockIds(boilerplate, elementTree);
-  const handleDrop = ({ itemId, containerId, index: containerIndex }) => {
-    dispatch(addChildTree({ itemId, containerId, index: containerIndex }));
+  const handleDrop = ({
+    itemId, containerId, index: containerIndex, prevContainerId,
+  }) => {
+    dispatch(addChildTree({
+      itemId, containerId, index: containerIndex, prevContainerId,
+    }));
   };
 
   useEffect(() => {

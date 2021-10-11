@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchChallenges, updateChallenge } from "./challengeThunks";
-import { generateBlocks } from "../utils/generateBlocks";
-import { findBlockTreeById } from "../utils/selectData";
+import { generateBlocks } from "../helpers/tagBlockGenerators";
+import { findBlockTreeById } from "../helpers/blockTreeHandlers";
 import { selectSelectedSubChallenge, selectContainer } from "../helpers/globalSelectors";
 import tutorialData from "../components/Tutorial/tutorialData";
 

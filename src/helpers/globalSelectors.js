@@ -1,4 +1,4 @@
-import { findBlockTreeById } from "../utils/selectData";
+import { findBlockTreeById } from "./blockTreeHandlers";
 
 function selectSelectedSubChallenge(state) {
   const challenge = state.challenges[state.selectedIndex];
