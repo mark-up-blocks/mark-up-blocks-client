@@ -1,63 +1,9 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getChallenge, getChallengeList } from "../api";
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchChallenges, updateChallenge } from "./challengeThunks";
 import { generateBlocks } from "../utils/generateBlocks";
-import {
-  findSubChallengeById, findBlockTreeById, findContainerByChildId,
-} from "../utils/selectData";
+import { findBlockTreeById } from "../utils/selectData";
+import { selectSelectedSubChallenge, selectContainer } from "../helpers/globalSelectors";
 import tutorialData from "../components/Tutorial/tutorialData";
-
-const fetchChallenges = createAsyncThunk(
-  "challenge/fetchChallenges",
-  async ({ notifyError }) => {
-    try {
-      const { challenges } = await getChallengeList();
-
-      return challenges;
-    } catch (err) {
-      notifyError(err);
-
-      return Promise.reject();
-    }
-  },
-);
-
-const updateChallenge = createAsyncThunk(
-  "challenge/updateChallenge",
-  async ({ subId, index, notifyError }, { getState }) => {
-    const state = getState();
-    const numberIndex = Number.isNaN(Number(index)) ? null : Number(index);
-    const challengeIndex = numberIndex ?? state.challenge.selectedIndex;
-    let challenge = state.challenge.challenges[challengeIndex];
-
-    if (!challenge) {
-      notifyError("invalid index");
-
-      return Promise.reject();
-    }
-
-    if (typeof challenge.elementTree === "object") {
-      return {
-        challengeIndex,
-        subId,
-        hasFetched: false,
-      };
-    }
-
-    try {
-      challenge = await getChallenge(challenge._id);
-
-      return {
-        challengeIndex,
-        hasFetched: true,
-        elementTree: challenge.elementTree,
-      };
-    } catch (err) {
-      notifyError(err);
-
-      return Promise.reject();
-    }
-  },
-);
 
 const challengeSlice = createSlice({
   name: "challenge",
@@ -68,26 +14,24 @@ const challengeSlice = createSlice({
   },
   reducers: {
     markStageCompleted(state) {
-      const challenge = state.challenges[state.selectedIndex];
-      const challengeId = challenge.selectedSubChallengeId;
-      const selectedSubChallenge = findSubChallengeById(challenge.elementTree, challengeId);
+      const selectedSubChallenge = selectSelectedSubChallenge(state);
 
       selectedSubChallenge.isCompleted = true;
     },
     addChildTree(state, { payload }) {
-      const { containerId, itemId, index } = payload;
-      const challenge = state.challenges[state.selectedIndex];
-      const challengeId = challenge.selectedSubChallengeId;
-      const selectedSubChallenge = findSubChallengeById(challenge.elementTree, challengeId);
+      const {
+        prevContainerId, containerId, itemId, index,
+      } = payload;
+      const selectedSubChallenge = selectSelectedSubChallenge(state);
 
-      const prevContainer = findContainerByChildId(selectedSubChallenge.tagBlockContainer, itemId)
-        || findContainerByChildId(selectedSubChallenge.boilerplate, itemId);
+      const prevContainer = selectContainer(selectedSubChallenge, prevContainerId);
+      const container = selectContainer(selectedSubChallenge, containerId);
       const blockTree = findBlockTreeById(prevContainer, itemId);
-      const container = containerId === "tagBlockContainer" ? selectedSubChallenge.tagBlockContainer : findBlockTreeById(selectedSubChallenge.boilerplate, containerId);
-      const isSameContainer = prevContainer._id === container._id;
-      const isInvalidContainer = findBlockTreeById(blockTree, container._id);
 
-      if (isSameContainer || isInvalidContainer) {
+      const isInvalidContainer = Boolean(findBlockTreeById(blockTree, container._id));
+      const isSameContainer = prevContainer._id === container._id;
+
+      if (isInvalidContainer) {
         return;
       }
 
@@ -98,13 +42,7 @@ const challengeSlice = createSlice({
       ];
 
       prevContainer.childTrees = prevContainer.childTrees.filter(
-        (child, childIndex) => {
-          const isDifferentBlock = child._id !== itemId;
-          const isCurrentBlock = prevContainer === container
-              && child._id === itemId && childIndex === index;
-
-          return isDifferentBlock || isCurrentBlock;
-        },
+        (child, childIndex) => child._id !== itemId || (isSameContainer && childIndex === index),
       );
     },
   },
@@ -115,10 +53,10 @@ const challengeSlice = createSlice({
       const elementTree = payload.hasFetched ? payload.elementTree : challenge.elementTree;
       const selectedSubChallengeId = subId ?? elementTree._id;
 
-      challenge.selectedSubChallengeId = selectedSubChallengeId;
       Object.assign(state, { selectedIndex: challengeIndex });
+      challenge.selectedSubChallengeId = selectedSubChallengeId;
 
-      const selectedSubChallenge = findSubChallengeById(elementTree, selectedSubChallengeId);
+      const selectedSubChallenge = findBlockTreeById(elementTree, selectedSubChallengeId);
 
       if (selectedSubChallenge.boilerplate) {
         return;
@@ -151,41 +89,6 @@ const challengeSlice = createSlice({
   },
 });
 
-function selectChallenge(state) {
-  const { selectedIndex, challenges } = state.challenge;
-  const challenge = challenges[selectedIndex];
-
-  if (!challenge) {
-    return {
-      _id: null,
-      boilerplate: null,
-      tagBlockContainer: null,
-      elementTree: null,
-      isCompleted: false,
-    };
-  }
-
-  const challengeId = challenge.selectedSubChallengeId;
-  const selectedSubChallenge = findSubChallengeById(challenge.elementTree, challengeId);
-
-  if (!selectedSubChallenge) {
-    return {
-      _id: null,
-      boilerplate: null,
-      tagBlockContainer: null,
-      elementTree: null,
-      isCompleted: false,
-    };
-  }
-
-  return {
-    ...selectedSubChallenge,
-    elementTree: selectedSubChallenge,
-    isCompleted: Boolean(selectedSubChallenge.isCompleted),
-  };
-}
-
 export const { markStageCompleted, addChildTree } = challengeSlice.actions;
 export { fetchChallenges, updateChallenge };
-export { selectChallenge };
 export default challengeSlice.reducer;

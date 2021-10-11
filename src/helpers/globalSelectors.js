@@ -1,0 +1,52 @@
+import { findBlockTreeById } from "../utils/selectData";
+
+function selectSelectedSubChallenge(state) {
+  const challenge = state.challenges[state.selectedIndex];
+  const challengeId = challenge.selectedSubChallengeId;
+  const selectedSubChallenge = findBlockTreeById(challenge.elementTree, challengeId);
+
+  return selectedSubChallenge;
+}
+
+function selectContainer(selectedSubChallenge, containerId) {
+  if (containerId === "tagBlockContainer") {
+    return selectedSubChallenge.tagBlockContainer;
+  }
+
+  return findBlockTreeById(selectedSubChallenge.boilerplate, containerId);
+}
+
+function selectChallenge(state) {
+  const { selectedIndex, challenges } = state.challenge;
+  const challenge = challenges[selectedIndex];
+  const result = {
+    _id: null,
+    boilerplate: null,
+    tagBlockContainer: null,
+    elementTree: null,
+    isCompleted: false,
+  };
+
+  if (!challenge) {
+    return result;
+  }
+
+  const challengeId = challenge.selectedSubChallengeId;
+  const selectedSubChallenge = findBlockTreeById(challenge.elementTree, challengeId);
+
+  if (!selectedSubChallenge) {
+    return result;
+  }
+
+  return {
+    ...selectedSubChallenge,
+    elementTree: selectedSubChallenge,
+    isCompleted: Boolean(selectedSubChallenge.isCompleted),
+  };
+}
+
+export {
+  selectSelectedSubChallenge,
+  selectContainer,
+  selectChallenge,
+};

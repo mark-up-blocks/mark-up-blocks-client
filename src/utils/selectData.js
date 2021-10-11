@@ -66,26 +66,6 @@ function compareChildTreeByBlockIds(left, right) {
   );
 }
 
-function findSubChallengeById(root, challengeId) {
-  const queue = [root];
-
-  while (queue.length) {
-    const currentNode = queue.shift();
-
-    if (currentNode) {
-      if (currentNode._id === challengeId) {
-        return currentNode;
-      }
-
-      if (currentNode.childTrees) {
-        queue.push(...currentNode.childTrees);
-      }
-    }
-  }
-
-  return null;
-}
-
 function findNextUncompletedChallenge(root, id) {
   const queue = [root];
 
@@ -113,6 +93,5 @@ export {
   findBlockTreeById,
   findContainerByChildId,
   compareChildTreeByBlockIds,
-  findSubChallengeById,
   findNextUncompletedChallenge,
 };
