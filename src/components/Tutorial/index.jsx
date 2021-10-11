@@ -6,7 +6,7 @@ import DndInterface from "../Puzzle/DndInterface";
 import Button from "../shared/Button";
 import ArrowButton from "../shared/Button/Arrow";
 
-import { sampleBlock, sampleBoilerplate } from "./sampleData";
+import { sampleBlock, sampleBoilerplate } from "./tutorialData";
 
 function Tutorial({ onFinish }) {
   const [isDone, setIsDone] = useState(false);
@@ -33,7 +33,7 @@ function Tutorial({ onFinish }) {
           <div>
             <p>좋아요 !</p>
             <Button onClick={handleReset} value="한번 더?" />
-            <div className="grid">
+            <div>
               <span>다음 스테이지</span>
               <ArrowButton onClick={onFinish} />
             </div>
