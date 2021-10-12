@@ -10,7 +10,7 @@ import ArrowButton from "../shared/Button/Arrow";
 
 import { updateChallenge, markStageCompleted, addChildTree } from "../../features/challenge";
 import { compareChildTreeByBlockIds } from "../../helpers/blockTreeHandlers";
-import { selectChallenge } from "../../helpers/globalSelectors";
+import { selectActiveChallenge } from "../../helpers/globalSelectors";
 
 import { MESSAGE } from "../../constants";
 
@@ -19,7 +19,7 @@ function Puzzle({ notifyError, onFinish }) {
   const { index, id } = useParams();
   const {
     _id: challengeId, boilerplate, elementTree, tagBlockContainer, isCompleted,
-  } = useSelector(selectChallenge);
+  } = useSelector(selectActiveChallenge);
   const isLoading = !boilerplate || !elementTree;
   const isCorrect = compareChildTreeByBlockIds(boilerplate, elementTree);
   const handleDrop = ({

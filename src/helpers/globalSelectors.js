@@ -18,6 +18,16 @@ function selectContainer(selectedSubChallenge, containerId) {
 }
 
 function selectChallenge(state) {
+  const { isLoading, selectedIndex, challenges } = state.challenge;
+
+  if (isLoading) {
+    return { _id: "", name: "", elementTree: "" };
+  }
+
+  return challenges[selectedIndex];
+}
+
+function selectActiveChallenge(state) {
   const { selectedIndex, challenges } = state.challenge;
   const challenge = challenges[selectedIndex];
   const result = {
@@ -50,4 +60,5 @@ export {
   selectSelectedSubChallenge,
   selectContainer,
   selectChallenge,
+  selectActiveChallenge,
 };

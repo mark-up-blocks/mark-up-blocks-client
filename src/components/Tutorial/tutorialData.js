@@ -32,8 +32,8 @@ const sampleBoilerplate = {
 };
 
 const tutorialData = {
-  _id: "tutorialChallenge",
-  name: "tutorialChallenge",
+  _id: "tutorial",
+  name: "tutorial",
   elementTree: {
     ...sampleBoilerplate,
     childTrees: [sampleBlock],
