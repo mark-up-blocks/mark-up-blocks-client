@@ -27,7 +27,7 @@ function TagBlock({
     window.addEventListener("resize", handleGetPosition);
 
     if (ref?.current) {
-      handleGetPosition();
+      setPosition(calcPosition(ref?.current));
     }
 
     return () => window.removeEventListener("resize", handleGetPosition);
