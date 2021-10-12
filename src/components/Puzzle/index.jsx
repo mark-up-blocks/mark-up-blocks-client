@@ -8,21 +8,26 @@ import Display from "./Display";
 import DndInterface from "./DndInterface";
 import ArrowButton from "../shared/Button/Arrow";
 
-import { setChallenge, markStageCompleted, addChildTree } from "../../features/challenge";
-import { compareChildTreeIds, compareChildTreeByBlockIds } from "../../utils/selectData";
+import { updateChallenge, markStageCompleted, addChildTree } from "../../features/challenge";
+import { compareChildTreeByBlockIds } from "../../helpers/blockTreeHandlers";
+import { selectActiveChallenge } from "../../helpers/globalSelectors";
 
 import { MESSAGE } from "../../constants";
 
 function Puzzle({ notifyError, onFinish }) {
   const dispatch = useDispatch();
-  const { id } = useParams();
-  const { challengeId, tagBlockContainer, isCompleted } = useSelector((state) => state.challenge);
-  const boilerplate = useSelector((state) => state.challenge.boilerplate, compareChildTreeIds);
-  const answer = useSelector((state) => state.challenge.answer, compareChildTreeIds);
-  const isCorrect = compareChildTreeByBlockIds(boilerplate, answer);
-  const isLoading = !boilerplate || !answer;
-  const handleDrop = ({ itemId, containerId, index }) => {
-    dispatch(addChildTree({ itemId, containerId, index }));
+  const { index, id } = useParams();
+  const {
+    _id: challengeId, boilerplate, elementTree, tagBlockContainer, isCompleted,
+  } = useSelector(selectActiveChallenge);
+  const isLoading = !boilerplate || !elementTree;
+  const isCorrect = compareChildTreeByBlockIds(boilerplate, elementTree);
+  const handleDrop = ({
+    itemId, containerId, index: containerIndex, prevContainerId,
+  }) => {
+    dispatch(addChildTree({
+      itemId, containerId, index: containerIndex, prevContainerId,
+    }));
   };
 
   useEffect(() => {
@@ -30,10 +35,14 @@ function Puzzle({ notifyError, onFinish }) {
       return;
     }
 
-    dispatch(setChallenge({ id, notifyError }));
-  }, [dispatch, notifyError, id, challengeId]);
+    dispatch(updateChallenge({ index, subId: id, notifyError }));
+  }, [dispatch, notifyError, id, index, challengeId]);
 
   useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+
     if (isCompleted) {
       return;
     }
@@ -42,12 +51,8 @@ function Puzzle({ notifyError, onFinish }) {
       return;
     }
 
-    if (!answer) {
-      return;
-    }
-
     dispatch(markStageCompleted());
-  }, [dispatch, isCorrect, answer, isCompleted]);
+  }, [dispatch, isLoading, isCorrect, isCompleted]);
 
   return (
     <div>
@@ -55,7 +60,7 @@ function Puzzle({ notifyError, onFinish }) {
         ? <div>{MESSAGE.LOADING}</div>
         : (
           <div>
-            <Display boilerplate={boilerplate} answer={answer} isDone={isCorrect} />
+            <Display boilerplate={boilerplate} elementTree={elementTree} isDone={isCorrect} />
             {isCorrect
               ? (
                 <div>

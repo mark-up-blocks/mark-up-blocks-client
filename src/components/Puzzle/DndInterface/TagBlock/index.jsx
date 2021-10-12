@@ -4,12 +4,16 @@ import debounce from "lodash.debounce";
 import styled from "styled-components";
 import Draggable from "../Draggable";
 import ElementBlock from "../../Display/ElementBlock";
-import { convertCamelToKebab, calcPosition } from "../../../../utils/formatData";
+import { convertCamelToKebab, calcPosition } from "../../../../helpers/dataFormatters";
 
-function TagBlock({ _id, isChallenge, block }) {
+import { DRAGGABLE_TYPE } from "../../../../constants";
+
+function TagBlock({
+  _id, isSubChallenge, block, containerId,
+}) {
   const ref = useRef(null);
   const { tagName, isContainer, property } = block;
-  const content = isContainer || isChallenge
+  const content = isContainer || isSubChallenge
     ? `<${tagName} />`
     : `<${tagName}>${property.text}</${tagName}>`;
   const [{ top, left }, setPosition] = useState({ top: 0, left: 0 });
@@ -31,7 +35,11 @@ function TagBlock({ _id, isChallenge, block }) {
 
   return (
     <TagBlockWrapper top={top} left={left}>
-      <Draggable _id={_id} type={isContainer ? "container" : "tag"}>
+      <Draggable
+        _id={_id}
+        type={isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
+        containerId={containerId}
+      >
         <span>{content}</span>
       </Draggable>
       <Preview ref={ref} className="preview">
@@ -54,7 +62,7 @@ function TagBlock({ _id, isChallenge, block }) {
 
 TagBlock.propTypes = {
   _id: PropTypes.string.isRequired,
-  isChallenge: PropTypes.bool.isRequired,
+  isSubChallenge: PropTypes.bool.isRequired,
   block: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     tagName: PropTypes.string.isRequired,
@@ -66,6 +74,7 @@ TagBlock.propTypes = {
       ]).isRequired,
     ).isRequired,
   }).isRequired,
+  containerId: PropTypes.string.isRequired,
 };
 
 export default TagBlock;

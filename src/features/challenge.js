@@ -1,76 +1,38 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  findBlockTreeById, findContainerByChildId, findChallengeById,
-} from "../utils/selectData";
-import { getChallenge } from "../api";
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchChallenges, updateChallenge } from "./challengeThunks";
+import { generateBlocks } from "../helpers/tagBlockGenerators";
+import { findBlockTreeById } from "../helpers/blockTreeHandlers";
+import { selectSelectedSubChallenge, selectContainer } from "../helpers/globalSelectors";
+import tutorialData from "../components/Tutorial/tutorialData";
+import { TYPE } from "../constants";
 
-const setChallenge = createAsyncThunk(
-  "challenge/setChallenge",
-  async ({ id, notifyError }, { getState }) => {
-    const state = getState();
-    const targetChallenge = findChallengeById(state?.challenge?.stageInfo?.rootChallenge.data, id);
-
-    if (targetChallenge?.data) {
-      return { _id: id, ...targetChallenge.data };
-    }
-
-    try {
-      const challenge = await getChallenge(id);
-
-      return challenge;
-    } catch (err) {
-      notifyError(err);
-
-      return Promise.reject();
-    }
-  },
-);
-
-export const challengeSlice = createSlice({
+const challengeSlice = createSlice({
   name: "challenge",
   initialState: {
-    challengeId: "",
-    title: "",
-    tagBlockContainer: null,
-    boilerplate: null,
-    answer: null,
-    isCompleted: false,
-    stageInfo: {
-      rootChallenge: {
-        name: "",
-        _id: "",
-        data: null,
-      },
-    },
+    isLoading: true,
+    selectedIndex: 0,
+    challenges: [tutorialData],
   },
   reducers: {
-    setStageInfo(state, { payload }) {
-      const { name, stage } = payload;
-
-      Object.assign(state, {
-        challengeId: null,
-        stageInfo: {
-          rootChallenge: {
-            name,
-            _id: stage._id,
-            data: stage,
-          },
-        },
-      });
-    },
     markStageCompleted(state) {
-      Object.assign(state, { isCompleted: true });
+      const selectedSubChallenge = selectSelectedSubChallenge(state);
+
+      selectedSubChallenge.isCompleted = true;
     },
     addChildTree(state, { payload }) {
-      const { containerId, itemId, index } = payload;
-      const prevContainer = findContainerByChildId(state.boilerplate, itemId)
-        || findContainerByChildId(state.tagBlockContainer, itemId);
-      const blockTree = findBlockTreeById(prevContainer, itemId);
-      const container = containerId === "tagBlockContainer" ? state.tagBlockContainer : findBlockTreeById(state.boilerplate, containerId);
-      const isSameContainer = prevContainer._id === container._id;
-      const isInvalidContainer = findBlockTreeById(blockTree, container._id);
+      const {
+        prevContainerId, containerId, itemId, index,
+      } = payload;
+      const selectedSubChallenge = selectSelectedSubChallenge(state);
 
-      if (isSameContainer || isInvalidContainer) {
+      const prevContainer = selectContainer(selectedSubChallenge, prevContainerId);
+      const container = selectContainer(selectedSubChallenge, containerId);
+      const blockTree = findBlockTreeById(prevContainer, itemId);
+
+      const isInvalidContainer = Boolean(findBlockTreeById(blockTree, container._id));
+      const isSameContainer = prevContainer._id === container._id;
+
+      if (isInvalidContainer) {
         return;
       }
 
@@ -81,68 +43,53 @@ export const challengeSlice = createSlice({
       ];
 
       prevContainer.childTrees = prevContainer.childTrees.filter(
-        (child, childIndex) => {
-          const isDifferentBlock = child._id !== itemId;
-          const isCurrentBlock = prevContainer === container
-              && child._id === itemId && childIndex === index;
-
-          return isDifferentBlock || isCurrentBlock;
-        },
+        (child, childIndex) => child._id !== itemId || (isSameContainer && childIndex === index),
       );
     },
   },
   extraReducers: {
-    [setChallenge.fulfilled]: (state, { payload }) => {
-      const {
-        _id, title, tagBlocks, boilerplate, answer, isCompleted,
-      } = payload;
-      const previousChallenge = findChallengeById(
-        state.stageInfo.rootChallenge.data, state.challengeId,
-      );
+    [updateChallenge.fulfilled]: (state, { payload }) => {
+      const { subId, challengeIndex } = payload;
+      const challenge = state.challenges[challengeIndex];
+      const elementTree = payload.hasFetched ? payload.elementTree : challenge.elementTree;
+      const selectedSubChallengeId = subId ?? elementTree._id;
 
-      if (previousChallenge) {
-        Object.assign(previousChallenge, {
-          data: {
-            tagBlockContainer: state.tagBlockContainer,
-            boilerplate: state.boilerplate,
-            answer: state.answer,
-            isLoaded: true,
-            isCompleted: state.isCompleted,
-          },
-        });
+      Object.assign(state, { selectedIndex: challengeIndex });
+      challenge.selectedSubChallengeId = selectedSubChallengeId;
+
+      const selectedSubChallenge = findBlockTreeById(elementTree, selectedSubChallengeId);
+
+      if (selectedSubChallenge.boilerplate) {
+        return;
       }
 
-      const formattedTagBlocks = tagBlocks.map((child) => ({
-        ...child,
-        childTrees: child.isChallenge
-          ? findBlockTreeById(answer, child.block._id).childTrees
-          : [],
-      }));
-
-      const tagBlockContainer = {
-        _id: "tagBlockContainer",
-        tagName: "div",
-        childTrees: formattedTagBlocks,
+      selectedSubChallenge.boilerplate = { ...selectedSubChallenge, childTrees: [] };
+      selectedSubChallenge.tagBlockContainer = {
+        _id: TYPE.TAG_BLOCK_CONTAINER,
+        childTrees: generateBlocks(selectedSubChallenge, true),
       };
 
+      if (payload.hasFetched) {
+        challenge.elementTree = elementTree;
+      }
+    },
+    [fetchChallenges.fulfilled]: (state, { payload }) => {
+      const challenges = payload;
+
       Object.assign(state, {
-        challengeId: _id,
-        title,
-        tagBlockContainer,
-        boilerplate,
-        answer,
-        isLoaded: true,
-        isCompleted,
+        isLoading: false,
+        challenges: state.challenges.concat(challenges),
       });
     },
-    [setChallenge.rejected]: (state) => {
-      Object.assign(state, {
-        challengeId: "",
-      });
+    [fetchChallenges.pending]: (state) => {
+      Object.assign(state, { isLoading: true });
+    },
+    [fetchChallenges.rejected]: (state) => {
+      Object.assign(state, { isLoading: false });
     },
   },
 });
 
-export const { setStageInfo, markStageCompleted, addChildTree } = challengeSlice.actions;
-export { setChallenge };
+export const { markStageCompleted, addChildTree } = challengeSlice.actions;
+export { fetchChallenges, updateChallenge };
 export default challengeSlice.reducer;

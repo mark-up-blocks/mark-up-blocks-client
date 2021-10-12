@@ -36,36 +36,6 @@ function findContainerByChildId(root, _id) {
   ), _id);
 }
 
-function compareChildTreeIds(left, right) {
-  if (left === null && right === null) {
-    return true;
-  }
-
-  if (left === null || right === null) {
-    return false;
-  }
-
-  if (!left?._id || !right?._id) {
-    return false;
-  }
-
-  if (left._id !== right._id) {
-    return false;
-  }
-
-  if (!left?.childTrees || !right?.childTrees) {
-    return false;
-  }
-
-  if (left.childTrees.length !== right.childTrees.length) {
-    return false;
-  }
-
-  return left.childTrees.every(
-    (child, index) => compareChildTreeIds(child, right.childTrees[index]),
-  );
-}
-
 function compareChildTreeByBlockIds(left, right) {
   if (left === null && right === null) {
     return true;
@@ -96,39 +66,21 @@ function compareChildTreeByBlockIds(left, right) {
   );
 }
 
-function findChallengeById(root, challengeId) {
-  const queue = [root];
-
-  while (queue.length) {
-    const currentNode = queue.shift();
-
-    if (currentNode) {
-      if (currentNode._id === challengeId) {
-        return currentNode;
-      }
-
-      if (currentNode.childChallenges) {
-        queue.push(...currentNode.childChallenges);
-      }
-    }
-  }
-
-  return null;
-}
-
 function findNextUncompletedChallenge(root, id) {
   const queue = [root];
 
   while (queue.length) {
-    const currentNode = queue.shift();
+    const currentNode = queue.pop();
 
     if (currentNode) {
-      if (currentNode._id !== id && (!currentNode?.data || !currentNode?.data.isCompleted)) {
+      if (currentNode._id !== id && currentNode.isSubChallenge && !currentNode.isCompleted) {
         return currentNode._id;
       }
 
-      if (currentNode.childChallenges) {
-        queue.push(...currentNode.childChallenges);
+      if (currentNode.childTrees) {
+        const reversed = [...currentNode.childTrees].reverse();
+
+        queue.push(...reversed);
       }
     }
   }
@@ -140,8 +92,6 @@ export {
   findBlockTree,
   findBlockTreeById,
   findContainerByChildId,
-  compareChildTreeIds,
   compareChildTreeByBlockIds,
-  findChallengeById,
   findNextUncompletedChallenge,
 };

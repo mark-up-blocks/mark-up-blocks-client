@@ -3,11 +3,15 @@ import PropTypes from "prop-types";
 import { useDrag } from "react-dnd";
 import styled from "styled-components";
 
-function Draggable({ children, _id, type }) {
+import { DRAGGABLE_TYPE } from "../../../../constants";
+
+function Draggable({
+  children, _id, type, containerId,
+}) {
   const [{ isDragging }, dragRef] = useDrag(
     () => ({
       type,
-      item: { itemId: _id },
+      item: { itemId: _id, prevContainerId: containerId },
       collect: (monitor) => ({ isDragging: monitor.isDragging() }),
     }),
   );
@@ -25,7 +29,8 @@ Draggable.propTypes = {
     PropTypes.arrayOf(PropTypes.element),
   ]).isRequired,
   _id: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(["tag", "container"]).isRequired,
+  type: PropTypes.oneOf(Object.values(DRAGGABLE_TYPE)).isRequired,
+  containerId: PropTypes.string.isRequired,
 };
 
 export default Draggable;

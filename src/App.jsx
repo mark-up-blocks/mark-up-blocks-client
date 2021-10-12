@@ -6,22 +6,22 @@ import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
 import GlobalStyle from "./theme/global";
 
-import { setStageInfo } from "./features/challenge";
-import { getChallengeList } from "./api";
+import { fetchChallenges, updateChallenge } from "./features/challenge";
+import Tutorial from "./components/Tutorial";
 import Header from "./components/Header";
 import Puzzle from "./components/Puzzle";
-import Tutorial from "./components/Tutorial";
-import { findNextUncompletedChallenge } from "./utils/selectData";
+import { findNextUncompletedChallenge } from "./helpers/blockTreeHandlers";
+import route from "./route";
+import { MESSAGE } from "./constants";
 
 function App() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const challenge = useSelector((state) => state.challenge);
+  const { isLoading, challenges, selectedIndex } = useSelector((state) => state.challenge);
   const [isDone, setIsDone] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [selectedOption] = useState(0);
 
-  const handleMenuClick = (_id) => history.push(`/${_id}`);
+  const handleMenuClick = (_id) => history.push(route.selectedChallenge(selectedIndex, _id));
   const notifyError = (err) => {
     if (process.env.NODE_ENV === "development") {
       console.error(err);
@@ -30,59 +30,55 @@ function App() {
     setHasError(true);
   };
   const handleFinishQuiz = (_id) => {
-    const nextChallengeId = findNextUncompletedChallenge(
-      challenge.stageInfo?.rootChallenge.data, _id,
+    const nextSubChallengeId = findNextUncompletedChallenge(
+      challenges[selectedIndex]?.elementTree, _id,
     );
 
-    if (nextChallengeId) {
-      history.push(`/${nextChallengeId}`);
-    } else {
-      setIsDone(true);
+    if (nextSubChallengeId) {
+      history.push(route.selectedChallenge(selectedIndex, nextSubChallengeId));
+      return;
     }
+
+    if (selectedIndex + 1 >= challenges.length - 1) {
+      dispatch(updateChallenge({ index: selectedIndex + 1, notifyError }));
+      history.push(route.nextIndex(selectedIndex));
+      return;
+    }
+
+    setIsDone(true);
   };
   const handleTitleClick = () => {
-    history.push("/");
+    history.push(route.home);
     setHasError(false);
   };
 
   useEffect(() => {
-    async function fetchRootChallenge() {
-      try {
-        const { challenges } = await getChallengeList();
-        const rootChallenge = challenges[selectedOption];
-
-        dispatch(setStageInfo(rootChallenge));
-      } catch (err) {
-        notifyError(err);
-      }
-    }
-
-    fetchRootChallenge();
-  }, [dispatch, selectedOption]);
+    dispatch(fetchChallenges({ notifyError }));
+  }, [dispatch]);
 
   return (
     <ThemeProvider theme={theme}>
       <AppWrapper>
         <Header onMenuClick={handleMenuClick} onTitleClick={handleTitleClick} />
-        {hasError
-          ? <div>현재 사이트 이용이 불가능합니다.</div>
+        {hasError || isLoading
+          ? <div>{hasError ? MESSAGE.INTERNAL_SERVER_ERROR : MESSAGE.LOADING_CHALLENGE_LIST}</div>
           : (
             <Switch>
-              <Route exact path="/">
+              <Route exact path={route.home}>
                 <Tutorial onFinish={handleFinishQuiz} />
               </Route>
-              <Route path="/:id">
+              <Route exact path={route.puzzle}>
                 <Puzzle
                   notifyError={notifyError}
                   onFinish={handleFinishQuiz}
                 />
               </Route>
               <Route path="*">
-                <div>404 not found</div>
+                <div>{MESSAGE.NOT_FOUND}</div>
               </Route>
             </Switch>
           )}
-        {isDone && <div>모두 완료하셨네요!!</div>}
+        {isDone && <div>{MESSAGE.ENDING}</div>}
       </AppWrapper>
       <GlobalStyle />
     </ThemeProvider>

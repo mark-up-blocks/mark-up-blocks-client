@@ -3,12 +3,14 @@ import PropTypes from "prop-types";
 import { useDrop } from "react-dnd";
 import styled from "styled-components";
 
+import { DRAGGABLE_TYPE } from "../../../../constants";
+
 function Droppable({
   children, _id, index, onDrop, className,
 }) {
   const [{ hovered }, dropRef] = useDrop(() => ({
-    accept: ["tag", "container"],
-    drop({ itemId }, monitor) {
+    accept: Object.values(DRAGGABLE_TYPE),
+    drop({ itemId, prevContainerId }, monitor) {
       if (monitor.didDrop()) {
         return;
       }
@@ -17,7 +19,9 @@ function Droppable({
         return;
       }
 
-      onDrop({ itemId, containerId: _id, index });
+      onDrop({
+        itemId, containerId: _id, index, prevContainerId,
+      });
     },
     collect(monitor) {
       return { hovered: monitor.isOver({ shallow: true }) };
