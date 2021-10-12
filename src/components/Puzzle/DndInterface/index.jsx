@@ -14,14 +14,20 @@ function DndInterface({
   return (
     <DndInterfaceWrapper className={className}>
       <TagBlockContainer _id={TYPE.TAG_BLOCK_CONTAINER} onDrop={onDrop}>
-        {tagBlockContainer.childTrees.map(({ _id, isSubChallenge, block }) => (
-          <TagBlock
+        {tagBlockContainer.childTrees.map(({ _id, isSubChallenge, block }, index) => (
+          <Droppable
+            _id={TYPE.TAG_BLOCK_CONTAINER}
             key={_id}
-            _id={_id}
-            block={block}
-            isSubChallenge={isSubChallenge}
-            containerId={TYPE.TAG_BLOCK_CONTAINER}
-          />
+            index={index}
+            onDrop={onDrop}
+          >
+            <TagBlock
+              _id={_id}
+              block={block}
+              isSubChallenge={isSubChallenge}
+              containerId={TYPE.TAG_BLOCK_CONTAINER}
+            />
+          </Droppable>
         ))}
       </TagBlockContainer>
       <HTMLViewer>

@@ -28,23 +28,20 @@ const challengeSlice = createSlice({
       const prevContainer = selectContainer(selectedSubChallenge, prevContainerId);
       const container = selectContainer(selectedSubChallenge, containerId);
       const blockTree = findBlockTreeById(prevContainer, itemId);
+      const itemIndex = index === -1 ? container.childTrees.length : index;
 
-      const isInvalidContainer = Boolean(findBlockTreeById(blockTree, container._id));
-      const isSameContainer = prevContainer._id === container._id;
+      const isInvalidContainer = !!findBlockTreeById(blockTree, container._id);
 
       if (isInvalidContainer) {
         return;
       }
 
+      prevContainer.childTrees = prevContainer.childTrees.filter((child) => child._id !== itemId);
       container.childTrees = [
-        ...container.childTrees.slice(0, index),
+        ...container.childTrees.slice(0, itemIndex),
         blockTree,
-        ...container.childTrees.slice(index),
+        ...container.childTrees.slice(itemIndex),
       ];
-
-      prevContainer.childTrees = prevContainer.childTrees.filter(
-        (child, childIndex) => child._id !== itemId || (isSameContainer && childIndex === index),
-      );
     },
   },
   extraReducers: {
