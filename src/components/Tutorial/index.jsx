@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
@@ -6,9 +6,9 @@ import DndInterface from "../Puzzle/DndInterface";
 
 import ArrowButton from "../shared/Button/Arrow";
 
-import { addChildTree } from "../../features/challenge";
+import { updateChallenge, addChildTree } from "../../features/challenge";
 
-function Tutorial({ onFinish }) {
+function Tutorial({ onFinish, notifyError }) {
   const dispatch = useDispatch();
   const { challenges } = useSelector((state) => state.challenge);
   const tutorialChallenge = challenges[0].elementTree;
@@ -20,6 +20,10 @@ function Tutorial({ onFinish }) {
       itemId, containerId, index, prevContainerId,
     }));
   };
+
+  useEffect(() => {
+    dispatch(updateChallenge({ index: 0, notifyError }));
+  }, [dispatch, notifyError]);
 
   return (
     <div>
@@ -42,6 +46,7 @@ function Tutorial({ onFinish }) {
 }
 
 Tutorial.propTypes = {
+  notifyError: PropTypes.func.isRequired,
   onFinish: PropTypes.func.isRequired,
 };
 

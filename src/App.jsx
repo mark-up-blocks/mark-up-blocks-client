@@ -80,7 +80,10 @@ function App() {
                 <Redirect to={route.tutorial} />
               </Route>
               <Route path={route.tutorial}>
-                <Tutorial onFinish={handleFinishQuiz} />
+                <Tutorial
+                  notifyError={notifyError}
+                  onFinish={handleFinishQuiz}
+                />
               </Route>
               <Route exact path={route.puzzle}>
                 <Puzzle

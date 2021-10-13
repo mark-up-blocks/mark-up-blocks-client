@@ -16,6 +16,7 @@ import { MESSAGE } from "../../constants";
 function Puzzle({ notifyError, onFinish }) {
   const dispatch = useDispatch();
   const { index, id } = useParams();
+  const { selectedIndex } = useSelector((state) => state.challenge);
   const {
     _id: challengeId, boilerplate, elementTree, tagBlockContainer, isCompleted, isLoaded,
   } = useSelector(selectActiveChallenge);
@@ -37,7 +38,7 @@ function Puzzle({ notifyError, onFinish }) {
 
   return (
     <div>
-      {isLoaded
+      {isLoaded && String(selectedIndex) === index
         ? (
           <div>
             <Display boilerplate={boilerplate} elementTree={elementTree} isDone={isCompleted} />
