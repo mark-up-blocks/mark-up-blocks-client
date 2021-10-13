@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import TagBlock from "./TagBlock";
+import TagBlock, { tagBlockSchema } from "./TagBlock";
 import Droppable from "./Droppable";
 import DropContainer from "./DropContainer";
 
@@ -14,14 +14,23 @@ function DndInterface({
   return (
     <DndInterfaceWrapper className={className}>
       <TagBlockContainer _id={TYPE.TAG_BLOCK_CONTAINER} onDrop={onDrop}>
-        {tagBlockContainer.childTrees.map(({ _id, isSubChallenge, block }) => (
-          <TagBlock
+        {tagBlockContainer.childTrees.map(({
+          _id, isSubChallenge, block, childTrees,
+        }, index) => (
+          <Droppable
+            _id={TYPE.TAG_BLOCK_CONTAINER}
             key={_id}
-            _id={_id}
-            block={block}
-            isSubChallenge={isSubChallenge}
-            containerId={TYPE.TAG_BLOCK_CONTAINER}
-          />
+            index={index}
+            onDrop={onDrop}
+          >
+            <TagBlock
+              _id={_id}
+              block={block}
+              isSubChallenge={isSubChallenge}
+              containerId={TYPE.TAG_BLOCK_CONTAINER}
+              childTrees={childTrees}
+            />
+          </Droppable>
         ))}
       </TagBlockContainer>
       <HTMLViewer>
@@ -40,13 +49,13 @@ DndInterface.propTypes = {
   tagBlockContainer: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     childTrees: PropTypes.arrayOf(
-      PropTypes.shape({ ...TagBlock.propTypes, containerId: null }),
+      PropTypes.shape(tagBlockSchema),
     ).isRequired,
   }).isRequired,
   boilerplate: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     childTrees: PropTypes.arrayOf(
-      PropTypes.shape({ ...TagBlock.propTypes, containerId: null }),
+      PropTypes.shape(tagBlockSchema),
     ).isRequired,
     block: PropTypes.shape({
       _id: PropTypes.string.isRequired,
