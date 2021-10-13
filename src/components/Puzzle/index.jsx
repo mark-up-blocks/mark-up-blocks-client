@@ -8,8 +8,7 @@ import Display from "./Display";
 import DndInterface from "./DndInterface";
 import ArrowButton from "../shared/Button/Arrow";
 
-import { updateChallenge, markStageCompleted, addChildTree } from "../../features/challenge";
-import { compareChildTreeByBlockIds } from "../../helpers/blockTreeHandlers";
+import { updateChallenge, addChildTree } from "../../features/challenge";
 import { selectActiveChallenge } from "../../helpers/globalSelectors";
 
 import { MESSAGE } from "../../constants";
@@ -21,7 +20,6 @@ function Puzzle({ notifyError, onFinish }) {
     _id: challengeId, boilerplate, elementTree, tagBlockContainer, isCompleted,
   } = useSelector(selectActiveChallenge);
   const isLoading = !boilerplate || !elementTree;
-  const isCorrect = compareChildTreeByBlockIds(boilerplate, elementTree);
   const handleDrop = ({
     itemId, containerId, index: containerIndex, prevContainerId,
   }) => {
@@ -38,30 +36,14 @@ function Puzzle({ notifyError, onFinish }) {
     dispatch(updateChallenge({ index, subId: id, notifyError }));
   }, [dispatch, notifyError, id, index, challengeId]);
 
-  useEffect(() => {
-    if (isLoading) {
-      return;
-    }
-
-    if (isCompleted) {
-      return;
-    }
-
-    if (!isCorrect) {
-      return;
-    }
-
-    dispatch(markStageCompleted());
-  }, [dispatch, isLoading, isCorrect, isCompleted]);
-
   return (
     <div>
       {isLoading
         ? <div>{MESSAGE.LOADING}</div>
         : (
           <div>
-            <Display boilerplate={boilerplate} elementTree={elementTree} isDone={isCorrect} />
-            {isCorrect
+            <Display boilerplate={boilerplate} elementTree={elementTree} isDone={isCompleted} />
+            {isCompleted
               ? (
                 <div>
                   <MessageContainer>{MESSAGE.SUCCESS}</MessageContainer>
