@@ -1,5 +1,6 @@
 const MESSAGE = {
-  SUCCESS: "You did it!\nYou rock at MarkUp.",
+  SUCCESS: "🎉  You did it! 🎉\nYou rock at MarkUp.",
+  NEXT_STAGE: "next stage",
   LOADING: "Loading...",
   NOT_FOUND: "페이지를 찾을 수 없습니다.",
   ENDING: "모두 완료하셨네요! 축하드립니다!",
