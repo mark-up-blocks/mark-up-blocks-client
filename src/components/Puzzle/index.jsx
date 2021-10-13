@@ -17,9 +17,8 @@ function Puzzle({ notifyError, onFinish }) {
   const dispatch = useDispatch();
   const { index, id } = useParams();
   const {
-    _id: challengeId, boilerplate, elementTree, tagBlockContainer, isCompleted,
+    _id: challengeId, boilerplate, elementTree, tagBlockContainer, isCompleted, isLoaded,
   } = useSelector(selectActiveChallenge);
-  const isLoading = !boilerplate || !elementTree;
   const handleDrop = ({
     itemId, containerId, index: containerIndex, prevContainerId,
   }) => {
@@ -38,9 +37,8 @@ function Puzzle({ notifyError, onFinish }) {
 
   return (
     <div>
-      {isLoading
-        ? <div>{MESSAGE.LOADING}</div>
-        : (
+      {isLoaded
+        ? (
           <div>
             <Display boilerplate={boilerplate} elementTree={elementTree} isDone={isCompleted} />
             {isCompleted
@@ -58,7 +56,8 @@ function Puzzle({ notifyError, onFinish }) {
                 />
               )}
           </div>
-        )}
+        )
+        : <div>{MESSAGE.LOADING}</div>}
     </div>
   );
 }
