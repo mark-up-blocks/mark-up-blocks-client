@@ -41,7 +41,7 @@ function App() {
       return;
     }
 
-    if (selectedIndex + 1 >= challenges.length - 1) {
+    if (challenges.length - 1 >= selectedIndex + 1) {
       history.push(route.nextIndex(selectedIndex));
       return;
     }

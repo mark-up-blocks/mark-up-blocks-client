@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 import Display from "./Display";
 import DndInterface from "./DndInterface";
-import ArrowButton from "../shared/Button/Arrow";
+import FinishPopup from "../ModalTemplate/FinishPopup";
 
 import { updateChallenge, addChildTree } from "../../features/challenge";
 import { selectActiveChallenge } from "../../helpers/globalSelectors";
@@ -37,29 +37,21 @@ function Puzzle({ notifyError, onFinish }) {
   }, [dispatch, notifyError, id, index, challengeId]);
 
   return (
-    <div>
+    <PuzzleWrapper>
       {isLoaded && String(selectedIndex) === index
         ? (
           <div>
-            <Display boilerplate={boilerplate} elementTree={elementTree} isDone={isCompleted} />
-            {isCompleted
-              ? (
-                <div>
-                  <MessageContainer>{MESSAGE.SUCCESS}</MessageContainer>
-                  <ArrowButton onClick={() => onFinish(id)} />
-                </div>
-              )
-              : (
-                <DndInterface
-                  tagBlockContainer={tagBlockContainer}
-                  boilerplate={boilerplate}
-                  onDrop={handleDrop}
-                />
-              )}
+            <Display boilerplate={boilerplate} elementTree={elementTree} />
+            <DndInterface
+              tagBlockContainer={tagBlockContainer}
+              boilerplate={boilerplate}
+              onDrop={handleDrop}
+            />
           </div>
         )
         : <div>{MESSAGE.LOADING}</div>}
-    </div>
+      {isCompleted && <FinishPopup onClick={() => onFinish(id)} />}
+    </PuzzleWrapper>
   );
 }
 
@@ -70,8 +62,7 @@ Puzzle.propTypes = {
 
 export default Puzzle;
 
-const MessageContainer = styled.pre`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const PuzzleWrapper = styled.div`
+  display: grid;
+  grid-template-rows: 4fr 3fr;
 `;
