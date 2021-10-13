@@ -18,4 +18,11 @@ const DRAGGABLE_TYPE = {
   CONTAINER: "container",
 };
 
-export { MESSAGE, TYPE, DRAGGABLE_TYPE };
+const NUMBER = {
+  DEBOUNCE_DELAY: 500,
+  PREVIEW_X_RANGE: 0.45,
+};
+
+export {
+  MESSAGE, TYPE, DRAGGABLE_TYPE, NUMBER,
+};

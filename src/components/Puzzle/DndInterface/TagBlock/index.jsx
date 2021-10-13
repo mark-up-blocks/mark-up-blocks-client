@@ -6,12 +6,13 @@ import Draggable from "../Draggable";
 import ElementBlock from "../../Display/ElementBlock";
 import { convertCamelToKebab, calcPosition } from "../../../../helpers/dataFormatters";
 
-import { DRAGGABLE_TYPE } from "../../../../constants";
+import { DRAGGABLE_TYPE, NUMBER } from "../../../../constants";
 
 function TagBlock({
   _id, isSubChallenge, block, containerId,
 }) {
-  const ref = useRef(null);
+  const observer = useRef(null);
+  const previewRef = useRef(null);
   const { tagName, isContainer, property } = block;
   const content = isContainer || isSubChallenge
     ? `<${tagName} />`
@@ -22,19 +23,24 @@ function TagBlock({
     .sort((a, b) => b[0] > a[0]);
 
   useEffect(() => {
-    const handleGetPosition = debounce(() => setPosition(calcPosition(ref?.current)), 300);
+    const handleResize = () => {
+      if (!previewRef?.current) {
+        return;
+      }
 
-    window.addEventListener("resize", handleGetPosition);
+      setPosition(calcPosition({ top, left }, previewRef.current.getBoundingClientRect()));
+    };
+    const debouncedHandleResize = debounce(handleResize, NUMBER.DEBOUNCE_DELAY);
+    const target = document.querySelector("#root");
 
-    if (ref?.current) {
-      setPosition(calcPosition(ref?.current));
-    }
+    observer.current = new ResizeObserver(debouncedHandleResize);
+    observer.current.observe(target);
 
-    return () => window.removeEventListener("resize", handleGetPosition);
-  }, []);
+    return () => observer.current.unobserve(target);
+  }, [top, left]);
 
   return (
-    <TagBlockWrapper top={top} left={left}>
+    <TagBlockWrapper>
       <Draggable
         _id={_id}
         type={isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
@@ -42,7 +48,7 @@ function TagBlock({
       >
         <span>{content}</span>
       </Draggable>
-      <Preview ref={ref} className="preview">
+      <Preview ref={previewRef} top={top} left={left}>
         <div className="preview-element">
           <ElementBlock
             _id="preview"
@@ -79,43 +85,24 @@ TagBlock.propTypes = {
 
 export default TagBlock;
 
-const TagBlockWrapper = styled.div`
-  position: relative;
-  border-radius: 10px;
-  border: 1px solid gray;
-  margin: 10px;
-
-  .preview {
-    position: absolute;
-    opacity: 0;
-    visibility: hidden;
-    top: ${({ top }) => (top ? `${top - 5}px` : "30px")};
-    left: ${({ left }) => (left ? `${left}px` : "auto")};
-    transition: all 0.25s;
-  }
-
-  :hover {
-    .preview {
-      opacity: 1;
-      z-index: 1;
-      visibility: visible;
-      top: ${({ top }) => (top ? `${top - 5}px` : "30px")};
-      left: ${({ left }) => (left ? `${left}px` : "auto")};
-    }
-  }
-`;
-
 const Preview = styled.div`
   display: grid;
-  width: 250px;
-  max-height: 200px;
+  position: absolute;
+  visibility: hidden;
+  z-index: 1;
+  opacity: 0;
   overflow: auto;
+  max-height: 200px;
+  width: 250px;
+  top: ${({ top }) => (top ? `${top - 5}px` : "30px")};
+  left: ${({ left }) => (left ? `${left}px` : "auto")};
   padding: 10px;
   color: white;
   background-color: darkgray;
   border: 1px solid ${({ theme }) => theme.color.main};
   border-radius: 4px;
   justify-content: start;
+  transition: all 0.25s;
 
   .preview-element {
     display: flex;
@@ -135,6 +122,20 @@ const Preview = styled.div`
 
     p {
       padding: 2px;
+    }
+  }
+`;
+
+const TagBlockWrapper = styled.div`
+  position: relative;
+  border-radius: 10px;
+  border: 1px solid gray;
+  margin: 10px;
+
+  :hover {
+    ${Preview} {
+      opacity: 1;
+      visibility: visible;
     }
   }
 `;

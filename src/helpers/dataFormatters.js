@@ -1,3 +1,5 @@
+import { NUMBER } from "../constants";
+
 function convertCamelToKebab(string) {
   return [...string]
     .map((char, index) => (
@@ -7,26 +9,20 @@ function convertCamelToKebab(string) {
     .join("");
 }
 
-function calcPosition(ref) {
-  const result = {
-    top: 0,
-    left: 0,
-  };
+function calcPosition(prevPosition, newPosition) {
+  const { top, left } = prevPosition;
+  const { bottom, right, height } = newPosition;
 
-  if (!ref) {
-    return result;
+  const result = { top, left };
+  const isXOverflowed = left + right > (window.innerWidth * NUMBER.PREVIEW_X_RANGE);
+  const isYOverflowed = top + bottom > window.innerHeight;
+
+  if (isXOverflowed) {
+    result.left -= left + right - (window.innerWidth * NUMBER.PREVIEW_X_RANGE);
   }
 
-  const {
-    top, left, width, height,
-  } = ref.getBoundingClientRect();
-
-  if (left + width > (window.innerWidth / 2)) {
-    result.left -= (left + width - (window.innerWidth / 2));
-  }
-
-  if (top + height > window.innerHeight) {
-    result.top -= height;
+  if (isYOverflowed) {
+    result.top = -height;
   }
 
   return result;
