@@ -1,26 +1,32 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Button from "../../shared/Button";
+import OptionButton from "../OptionButton";
 
-function StageMenu({
-  _id, title, childTrees, onClick, isCompleted,
+function StageList({
+  _id, title, childTrees, onClick, isCompleted, selectedTitle,
 }) {
   const handleClick = () => onClick(_id);
 
   return (
     <Li>
-      <StageButton onClick={handleClick} value={title} isCompleted={isCompleted} />
+      <OptionButton
+        onClick={handleClick}
+        value={title}
+        isCompleted={isCompleted}
+        className={selectedTitle === title ? "selected" : ""}
+      />
       <ol>
         {childTrees.map((child) => (child.isSubChallenge
           && (
-          <StageMenu
+          <StageList
             key={child._id}
             _id={child._id}
             title={child.title}
             childTrees={child.childTrees}
             onClick={onClick}
             isCompleted={child.isCompleted}
+            selectedTitle={selectedTitle}
           />
           )
         ))}
@@ -35,28 +41,21 @@ const menuSchema = {
   isCompleted: PropTypes.bool,
 };
 
-StageMenu.propTypes = {
+StageList.propTypes = {
   ...menuSchema,
   childTrees: PropTypes.arrayOf(
     PropTypes.shape(menuSchema),
   ).isRequired,
   onClick: PropTypes.func.isRequired,
+  selectedTitle: PropTypes.string.isRequired,
 };
 
-export default StageMenu;
+export default StageList;
 
 const Li = styled.li`
   margin: 5px 0px 5px 15px;
-`;
 
-const StageButton = styled(Button)`
-  width: 100%;
-  padding: 5px;
-  color: ${({ theme }) => theme.color.text};
-  background-color: ${({ isCompleted }) => (isCompleted ? "lightgray" : "transparent")};
-  text-align: left;
-
-  :hover {
+  .selected {
     background-color: ${({ theme }) => theme.color.main};
   }
 `;

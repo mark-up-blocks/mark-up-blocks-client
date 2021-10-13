@@ -3,34 +3,63 @@ import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 
-import StageMenu from "./StageMenu";
+import StageList from "./StageList";
 import Button from "../shared/Button";
-import { selectChallenge } from "../../helpers/globalSelectors";
+import OptionButton from "./OptionButton";
+import { selectChallenge, selectActiveChallenge } from "../../helpers/globalSelectors";
 
-function Header({ onTitleClick, onMenuClick }) {
-  const { name, elementTree } = useSelector(selectChallenge);
-  const [isStageMenuOpen, setIsStageMenuOpen] = useState(false);
+function Header({ onTitleClick, onChallengeClick, onStageMenuClick }) {
+  const { elementTree } = useSelector(selectChallenge);
+  const { title } = useSelector(selectActiveChallenge);
+  const { challenges, selectedIndex } = useSelector((state) => state.challenge);
+
+  const [isChallengeListOpen, setIsChallengeListOpen] = useState(false);
+  const [isStageListOpen, setIsStageListOpen] = useState(false);
+
+  const challengeName = challenges[selectedIndex].name;
+
+  const handleStageMenuClick = (_id) => {
+    setIsStageListOpen(false);
+    onStageMenuClick(_id);
+  };
+  const handleChallengeClick = (index) => {
+    setIsChallengeListOpen(false);
+    onChallengeClick(index);
+  };
 
   return (
     <HeaderWrapper>
       <Title onClick={onTitleClick}>Mark Up Blocks</Title>
       <Nav>
-        {isStageMenuOpen && (
+        {isChallengeListOpen && (
+          <ChallengeListWrapper>
+            {challenges.map((challenge, index) => (
+              <OptionButton
+                key={challenge._id}
+                onClick={() => handleChallengeClick(index)}
+                className={selectedIndex === index ? "selected" : ""}
+                value={challenge.name}
+              />
+            ))}
+          </ChallengeListWrapper>
+        )}
+        {isStageListOpen && (
         <MenuWrapper>
           {elementTree?.childTrees
           && (
-          <StageMenu
+          <StageList
             _id={elementTree._id}
             title={elementTree.title}
             childTrees={elementTree.childTrees}
-            onClick={onMenuClick}
+            onClick={handleStageMenuClick}
             isCompleted={Boolean(elementTree.isCompleted)}
+            selectedTitle={title}
           />
           )}
         </MenuWrapper>
         )}
-        <ChallengeName>{name}</ChallengeName>
-        <StageButton onClick={() => setIsStageMenuOpen((prev) => !prev)} value={name} />
+        <OpenButton onClick={() => setIsChallengeListOpen((prev) => !prev)} value={challengeName} />
+        <OpenButton onClick={() => setIsStageListOpen((prev) => !prev)} value={title} />
       </Nav>
     </HeaderWrapper>
   );
@@ -38,7 +67,8 @@ function Header({ onTitleClick, onMenuClick }) {
 
 Header.propTypes = {
   onTitleClick: PropTypes.func.isRequired,
-  onMenuClick: PropTypes.func.isRequired,
+  onChallengeClick: PropTypes.func.isRequired,
+  onStageMenuClick: PropTypes.func.isRequired,
 };
 
 export default Header;
@@ -65,12 +95,7 @@ const Nav = styled.nav`
   align-items: center;
 `;
 
-const ChallengeName = styled.h3`
-  margin: 10px;
-  font-size: 1.3rem;
-`;
-
-const StageButton = styled(Button)`
+const OpenButton = styled(Button)`
   width: 100px;
   margin: 10px;
   padding: 5px 10px;
@@ -86,14 +111,25 @@ const StageButton = styled(Button)`
   }
 `;
 
-const MenuWrapper = styled.ol`
+const ListWrapper = styled.ol`
   position: absolute;
   top: 48px;
-  right: 10px;
   min-width: 100px;
   padding: 5px;
   background-color: ${({ theme }) => theme.color.inner};
   border: 2px solid ${({ theme }) => theme.color.main};
   border-radius: 4px;
   box-shadow: 2px 2px 3px gray;
+`;
+
+const MenuWrapper = styled(ListWrapper)`
+  right: 10px;
+`;
+
+const ChallengeListWrapper = styled(ListWrapper)`
+  right: 120px;
+
+  .selected {
+    background-color: ${({ theme }) => theme.color.main};
+  }
 `;
