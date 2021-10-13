@@ -33,7 +33,7 @@ const updateChallenge = createAsyncThunk(
     if (typeof challenge.elementTree === "object") {
       return {
         challengeIndex,
-        subId,
+        subId: subId || challenge.elementTree._id,
         hasFetched: false,
       };
     }

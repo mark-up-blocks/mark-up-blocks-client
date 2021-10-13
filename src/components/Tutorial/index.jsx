@@ -1,60 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import DndInterface from "../Puzzle/DndInterface";
 
-import Button from "../shared/Button";
 import ArrowButton from "../shared/Button/Arrow";
 
-import { sampleBlock, sampleBoilerplate } from "./tutorialData";
-import { TYPE } from "../../constants";
+import { updateChallenge, addChildTree } from "../../features/challenge";
 
-function Tutorial({ onFinish }) {
-  const [isDone, setIsDone] = useState(false);
-  const [tutorialBlocks, setTutorialBlocks] = useState([sampleBlock]);
-  const [boilerplate, setBoilerplate] = useState(sampleBoilerplate);
-  const handleDrop = () => {
-    setTutorialBlocks(() => [{
-      ...sampleBlock,
-      hasUsed: true,
-    }]);
-    setBoilerplate((prev) => ({ ...prev, childTrees: [sampleBlock] }));
-    setIsDone(true);
+function Tutorial({ onFinish, notifyError }) {
+  const dispatch = useDispatch();
+  const { challenges } = useSelector((state) => state.challenge);
+  const tutorialChallenge = challenges[0].elementTree;
+  const { tagBlockContainer, boilerplate, isCompleted } = tutorialChallenge;
+  const handleDrop = ({
+    itemId, containerId, index, prevContainerId,
+  }) => {
+    dispatch(addChildTree({
+      itemId, containerId, index, prevContainerId,
+    }));
   };
-  const handleReset = () => {
-    setIsDone(false);
-    setTutorialBlocks([sampleBlock]);
-    setBoilerplate(sampleBoilerplate);
-  };
+
+  useEffect(() => {
+    dispatch(updateChallenge({ index: 0, notifyError }));
+  }, [dispatch, notifyError]);
 
   return (
     <div>
-      {isDone
-        ? (
+      {isCompleted ? (
+        <div>
+          <p>좋아요 !</p>
           <div>
-            <p>좋아요 !</p>
-            <Button onClick={handleReset} value="한번 더?" />
-            <div>
-              <span>다음 스테이지</span>
-              <ArrowButton onClick={onFinish} />
-            </div>
+            <span>다음 스테이지</span>
+            <ArrowButton onClick={onFinish} />
           </div>
-        )
-        : (
-          <>
-            <div>Mark Up Blocks에 오신 것을 환영합니다! 아래 태그 블록을 div 안으로 옮겨볼까요?</div>
-            <WideDndInterface
-              tagBlockContainer={{ _id: TYPE.TAG_BLOCK_CONTAINER, tagName: "div", childTrees: tutorialBlocks }}
-              boilerplate={boilerplate}
-              onDrop={handleDrop}
-            />
-          </>
-        )}
+        </div>
+      ) : <div>Mark Up Blocks에 오신 것을 환영합니다! 아래 태그 블록을 div 안으로 옮겨볼까요?</div>}
+      <WideDndInterface
+        tagBlockContainer={tagBlockContainer}
+        boilerplate={boilerplate}
+        onDrop={handleDrop}
+      />
     </div>
   );
 }
 
 Tutorial.propTypes = {
+  notifyError: PropTypes.func.isRequired,
   onFinish: PropTypes.func.isRequired,
 };
 

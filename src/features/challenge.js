@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchChallenges, updateChallenge } from "./challengeThunks";
 import { generateBlocks } from "../helpers/tagBlockGenerators";
-import { findBlockTreeById } from "../helpers/blockTreeHandlers";
+import { findBlockTreeById, compareChildTreeByBlockIds } from "../helpers/blockTreeHandlers";
 import { selectSelectedSubChallenge, selectContainer } from "../helpers/globalSelectors";
 import tutorialData from "../components/Tutorial/tutorialData";
 import { TYPE } from "../constants";
@@ -14,11 +14,6 @@ const challengeSlice = createSlice({
     challenges: [tutorialData],
   },
   reducers: {
-    markStageCompleted(state) {
-      const selectedSubChallenge = selectSelectedSubChallenge(state);
-
-      selectedSubChallenge.isCompleted = true;
-    },
     addChildTree(state, { payload }) {
       const {
         prevContainerId, containerId, itemId, index,
@@ -42,6 +37,9 @@ const challengeSlice = createSlice({
         blockTree,
         ...container.childTrees.slice(itemIndex),
       ];
+      selectedSubChallenge.isCompleted = compareChildTreeByBlockIds(
+        selectedSubChallenge, selectedSubChallenge.boilerplate,
+      );
     },
   },
   extraReducers: {
@@ -65,6 +63,7 @@ const challengeSlice = createSlice({
         _id: TYPE.TAG_BLOCK_CONTAINER,
         childTrees: generateBlocks(selectedSubChallenge),
       };
+      selectedSubChallenge.isLoaded = true;
 
       if (payload.hasFetched) {
         challenge.elementTree = elementTree;
@@ -87,6 +86,6 @@ const challengeSlice = createSlice({
   },
 });
 
-export const { markStageCompleted, addChildTree } = challengeSlice.actions;
+export const { addChildTree } = challengeSlice.actions;
 export { fetchChallenges, updateChallenge };
 export default challengeSlice.reducer;

@@ -1,3 +1,6 @@
+import { generateBlocks } from "../../helpers/tagBlockGenerators";
+import { TYPE } from "../../constants";
+
 const sampleBlock = {
   _id: "tutorial1",
   title: "tutorialBlock",
@@ -18,27 +21,32 @@ const sampleBlock = {
   childTrees: [],
 };
 
-const sampleBoilerplate = {
-  _id: "tutorial",
+const elementTree = {
+  _id: "tutorialTree",
   title: "tutorial",
   isSubChallenge: true,
   block: {
-    _id: "tutorialBoxBlock",
+    _id: "tutorialTree",
     tagName: "div",
     isContainer: true,
     property: {},
   },
-  childTrees: [],
+  childTrees: [sampleBlock],
 };
 
 const tutorialData = {
   _id: "tutorial",
   name: "tutorial",
+  selectedSubChallengeId: "tutorialTree",
   elementTree: {
-    ...sampleBoilerplate,
-    childTrees: [sampleBlock],
+    ...elementTree,
+    boilerplate: { ...elementTree, childTrees: [] },
+    tagBlockContainer: {
+      _id: TYPE.TAG_BLOCK_CONTAINER,
+      childTrees: generateBlocks(elementTree),
+    },
+    isLoaded: true,
   },
 };
 
 export default tutorialData;
-export { sampleBlock, sampleBoilerplate };

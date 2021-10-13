@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Switch, useHistory } from "react-router-dom";
+import {
+  Redirect, Route, Switch, useHistory,
+} from "react-router-dom";
 
 import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
 import GlobalStyle from "./theme/global";
 
-import { fetchChallenges, updateChallenge } from "./features/challenge";
+import { fetchChallenges } from "./features/challenge";
 import Tutorial from "./components/Tutorial";
 import Header from "./components/Header";
 import Puzzle from "./components/Puzzle";
@@ -21,7 +23,7 @@ function App() {
   const [isDone, setIsDone] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const handleMenuClick = (_id) => history.push(route.selectedChallenge(selectedIndex, _id));
+  const handleStageMenuClick = (_id) => history.push(route.selectedChallenge(selectedIndex, _id));
   const notifyError = (err) => {
     if (process.env.NODE_ENV === "development") {
       console.error(err);
@@ -40,7 +42,6 @@ function App() {
     }
 
     if (selectedIndex + 1 >= challenges.length - 1) {
-      dispatch(updateChallenge({ index: selectedIndex + 1, notifyError }));
       history.push(route.nextIndex(selectedIndex));
       return;
     }
@@ -51,6 +52,13 @@ function App() {
     history.push(route.home);
     setHasError(false);
   };
+  const handleChallengeClick = (index) => {
+    if (index === selectedIndex) {
+      return;
+    }
+
+    history.push(route.selectedPuzzle(index));
+  };
 
   useEffect(() => {
     dispatch(fetchChallenges({ notifyError }));
@@ -59,13 +67,23 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <AppWrapper>
-        <Header onMenuClick={handleMenuClick} onTitleClick={handleTitleClick} />
+        <Header
+          onTitleClick={handleTitleClick}
+          onStageMenuClick={handleStageMenuClick}
+          onChallengeClick={handleChallengeClick}
+        />
         {hasError || isLoading
           ? <div>{hasError ? MESSAGE.INTERNAL_SERVER_ERROR : MESSAGE.LOADING_CHALLENGE_LIST}</div>
           : (
             <Switch>
               <Route exact path={route.home}>
-                <Tutorial onFinish={handleFinishQuiz} />
+                <Redirect to={route.tutorial} />
+              </Route>
+              <Route path={route.tutorial}>
+                <Tutorial
+                  notifyError={notifyError}
+                  onFinish={handleFinishQuiz}
+                />
               </Route>
               <Route exact path={route.puzzle}>
                 <Puzzle
