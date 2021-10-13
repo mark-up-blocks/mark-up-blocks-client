@@ -28,7 +28,14 @@ function calcPosition(prevPosition, newPosition) {
   return result;
 }
 
+function formatTagName(isContainer, tagName, text) {
+  return isContainer
+    ? `<${tagName} />`
+    : `<${tagName}>${text}</${tagName}>`;
+}
+
 export {
   convertCamelToKebab,
   calcPosition,
+  formatTagName,
 };

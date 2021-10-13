@@ -4,23 +4,24 @@ import debounce from "lodash.debounce";
 import styled from "styled-components";
 import Draggable from "../Draggable";
 import ElementBlock from "../../Display/ElementBlock";
-import { convertCamelToKebab, calcPosition } from "../../../../helpers/dataFormatters";
+import { convertCamelToKebab, calcPosition, formatTagName } from "../../../../helpers/dataFormatters";
 
 import { DRAGGABLE_TYPE, NUMBER } from "../../../../constants";
 
 function TagBlock({
-  _id, isSubChallenge, block, containerId,
+  _id, isSubChallenge, block, containerId, childTrees,
 }) {
   const observer = useRef(null);
   const previewRef = useRef(null);
   const { tagName, isContainer, property } = block;
-  const content = isContainer || isSubChallenge
-    ? `<${tagName} />`
-    : `<${tagName}>${property.text}</${tagName}>`;
+  const content = formatTagName(isContainer, tagName, property.text);
   const [{ top, left }, setPosition] = useState({ top: 0, left: 0 });
   const styles = Object.entries(block?.property?.style || {})
     .map(([key, value]) => [convertCamelToKebab(key), value])
     .sort((a, b) => b[0] > a[0]);
+  const previewChildTrees = block.isContainer
+    ? [{ _id: "virtualChild", block: { tagName: "span", property: { text: "child" }, isContainer: false } }]
+    : [];
 
   useEffect(() => {
     const handleResize = () => {
@@ -53,7 +54,7 @@ function TagBlock({
           <ElementBlock
             _id="preview"
             block={block}
-            childTrees={[]}
+            childTrees={isSubChallenge ? childTrees : previewChildTrees}
           />
         </div>
         <div className="preview-style">
@@ -66,7 +67,7 @@ function TagBlock({
   );
 }
 
-TagBlock.propTypes = {
+export const tagBlockSchema = {
   _id: PropTypes.string.isRequired,
   isSubChallenge: PropTypes.bool.isRequired,
   block: PropTypes.shape({
@@ -80,7 +81,18 @@ TagBlock.propTypes = {
       ]).isRequired,
     ).isRequired,
   }).isRequired,
+};
+
+TagBlock.propTypes = {
+  ...tagBlockSchema,
   containerId: PropTypes.string.isRequired,
+  childTrees: PropTypes.arrayOf(
+    PropTypes.shape(tagBlockSchema),
+  ),
+};
+
+TagBlock.defaultProps = {
+  childTrees: [],
 };
 
 export default TagBlock;
@@ -97,7 +109,6 @@ const Preview = styled.div`
   top: ${({ top }) => (top ? `${top - 5}px` : "30px")};
   left: ${({ left }) => (left ? `${left}px` : "auto")};
   padding: 10px;
-  color: white;
   background-color: darkgray;
   border: 1px solid ${({ theme }) => theme.color.main};
   border-radius: 4px;
@@ -119,6 +130,7 @@ const Preview = styled.div`
     max-height: 30px;
     margin: 5px;
     padding: 5px;
+    color: white;
 
     p {
       padding: 2px;

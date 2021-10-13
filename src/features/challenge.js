@@ -63,7 +63,7 @@ const challengeSlice = createSlice({
       selectedSubChallenge.boilerplate = { ...selectedSubChallenge, childTrees: [] };
       selectedSubChallenge.tagBlockContainer = {
         _id: TYPE.TAG_BLOCK_CONTAINER,
-        childTrees: generateBlocks(selectedSubChallenge, true),
+        childTrees: generateBlocks(selectedSubChallenge),
       };
 
       if (payload.hasFetched) {

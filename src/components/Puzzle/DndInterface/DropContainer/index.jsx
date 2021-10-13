@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
-import TagBlock from "../TagBlock";
+import { tagBlockSchema } from "../TagBlock";
 
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
@@ -57,7 +57,7 @@ DropContainer.propTypes = {
   _id: PropTypes.string.isRequired,
   tagName: PropTypes.string.isRequired,
   childTrees: PropTypes.arrayOf(
-    PropTypes.shape({ ...TagBlock.propTypes, containerId: null }),
+    PropTypes.shape(tagBlockSchema),
   ).isRequired,
   onDrop: PropTypes.func.isRequired,
 };
