@@ -7,11 +7,10 @@ import styled from "styled-components";
 import Display from "./Display";
 import DndInterface from "./DndInterface";
 import FinishPopup from "../ModalTemplate/FinishPopup";
+import Loading from "../ModalTemplate/Loading";
 
 import { updateChallenge, addChildTree } from "../../features/challenge";
 import { selectActiveChallenge } from "../../helpers/globalSelectors";
-
-import { MESSAGE } from "../../constants";
 
 function Puzzle({ notifyError, onFinish }) {
   const dispatch = useDispatch();
@@ -49,7 +48,7 @@ function Puzzle({ notifyError, onFinish }) {
             />
           </div>
         )
-        : <div>{MESSAGE.LOADING}</div>}
+        : <Loading />}
       {isCompleted && <FinishPopup onClick={() => onFinish(id)} />}
     </PuzzleWrapper>
   );
