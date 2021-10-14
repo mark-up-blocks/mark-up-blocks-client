@@ -13,26 +13,28 @@ function DndInterface({
 }) {
   return (
     <DndInterfaceWrapper className={className}>
-      <TagBlockContainer _id={TYPE.TAG_BLOCK_CONTAINER} onDrop={onDrop}>
-        {tagBlockContainer.childTrees.map(({
-          _id, isSubChallenge, block, childTrees,
-        }, index) => (
-          <Droppable
-            _id={TYPE.TAG_BLOCK_CONTAINER}
-            key={_id}
-            index={index}
-            onDrop={onDrop}
-          >
-            <TagBlock
-              _id={_id}
-              block={block}
-              isSubChallenge={isSubChallenge}
-              containerId={TYPE.TAG_BLOCK_CONTAINER}
-              childTrees={childTrees}
-            />
-          </Droppable>
-        ))}
-      </TagBlockContainer>
+      <Droppable className="tag-block-container-droppable" _id={TYPE.TAG_BLOCK_CONTAINER} onDrop={onDrop}>
+        <TagBlockContainer>
+          {tagBlockContainer.childTrees.map(({
+            _id, isSubChallenge, block, childTrees,
+          }, index) => (
+            <Droppable
+              _id={TYPE.TAG_BLOCK_CONTAINER}
+              key={_id}
+              index={index}
+              onDrop={onDrop}
+            >
+              <TagBlock
+                _id={_id}
+                block={block}
+                isSubChallenge={isSubChallenge}
+                containerId={TYPE.TAG_BLOCK_CONTAINER}
+                childTrees={childTrees}
+              />
+            </Droppable>
+          ))}
+        </TagBlockContainer>
+      </Droppable>
       <HTMLViewer>
         <DropContainer
           _id={boilerplate._id}
@@ -74,21 +76,36 @@ export default DndInterface;
 
 const DndInterfaceWrapper = styled.div`
   display: grid;
+  width: 100%;
+  height: 100%;
   grid-template-columns: 1fr 1fr;
+
+  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .tag-block-container-droppable {
+    display: flex;
+    margin: 10px;
+    justify-content: center;
+    align-items: center;
+    border: ${({ theme }) => theme.border.container};
+    border-radius: ${({ theme }) => theme.border.radius.container};
+  }
 `;
 
-const TagBlockContainer = styled(Droppable)`
+const TagBlockContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin: 10px;
   justify-content: center;
   align-items: center;
-  border: ${({ theme }) => theme.border.page};
 `;
 
 const HTMLViewer = styled.div`
   display: grid;
   align-items: center;
   margin: 10px;
-  border: ${({ theme }) => theme.border.page};
+  border: ${({ theme }) => theme.border.container};
+  border-radius: ${({ theme }) => theme.border.radius.container};
 `;
