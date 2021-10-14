@@ -111,7 +111,7 @@ const Preview = styled.div`
   padding: 10px;
   background-color: darkgray;
   border: 1px solid ${({ theme }) => theme.color.main};
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.border.radius.container};
   justify-content: start;
   transition: all 0.25s;
 
@@ -120,7 +120,7 @@ const Preview = styled.div`
     margin: auto;
     padding: 10px;
     background-color: white;
-    border-radius: 4px;
+    border-radius: ${({ theme }) => theme.border.radius.container};
     justify-content: center;
     align-items: center;
   }

@@ -116,5 +116,5 @@ const AppWrapper = styled.div`
   display: grid;
   width: 100%;
   height: 100%;
-  grid-template-rows: 50px 4fr 3fr;
+  grid-template-rows: 50px 1fr;
 `;

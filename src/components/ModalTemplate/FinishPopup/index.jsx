@@ -42,7 +42,7 @@ const NextStage = styled.div`
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
     border-left: 18px solid ${({ color }) => color};
-    border-radius: 2px;
+    border-radius: ${({ theme }) => theme.border.radius.container};
   }
 
   .next-stage-text {

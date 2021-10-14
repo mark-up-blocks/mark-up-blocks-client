@@ -39,14 +39,14 @@ function Puzzle({ notifyError, onFinish }) {
     <PuzzleWrapper>
       {isLoaded && String(selectedIndex) === index
         ? (
-          <div>
+          <>
             <Display boilerplate={boilerplate} elementTree={elementTree} />
             <DndInterface
               tagBlockContainer={tagBlockContainer}
               boilerplate={boilerplate}
               onDrop={handleDrop}
             />
-          </div>
+          </>
         )
         : <Loading />}
       {isCompleted && <FinishPopup onClick={() => onFinish(id)} />}
@@ -63,5 +63,12 @@ export default Puzzle;
 
 const PuzzleWrapper = styled.div`
   display: grid;
-  grid-template-rows: 4fr 3fr;
+  width: 100%;
+  height: 100%;
+  margin-bottom: 20px;
+  grid-template-rows: 2fr 1fr;
+
+  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
+    grid-template-rows: unset;
+  }
 `;
