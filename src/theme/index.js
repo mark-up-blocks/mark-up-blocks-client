@@ -8,12 +8,22 @@ const color = {
 };
 
 const border = {
-  page: "2px solid #FBC00E",
+  container: "2px solid #FBC00E",
+  radius: {
+    container: "4px",
+  },
+};
+
+const screenSize = {
+  maxWidth: {
+    mobile: "600px",
+  },
 };
 
 const theme = {
   color,
   border,
+  screenSize,
 };
 
 export default theme;

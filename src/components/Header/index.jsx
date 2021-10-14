@@ -85,8 +85,12 @@ const HeaderWrapper = styled.header`
 
 const Title = styled.h2`
   margin: 10px;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   cursor: pointer;
+
+  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
+    font-size: 1.2rem;
+  }
 `;
 
 const Nav = styled.nav`
@@ -103,7 +107,7 @@ const OpenButton = styled(Button)`
   color: ${({ theme }) => theme.color.main};
   background-color: ${({ theme }) => theme.color.inner};
   border: none;
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.border.radius.container};
   cursor: pointer;
 
   &:hover {
@@ -118,7 +122,7 @@ const ListWrapper = styled.ol`
   padding: 5px;
   background-color: ${({ theme }) => theme.color.inner};
   border: 2px solid ${({ theme }) => theme.color.main};
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.border.radius.container};
   box-shadow: 2px 2px 3px gray;
 `;
 
