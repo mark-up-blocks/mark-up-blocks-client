@@ -12,6 +12,9 @@ import { fetchChallenges } from "./features/challenge";
 import Tutorial from "./components/Tutorial";
 import Header from "./components/Header";
 import Puzzle from "./components/Puzzle";
+import Loading from "./components/ModalTemplate/Loading";
+import Error from "./components/ModalTemplate/Error";
+
 import { findNextUncompletedChallenge } from "./helpers/blockTreeHandlers";
 import route from "./route";
 import { MESSAGE } from "./constants";
@@ -41,7 +44,7 @@ function App() {
       return;
     }
 
-    if (selectedIndex + 1 >= challenges.length - 1) {
+    if (challenges.length - 1 >= selectedIndex + 1) {
       history.push(route.nextIndex(selectedIndex));
       return;
     }
@@ -72,30 +75,34 @@ function App() {
           onStageMenuClick={handleStageMenuClick}
           onChallengeClick={handleChallengeClick}
         />
-        {hasError || isLoading
-          ? <div>{hasError ? MESSAGE.INTERNAL_SERVER_ERROR : MESSAGE.LOADING_CHALLENGE_LIST}</div>
-          : (
-            <Switch>
-              <Route exact path={route.home}>
-                <Redirect to={route.tutorial} />
-              </Route>
-              <Route path={route.tutorial}>
-                <Tutorial
-                  notifyError={notifyError}
-                  onFinish={handleFinishQuiz}
-                />
-              </Route>
-              <Route exact path={route.puzzle}>
-                <Puzzle
-                  notifyError={notifyError}
-                  onFinish={handleFinishQuiz}
-                />
-              </Route>
-              <Route path="*">
-                <div>{MESSAGE.NOT_FOUND}</div>
-              </Route>
-            </Switch>
+        {hasError && <Error />}
+        {!hasError && (
+        <>
+          {isLoading && <Loading />}
+          {!isLoading && (
+          <Switch>
+            <Route exact path={route.home}>
+              <Redirect to={route.tutorial} />
+            </Route>
+            <Route path={route.tutorial}>
+              <Tutorial
+                notifyError={notifyError}
+                onFinish={handleFinishQuiz}
+              />
+            </Route>
+            <Route exact path={route.puzzle}>
+              <Puzzle
+                notifyError={notifyError}
+                onFinish={handleFinishQuiz}
+              />
+            </Route>
+            <Route path="*">
+              <div>{MESSAGE.NOT_FOUND}</div>
+            </Route>
+          </Switch>
           )}
+        </>
+        )}
         {isDone && <div>{MESSAGE.ENDING}</div>}
       </AppWrapper>
       <GlobalStyle />

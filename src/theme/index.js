@@ -4,6 +4,7 @@ const color = {
   focus: "#ffddad",
   text: "#000000",
   inactive: "#808080",
+  error: "#d22020",
 };
 
 const border = {
