@@ -6,8 +6,9 @@ const color = {
   inactive: "#808080",
   error: "#d22020",
   point: "#58ea9b",
-  dropGuide: "#fbc76d59",
+  dropGuide: "#90eebb59",
   preview: "#9d9d9d",
+  parentTag: "#d082c2",
 };
 
 const border = {

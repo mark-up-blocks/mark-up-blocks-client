@@ -92,6 +92,7 @@ function DndInterface({
         </TagBlockContainer>
       </Droppable>
       <HTMLViewer>
+        <LineNumberSpace />
         <DropContainer
           _id={boilerplate._id}
           childTrees={boilerplate.childTrees}
@@ -162,10 +163,29 @@ const TagBlockContainer = styled.div`
 `;
 
 const HTMLViewer = styled.div`
+  position: relative;
   display: grid;
+  grid-template-columns: 30px auto;
   align-items: center;
   margin: 10px;
-  padding: 10px;
   border: ${({ theme }) => theme.border.container};
   border-radius: ${({ theme }) => theme.border.radius.container};
+  counter-reset: line;
+
+  .tag-text::before {
+    position: absolute;
+    right: 100%;
+    margin-right: -20px;
+    text-align: right;
+    counter-increment: line;
+    content: counter(line);
+    color: ${({ theme }) => theme.color.inner};
+  }
+`;
+
+const LineNumberSpace = styled.div`
+  width: 28px;
+  height: 100%;
+  margin-right: 5px;
+  background-color: ${({ theme }) => theme.color.main};
 `;

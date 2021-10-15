@@ -79,6 +79,6 @@ export default TagBlock;
 
 const TagBlockWrapper = styled.div`
   border-radius: 10px;
-  border: 1px solid gray;
+  border: 1px solid ${({ theme }) => theme.color.point};
   margin: 10px;
 `;

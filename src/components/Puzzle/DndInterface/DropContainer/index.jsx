@@ -19,7 +19,7 @@ function DropContainer({
 
   return (
     <DropContainerWrapper className={className}>
-      <span className="container-tag">{`<${tagName}>`}</span>
+      <span className="tag-text parent-tag">{`<${tagName}>`}</span>
       <>
         <Droppable
           _id={_id}
@@ -49,7 +49,7 @@ function DropContainer({
                     droppableHoveredClassName={droppableHoveredClassName}
                   />
                 )
-                : <span className="child-tag">{getTextValue(child)}</span>}
+                : <span className="tag-text">{getTextValue(child)}</span>}
             </Draggable>
             <Droppable
               _id={_id}
@@ -63,7 +63,7 @@ function DropContainer({
           </>
         ))}
       </>
-      <span className="container-tag">{`</${tagName}>`}</span>
+      <span className="tag-text parent-tag">{`</${tagName}>`}</span>
     </DropContainerWrapper>
   );
 }
@@ -91,5 +91,9 @@ export default DropContainer;
 const DropContainerWrapper = styled.div`
   .droppable {
     margin-left: 20px;
+  }
+
+  .parent-tag {
+    color: ${({ theme }) => theme.color.parentTag};
   }
 `;
