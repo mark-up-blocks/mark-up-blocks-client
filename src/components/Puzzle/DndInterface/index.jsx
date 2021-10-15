@@ -46,6 +46,10 @@ function DndInterface({
     handlePreviewClick();
     onDrop(params);
   };
+  const handleTagBlockClick = (hovered) => {
+    setIsClicked((prev) => !prev);
+    setHoveredBlock((prevHovered) => (prevHovered?._id === hovered._id ? null : hovered));
+  };
 
   return (
     <DndInterfaceWrapper className={className}>
@@ -84,7 +88,7 @@ function DndInterface({
                   childTrees={childTrees}
                   onMouseOver={handleBlockHovered}
                   onMouseOut={handleBlockUnhovered}
-                  onClick={() => setIsClicked((prev) => !prev)}
+                  onClick={handleTagBlockClick}
                 />
               </Droppable>
             ))}

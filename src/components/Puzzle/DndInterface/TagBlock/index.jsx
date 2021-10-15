@@ -19,6 +19,13 @@ function TagBlock({
       isSubChallenge, block, childTrees, position,
     });
   };
+  const handleClick = () => {
+    const position = ref?.current ? ref.current.getBoundingClientRect() : {};
+
+    onClick({
+      _id, isSubChallenge, block, childTrees, position,
+    });
+  };
 
   return (
     <TagBlockWrapper
@@ -26,7 +33,7 @@ function TagBlock({
       onMouseOver={handleMouseOver}
       onMouseOut={onMouseOut}
       ref={ref}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <Draggable
         _id={_id}
