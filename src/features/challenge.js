@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchChallenges, updateChallenge } from "./challengeThunks";
 import { generateBlocks } from "../helpers/tagBlockGenerators";
-import { findBlockTreeById, compareChildTreeByBlockIds } from "../helpers/blockTreeHandlers";
+import { findBlockTreeById, compareChildTreeByBlockIds, validatePosition } from "../helpers/blockTreeHandlers";
 import { selectSelectedSubChallenge, selectContainer } from "../helpers/globalSelectors";
 import tutorialData from "../components/Tutorial/tutorialData";
 import { TYPE } from "../constants";
@@ -18,6 +18,7 @@ const challengeSlice = createSlice({
       const {
         prevContainerId, containerId, itemId, index,
       } = payload;
+      const challenge = state.challenges[state.selectedIndex];
       const selectedSubChallenge = selectSelectedSubChallenge(state);
 
       const prevContainer = selectContainer(selectedSubChallenge, prevContainerId);
@@ -31,6 +32,12 @@ const challengeSlice = createSlice({
       if (isInvalidContainer) {
         return;
       }
+
+      blockTree.isCorrect = containerId === TYPE.TAG_BLOCK_CONTAINER
+        ? false
+        : validatePosition({
+          elementTree: challenge.elementTree, container, index, itemId,
+        });
 
       if (container._id === TYPE.TAG_BLOCK_CONTAINER && blockTree.childTrees.length) {
         const tagBlocks = generateBlocks(blockTree, false);

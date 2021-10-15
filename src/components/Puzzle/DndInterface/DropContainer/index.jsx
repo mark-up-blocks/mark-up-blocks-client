@@ -49,7 +49,7 @@ function DropContainer({
                     droppableHoveredClassName={droppableHoveredClassName}
                   />
                 )
-                : <span className="tag-text">{getTextValue(child)}</span>}
+                : <span className={`tag-text ${child.isCorrect ? "correct" : "wrong"}`}>{getTextValue(child)}</span>}
             </Draggable>
             <Droppable
               _id={_id}
@@ -72,7 +72,10 @@ DropContainer.propTypes = {
   _id: PropTypes.string.isRequired,
   tagName: PropTypes.string.isRequired,
   childTrees: PropTypes.arrayOf(
-    PropTypes.shape(tagBlockSchema),
+    PropTypes.shape({
+      ...tagBlockSchema,
+      isCorrect: PropTypes.bool,
+    }),
   ).isRequired,
   onDrop: PropTypes.func.isRequired,
   className: PropTypes.string,
