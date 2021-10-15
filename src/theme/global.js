@@ -9,6 +9,14 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
   }
 
+  * {
+    font: inherit;
+  }
+
+  body {
+    font-family: "Noto Serif KR";
+  }
+
   a {
     text-decoration: none;
   }
@@ -21,7 +29,12 @@ const GlobalStyle = createGlobalStyle`
 
   @font-face {
     font-family: "Noto Sans Display";
-    src: url("https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@100&display=swap");
+    src: url("/font/NotoSansDisplay-Black.ttf");
+  }
+
+  @font-face {
+    font-family: "Noto Serif KR";
+    src: url("/font/NotoSerifKR-Light.otf");
   }
 `;
 
