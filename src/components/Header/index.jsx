@@ -118,6 +118,7 @@ const OpenButton = styled(Button)`
 
 const ListWrapper = styled.ol`
   position: absolute;
+  z-index: 1;
   top: 48px;
   min-width: 100px;
   padding: 5px;

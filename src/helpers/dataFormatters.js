@@ -9,21 +9,17 @@ function convertCamelToKebab(string) {
     .join("");
 }
 
-function calcPosition(prevPosition, newPosition) {
-  const { top, left } = prevPosition;
-  const { bottom, right, height } = newPosition;
-
+function calcPosition(tagBlockPosition, previewPosition) {
+  const { top, left } = tagBlockPosition;
   const result = { top, left };
-  const isXOverflowed = left + right > (window.innerWidth * NUMBER.PREVIEW_X_RANGE);
-  const isYOverflowed = top + bottom > window.innerHeight;
+  const { width, height } = previewPosition;
+  const overflowX = left + width - (window.innerWidth * NUMBER.PREVIEW_X_RANGE);
 
-  if (isXOverflowed) {
-    result.left -= left + right - (window.innerWidth * NUMBER.PREVIEW_X_RANGE);
+  if (overflowX > 0) {
+    result.left -= overflowX;
   }
 
-  if (isYOverflowed) {
-    result.top = -height;
-  }
+  result.top = -height;
 
   return result;
 }

@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function Droppable({
-  children, _id, index, onDrop, className,
+  children, _id, index, onDrop, className, hoveredClassName,
 }) {
   const [{ hovered }, dropRef] = useDrop(() => ({
     accept: Object.values(DRAGGABLE_TYPE),
@@ -29,14 +29,16 @@ function Droppable({
   }), [_id, index]);
 
   return (
-    <DroppableWrapper className={className} ref={dropRef} hovered={hovered}>
+    <DroppableWrapper
+      className={hovered ? hoveredClassName : className}
+      ref={dropRef}
+    >
       {children}
     </DroppableWrapper>
   );
 }
 
 Droppable.propTypes = {
-  className: PropTypes.string,
   _id: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([
     PropTypes.element,
@@ -44,11 +46,14 @@ Droppable.propTypes = {
   ]).isRequired,
   index: PropTypes.number,
   onDrop: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  hoveredClassName: PropTypes.string,
 };
 
 Droppable.defaultProps = {
-  className: "",
   index: -1,
+  className: "",
+  hoveredClassName: "",
 };
 
 export default Droppable;
@@ -56,7 +61,6 @@ export default Droppable;
 const DroppableWrapper = styled.div`
   display: grid;
   margin: 1px 0;
-  padding: 2px 0;
+  padding: 3px 0;
   align-content: space-between;
-  background-color: ${({ hovered }) => (hovered ? "salmon" : "transparent")};
 `;

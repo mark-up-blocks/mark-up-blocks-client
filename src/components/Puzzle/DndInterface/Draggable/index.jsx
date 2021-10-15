@@ -8,16 +8,15 @@ import { DRAGGABLE_TYPE } from "../../../../constants";
 function Draggable({
   children, _id, type, containerId,
 }) {
-  const [{ isDragging }, dragRef] = useDrag(
+  const [, dragRef] = useDrag(
     () => ({
       type,
       item: { itemId: _id, prevContainerId: containerId },
-      collect: (monitor) => ({ isDragging: monitor.isDragging() }),
     }),
   );
 
   return (
-    <DraggableWrapper ref={dragRef} isDragging={isDragging}>
+    <DraggableWrapper ref={dragRef}>
       {children}
     </DraggableWrapper>
   );
@@ -39,5 +38,5 @@ const DraggableWrapper = styled.div`
   margin: 1px 20px;
   padding: 2px;
   cursor: pointer;
-  border: ${({ isDragging }) => (isDragging ? "1px solid gray" : "1px solid transparent")};
+  border-radius: ${({ theme }) => theme.border.radius.container}
 `;
