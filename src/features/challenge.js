@@ -56,6 +56,15 @@ const challengeSlice = createSlice({
         selectedSubChallenge, selectedSubChallenge.boilerplate,
       );
     },
+    resetStage(state) {
+      const selectedSubChallenge = selectSelectedSubChallenge(state);
+
+      selectedSubChallenge.boilerplate = { ...selectedSubChallenge, childTrees: [] };
+      selectedSubChallenge.tagBlockContainer = {
+        _id: TYPE.TAG_BLOCK_CONTAINER,
+        childTrees: generateBlocks(selectedSubChallenge),
+      };
+    },
   },
   extraReducers: {
     [updateChallenge.fulfilled]: (state, { payload }) => {
@@ -101,6 +110,6 @@ const challengeSlice = createSlice({
   },
 });
 
-export const { addChildTree } = challengeSlice.actions;
+export const { addChildTree, resetStage } = challengeSlice.actions;
 export { fetchChallenges, updateChallenge };
 export default challengeSlice.reducer;
