@@ -44,6 +44,11 @@ const GlobalStyle = createGlobalStyle`
     animation: none;
   }
 
+  .grow-down {
+    animation: 0.25s ease-in-out 0s 1 alternate growDown;
+    transform-origin: top center;
+  }
+
   @font-face {
     font-family: "Noto Sans Display";
     src: url("/font/NotoSansDisplay-Black.ttf");
@@ -79,6 +84,20 @@ const GlobalStyle = createGlobalStyle`
 
     75%, 100% {
       transform: rotate(1deg);
+    }
+  }
+
+  @keyframes growDown {
+    0% {
+      transform: scaleY(0)
+    }
+
+    80% {
+      transform: scaleY(1.1)
+    }
+
+    100% {
+      transform: scaleY(1)
     }
   }
 `;

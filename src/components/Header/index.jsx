@@ -32,7 +32,7 @@ function Header({ onTitleClick, onChallengeClick, onStageMenuClick }) {
       <Title onClick={onTitleClick}>Mark Up Blocks</Title>
       <Nav>
         {isChallengeListOpen && (
-          <ChallengeListWrapper>
+          <ChallengeListWrapper className="grow-down">
             {challenges.map((challenge, index) => (
               <OptionButton
                 key={challenge._id}
@@ -44,7 +44,7 @@ function Header({ onTitleClick, onChallengeClick, onStageMenuClick }) {
           </ChallengeListWrapper>
         )}
         {isStageListOpen && (
-        <MenuWrapper>
+        <MenuWrapper className="grow-down">
           {elementTree?.childTrees
           && (
           <StageList
