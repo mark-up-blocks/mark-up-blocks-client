@@ -26,15 +26,30 @@ const challengeSlice = createSlice({
       const itemIndex = index === -1 ? container.childTrees.length : index;
 
       const isInvalidContainer = !!findBlockTreeById(blockTree, container._id);
+      const childTrees = [];
 
       if (isInvalidContainer) {
         return;
       }
 
+      if (container._id === TYPE.TAG_BLOCK_CONTAINER && blockTree.childTrees.length) {
+        const tagBlocks = generateBlocks(blockTree, false);
+        const challengeTagBlocks = generateBlocks(selectedSubChallenge);
+
+        childTrees.push({ ...blockTree, childTrees: [] });
+        tagBlocks.forEach((child) => {
+          if (challengeTagBlocks.find(({ _id }) => _id === child._id)) {
+            childTrees.push({ ...child, childTrees: [] });
+          }
+        });
+      } else {
+        childTrees.push(blockTree);
+      }
+
       prevContainer.childTrees = prevContainer.childTrees.filter((child) => child._id !== itemId);
       container.childTrees = [
         ...container.childTrees.slice(0, itemIndex),
-        blockTree,
+        ...childTrees,
         ...container.childTrees.slice(itemIndex),
       ];
       selectedSubChallenge.isCompleted = compareChildTreeByBlockIds(
