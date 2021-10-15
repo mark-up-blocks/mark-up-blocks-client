@@ -17,6 +17,7 @@ function calcPosition(tagBlockPosition, previewPosition) {
 
   if (overflowX > 0) {
     result.left -= overflowX;
+    result.left = result.left < 0 ? 0 : result.left;
   }
 
   result.top = -height;
