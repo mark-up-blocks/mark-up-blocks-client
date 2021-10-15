@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchChallenges, updateChallenge } from "./challengeThunks";
 import { generateBlocks } from "../helpers/tagBlockGenerators";
-import { findBlockTreeById, compareChildTreeByBlockIds } from "../helpers/blockTreeHandlers";
+import { findBlockTreeById, compareChildTreeByBlockIds, validatePosition } from "../helpers/blockTreeHandlers";
 import { selectSelectedSubChallenge, selectContainer } from "../helpers/globalSelectors";
 import tutorialData from "../components/Tutorial/tutorialData";
 import { TYPE } from "../constants";
@@ -18,6 +18,7 @@ const challengeSlice = createSlice({
       const {
         prevContainerId, containerId, itemId, index,
       } = payload;
+      const challenge = state.challenges[state.selectedIndex];
       const selectedSubChallenge = selectSelectedSubChallenge(state);
 
       const prevContainer = selectContainer(selectedSubChallenge, prevContainerId);
@@ -26,20 +27,50 @@ const challengeSlice = createSlice({
       const itemIndex = index === -1 ? container.childTrees.length : index;
 
       const isInvalidContainer = !!findBlockTreeById(blockTree, container._id);
+      const childTrees = [];
 
       if (isInvalidContainer) {
         return;
       }
 
+      blockTree.isCorrect = containerId === TYPE.TAG_BLOCK_CONTAINER
+        ? false
+        : validatePosition({
+          elementTree: challenge.elementTree, container, index, itemId,
+        });
+
+      if (container._id === TYPE.TAG_BLOCK_CONTAINER && blockTree.childTrees.length) {
+        const tagBlocks = generateBlocks(blockTree, false);
+        const challengeTagBlocks = generateBlocks(selectedSubChallenge);
+
+        childTrees.push({ ...blockTree, childTrees: [] });
+        tagBlocks.forEach((child) => {
+          if (challengeTagBlocks.find(({ _id }) => _id === child._id)) {
+            childTrees.push({ ...child, childTrees: [] });
+          }
+        });
+      } else {
+        childTrees.push(blockTree);
+      }
+
       prevContainer.childTrees = prevContainer.childTrees.filter((child) => child._id !== itemId);
       container.childTrees = [
         ...container.childTrees.slice(0, itemIndex),
-        blockTree,
+        ...childTrees,
         ...container.childTrees.slice(itemIndex),
       ];
       selectedSubChallenge.isCompleted = compareChildTreeByBlockIds(
         selectedSubChallenge, selectedSubChallenge.boilerplate,
       );
+    },
+    resetStage(state) {
+      const selectedSubChallenge = selectSelectedSubChallenge(state);
+
+      selectedSubChallenge.boilerplate = { ...selectedSubChallenge, childTrees: [] };
+      selectedSubChallenge.tagBlockContainer = {
+        _id: TYPE.TAG_BLOCK_CONTAINER,
+        childTrees: generateBlocks(selectedSubChallenge),
+      };
     },
   },
   extraReducers: {
@@ -86,6 +117,6 @@ const challengeSlice = createSlice({
   },
 });
 
-export const { addChildTree } = challengeSlice.actions;
+export const { addChildTree, resetStage } = challengeSlice.actions;
 export { fetchChallenges, updateChallenge };
 export default challengeSlice.reducer;

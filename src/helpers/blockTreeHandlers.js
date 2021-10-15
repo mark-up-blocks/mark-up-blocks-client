@@ -88,10 +88,28 @@ function findNextUncompletedChallenge(root, id) {
   return null;
 }
 
+function validatePosition({
+  elementTree, container, index, itemId,
+}) {
+  const correctContainer = findContainerByChildId(elementTree, itemId);
+  const isSameContainer = correctContainer._id === container._id;
+  const isSameContainerTag = correctContainer.block._id === container.block._id;
+  const correctContainerIndex = correctContainer.childTrees.findIndex(
+    (child) => child._id === itemId,
+  );
+
+  if (!(isSameContainer || isSameContainerTag)) {
+    return false;
+  }
+
+  return correctContainerIndex >= index;
+}
+
 export {
   findBlockTree,
   findBlockTreeById,
   findContainerByChildId,
   compareChildTreeByBlockIds,
   findNextUncompletedChallenge,
+  validatePosition,
 };

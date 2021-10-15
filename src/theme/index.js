@@ -5,6 +5,7 @@ const color = {
   text: "#000000",
   inactive: "#808080",
   error: "#d22020",
+  errorBackground: "#d082c259",
   point: "#58ea9b",
   dropGuide: "#90eebb59",
   preview: "#9d9d9d",

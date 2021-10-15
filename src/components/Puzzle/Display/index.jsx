@@ -49,6 +49,7 @@ const Container = styled.div`
 
 const PageWrapper = styled.div`
   display: flex;
+  overflow: auto;
   margin: 10px;
   justify-content: center;
   align-items: center;

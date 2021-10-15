@@ -1,11 +1,12 @@
-function generateBlocks(elementTree) {
+function generateBlocks(elementTree, onlySubChallenge = true) {
   const queue = [...elementTree.childTrees];
   const blocks = [];
 
   while (queue.length) {
     const currentNode = queue.shift();
+    const condition = onlySubChallenge ? !currentNode.isSubChallenge : true;
 
-    if (!currentNode.isSubChallenge && currentNode.block.isContainer) {
+    if (condition && currentNode.block.isContainer) {
       blocks.push({
         ...currentNode,
         childTrees: [],

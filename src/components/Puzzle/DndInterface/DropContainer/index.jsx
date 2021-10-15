@@ -19,9 +19,10 @@ function DropContainer({
 
   return (
     <DropContainerWrapper className={className}>
-      <span className="tag-text parent-tag">{`<${tagName}>`}</span>
+      <span key="open" className="tag-text parent-tag">{`<${tagName}>`}</span>
       <>
         <Droppable
+          key={_id}
           _id={_id}
           index={0}
           onDrop={onDrop}
@@ -31,9 +32,8 @@ function DropContainer({
           <div />
         </Droppable>
         {childTrees.map((child, index) => (
-          <>
+          <div key={child._id}>
             <Draggable
-              key={child._id}
               _id={child._id}
               type={child.block.isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
               containerId={_id}
@@ -49,7 +49,7 @@ function DropContainer({
                     droppableHoveredClassName={droppableHoveredClassName}
                   />
                 )
-                : <span className="tag-text">{getTextValue(child)}</span>}
+                : <span className={`tag-text ${child.isCorrect ? "correct" : "wrong"}`}>{getTextValue(child)}</span>}
             </Draggable>
             <Droppable
               _id={_id}
@@ -60,10 +60,10 @@ function DropContainer({
             >
               <div />
             </Droppable>
-          </>
+          </div>
         ))}
       </>
-      <span className="tag-text parent-tag">{`</${tagName}>`}</span>
+      <span key="close" className="tag-text parent-tag">{`</${tagName}>`}</span>
     </DropContainerWrapper>
   );
 }
@@ -72,7 +72,10 @@ DropContainer.propTypes = {
   _id: PropTypes.string.isRequired,
   tagName: PropTypes.string.isRequired,
   childTrees: PropTypes.arrayOf(
-    PropTypes.shape(tagBlockSchema),
+    PropTypes.shape({
+      ...tagBlockSchema,
+      isCorrect: PropTypes.bool,
+    }),
   ).isRequired,
   onDrop: PropTypes.func.isRequired,
   className: PropTypes.string,

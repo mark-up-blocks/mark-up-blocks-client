@@ -8,8 +8,9 @@ import Display from "./Display";
 import DndInterface from "./DndInterface";
 import FinishPopup from "../ModalTemplate/FinishPopup";
 import Loading from "../ModalTemplate/Loading";
+import Button from "../shared/Button";
 
-import { updateChallenge, addChildTree } from "../../features/challenge";
+import { updateChallenge, addChildTree, resetStage } from "../../features/challenge";
 import { selectActiveChallenge } from "../../helpers/globalSelectors";
 
 function Puzzle({ notifyError, onFinish }) {
@@ -26,6 +27,7 @@ function Puzzle({ notifyError, onFinish }) {
       itemId, containerId, index: containerIndex, prevContainerId,
     }));
   };
+  const handleReset = () => dispatch(resetStage());
 
   useEffect(() => {
     if (id === challengeId) {
@@ -46,6 +48,7 @@ function Puzzle({ notifyError, onFinish }) {
               boilerplate={boilerplate}
               onDrop={handleDrop}
             />
+            <ResetButton value="reset" onClick={handleReset} />
           </>
         )
         : <Loading />}
@@ -66,9 +69,25 @@ const PuzzleWrapper = styled.div`
   width: 100%;
   height: 100%;
   margin-bottom: 20px;
-  grid-template-rows: minmax(2fr, 60vh), minmax(1fr, 40vh);
+  grid-template-rows: 60% minmax(40%, 100px);
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
     grid-template-rows: unset;
+  }
+`;
+
+const ResetButton = styled(Button)`
+  position: fixed;
+  top: 100%;
+  left: 100%;
+  margin-top: -50px;
+  margin-left: -90px;
+  width: 80px;
+  height: 40px;
+  border-radius: 2px;
+  background-color: ${({ theme }) => theme.color.focus};
+
+  :hover {
+    background-color: ${({ theme }) => theme.color.main};
   }
 `;
