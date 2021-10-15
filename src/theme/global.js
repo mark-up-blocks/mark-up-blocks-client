@@ -1,5 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
+import theme from "./index";
 
 const GlobalStyle = createGlobalStyle`
   ${reset};
@@ -7,6 +8,14 @@ const GlobalStyle = createGlobalStyle`
   html, body, #root {
     width: 100%;
     height: 100%;
+  }
+
+  * {
+    font: inherit;
+  }
+
+  body {
+    font-family: "Noto Serif KR";
   }
 
   a {
@@ -19,9 +28,77 @@ const GlobalStyle = createGlobalStyle`
     cursor: pointer;
   }
 
+  .drop-guide {
+    animation: 0.3s ease-in-out 0s infinite alternate blink;
+  }
+
+  .drop-selected {
+    background-color: ${theme.color.point};
+  }
+
+  .swing {
+    animation: 0.15s ease-in-out 0s infinite alternate swing;
+  }
+
+  .swing:hover {
+    animation: none;
+  }
+
+  .grow-down {
+    animation: 0.25s ease-in-out 0s 1 alternate growDown;
+    transform-origin: top center;
+  }
+
   @font-face {
     font-family: "Noto Sans Display";
-    src: url("https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@100&display=swap");
+    src: url("/font/NotoSansDisplay-Black.ttf");
+  }
+
+  @font-face {
+    font-family: "Noto Serif KR";
+    src: url("/font/NotoSerifKR-Light.otf");
+  }
+
+  @keyframes blink {
+    to {
+      background-color: transparent;
+    }
+
+    to {
+      background-color: ${theme.color.dropGuide};
+    }
+  }
+
+  @keyframes swing {
+    0%, 25% {
+      transform: rotate(0.5deg);
+    }
+
+    25%, 50% {
+      transform: rotate(-0.5deg);
+    }
+
+    50%, 75% {
+      transform: rotate(-1deg);
+    }
+
+    75%, 100% {
+      transform: rotate(1deg);
+    }
+  }
+
+  @keyframes growDown {
+    0% {
+      transform: scaleY(0)
+    }
+
+    80% {
+      transform: scaleY(1.1)
+    }
+
+    100% {
+      transform: scaleY(1)
+    }
   }
 `;
 

@@ -1,10 +1,14 @@
 const color = {
   main: "#FBC00E",
-  inner: "#fff",
+  inner: "#ffffff",
   focus: "#ffddad",
   text: "#000000",
   inactive: "#808080",
   error: "#d22020",
+  point: "#58ea9b",
+  dropGuide: "#90eebb59",
+  preview: "#9d9d9d",
+  parentTag: "#d082c2",
 };
 
 const border = {

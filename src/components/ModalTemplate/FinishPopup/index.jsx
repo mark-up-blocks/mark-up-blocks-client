@@ -5,25 +5,37 @@ import styled from "styled-components";
 import Modal from "../../shared/Modal";
 import { MESSAGE } from "../../../constants";
 
-function FinishPopup({ onClick }) {
+function FinishPopup({ onClick, isFinalChallenge }) {
   return (
     <Modal>
-      <>
-        <pre>{MESSAGE.SUCCESS}</pre>
-        <NextStage onClick={onClick}>
-          <div className="next-stage-arrow" />
-          <p className="next-stage-text">{MESSAGE.NEXT_STAGE}</p>
-        </NextStage>
-      </>
+      <pre>{MESSAGE.SUCCESS}</pre>
+      {isFinalChallenge
+        ? <Ending>{MESSAGE.ENDING}</Ending>
+        : (
+          <NextStage onClick={onClick}>
+            <div className="next-stage-arrow" />
+            <p className="next-stage-text">{MESSAGE.NEXT_STAGE}</p>
+          </NextStage>
+        )}
     </Modal>
   );
 }
 
 FinishPopup.propTypes = {
   onClick: PropTypes.func.isRequired,
+  isFinalChallenge: PropTypes.bool,
+};
+
+FinishPopup.defaultProps = {
+  isFinalChallenge: false,
 };
 
 export default FinishPopup;
+
+const Ending = styled.div`
+  font-size: 1.2rem;
+  padding: 10px;
+`;
 
 const NextStage = styled.div`
   margin-top: 5px;

@@ -14,6 +14,7 @@ import Header from "./components/Header";
 import Puzzle from "./components/Puzzle";
 import Loading from "./components/ModalTemplate/Loading";
 import Error from "./components/ModalTemplate/Error";
+import FinishPopup from "./components/ModalTemplate/FinishPopup";
 
 import { findNextUncompletedChallenge } from "./helpers/blockTreeHandlers";
 import route from "./route";
@@ -103,7 +104,7 @@ function App() {
           )}
         </>
         )}
-        {isDone && <div>{MESSAGE.ENDING}</div>}
+        {isDone && <FinishPopup isFinalChallenge={isDone} />}
       </AppWrapper>
       <GlobalStyle />
     </ThemeProvider>
@@ -116,5 +117,5 @@ const AppWrapper = styled.div`
   display: grid;
   width: 100%;
   height: 100%;
-  grid-template-rows: 50px 1fr;
+  grid-template-rows: 50px auto;
 `;

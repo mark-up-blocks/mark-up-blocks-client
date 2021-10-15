@@ -32,7 +32,7 @@ function Header({ onTitleClick, onChallengeClick, onStageMenuClick }) {
       <Title onClick={onTitleClick}>Mark Up Blocks</Title>
       <Nav>
         {isChallengeListOpen && (
-          <ChallengeListWrapper>
+          <ChallengeListWrapper className="grow-down">
             {challenges.map((challenge, index) => (
               <OptionButton
                 key={challenge._id}
@@ -44,7 +44,7 @@ function Header({ onTitleClick, onChallengeClick, onStageMenuClick }) {
           </ChallengeListWrapper>
         )}
         {isStageListOpen && (
-        <MenuWrapper>
+        <MenuWrapper className="grow-down">
           {elementTree?.childTrees
           && (
           <StageList
@@ -80,12 +80,12 @@ const HeaderWrapper = styled.header`
   background-color: ${({ theme }) => theme.color.main};
   justify-content: space-between;
   align-items: center;
-  font-family: "Noto Sans Display", sans-serif;
 `;
 
 const Title = styled.h2`
   margin: 10px;
   font-size: 1.5rem;
+  font-family: "Noto Sans Display", sans-serif;
   cursor: pointer;
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
@@ -109,6 +109,7 @@ const OpenButton = styled(Button)`
   border: none;
   border-radius: ${({ theme }) => theme.border.radius.container};
   cursor: pointer;
+  overflow: hidden;
 
   &:hover {
     background-color: ${({ theme }) => theme.color.focus};
@@ -117,6 +118,7 @@ const OpenButton = styled(Button)`
 
 const ListWrapper = styled.ol`
   position: absolute;
+  z-index: 1;
   top: 48px;
   min-width: 100px;
   padding: 5px;

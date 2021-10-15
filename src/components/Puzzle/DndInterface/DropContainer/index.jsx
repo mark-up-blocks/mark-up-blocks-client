@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
@@ -8,7 +9,7 @@ import { tagBlockSchema } from "../TagBlock";
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function DropContainer({
-  _id, tagName, childTrees, onDrop,
+  _id, tagName, childTrees, onDrop, className, droppableClassName, droppableHoveredClassName,
 }) {
   function getTextValue(child) {
     return child.isSubChallenge
@@ -17,20 +18,26 @@ function DropContainer({
   }
 
   return (
-    <div>
-      <span>{`<${tagName}>`}</span>
+    <DropContainerWrapper className={className}>
+      <span className="tag-text parent-tag">{`<${tagName}>`}</span>
       <>
-        <Droppable _id={_id} index={0} onDrop={onDrop}>
+        <Droppable
+          _id={_id}
+          index={0}
+          onDrop={onDrop}
+          className={`droppable ${droppableClassName}`}
+          hoveredClassName={`droppable ${droppableHoveredClassName}`}
+        >
           <div />
         </Droppable>
         {childTrees.map((child, index) => (
-          <Draggable
-            key={child._id}
-            _id={child._id}
-            type={child.block.isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
-            containerId={_id}
-          >
-            <>
+          <>
+            <Draggable
+              key={child._id}
+              _id={child._id}
+              type={child.block.isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
+              containerId={_id}
+            >
               {child.block.isContainer && !child.isSubChallenge
                 ? (
                   <DropContainer
@@ -38,18 +45,26 @@ function DropContainer({
                     childTrees={child.childTrees}
                     tagName={child.block.tagName}
                     onDrop={onDrop}
+                    droppableClassName={droppableClassName}
+                    droppableHoveredClassName={droppableHoveredClassName}
                   />
                 )
-                : <span>{getTextValue(child)}</span>}
-              <Droppable _id={_id} index={index + 1} onDrop={onDrop}>
-                <div />
-              </Droppable>
-            </>
-          </Draggable>
+                : <span className="tag-text">{getTextValue(child)}</span>}
+            </Draggable>
+            <Droppable
+              _id={_id}
+              index={index + 1}
+              onDrop={onDrop}
+              className={`droppable ${droppableClassName}`}
+              hoveredClassName={`droppable ${droppableHoveredClassName}`}
+            >
+              <div />
+            </Droppable>
+          </>
         ))}
       </>
-      <span>{`</${tagName}>`}</span>
-    </div>
+      <span className="tag-text parent-tag">{`</${tagName}>`}</span>
+    </DropContainerWrapper>
   );
 }
 
@@ -60,6 +75,25 @@ DropContainer.propTypes = {
     PropTypes.shape(tagBlockSchema),
   ).isRequired,
   onDrop: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  droppableClassName: PropTypes.string,
+  droppableHoveredClassName: PropTypes.string,
+};
+
+DropContainer.defaultProps = {
+  className: "",
+  droppableClassName: "",
+  droppableHoveredClassName: "",
 };
 
 export default DropContainer;
+
+const DropContainerWrapper = styled.div`
+  .droppable {
+    margin-left: 20px;
+  }
+
+  .parent-tag {
+    color: ${({ theme }) => theme.color.parentTag};
+  }
+`;

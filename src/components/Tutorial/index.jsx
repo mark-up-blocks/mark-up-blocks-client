@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import DndInterface from "../Puzzle/DndInterface";
 
+import DndInterface from "../Puzzle/DndInterface";
 import FinishPopup from "../ModalTemplate/FinishPopup";
 
 import { updateChallenge, addChildTree } from "../../features/challenge";
@@ -27,21 +27,23 @@ function Tutorial({ onFinish, notifyError }) {
   }, [dispatch, notifyError]);
 
   return (
-    <div>
-      {isCompleted
-        ? <FinishPopup onClick={handleFinish} />
-        : (
-          <Guide>
-            <p className="welcome">Mark Up Blocks에 오신 것을 환영합니다!</p>
-            <p>아래 태그 블록을 div 안으로 옮겨볼까요?</p>
-          </Guide>
-        )}
-      <WideDndInterface
+    <TutorialWrapper>
+      <div>
+        {isCompleted
+          ? <FinishPopup onClick={handleFinish} />
+          : (
+            <Guide>
+              <p className="welcome">Mark Up Blocks에 오신 것을 환영합니다!</p>
+              <p className="guide-description">아래 태그 블록을 div 안으로 옮겨볼까요?</p>
+            </Guide>
+          )}
+      </div>
+      <DndInterface
         tagBlockContainer={tagBlockContainer}
         boilerplate={boilerplate}
         onDrop={handleDrop}
       />
-    </div>
+    </TutorialWrapper>
   );
 }
 
@@ -52,10 +54,12 @@ Tutorial.propTypes = {
 
 export default Tutorial;
 
-const WideDndInterface = styled(DndInterface)`
+const TutorialWrapper = styled.div`
+  display: grid;
   width: 100%;
   height: 100%;
-  margin-top: 20px;
+  grid-template-rows: 2fr 3fr;
+  align-items: center;
 `;
 
 const Guide = styled.div`
@@ -65,6 +69,10 @@ const Guide = styled.div`
 
   .welcome {
     margin: 10px;
-    font-size: 0.9rem;
+    font-size: 1rem;
+  }
+
+  .guide-description {
+    font-size: 1.15rem;
   }
 `;

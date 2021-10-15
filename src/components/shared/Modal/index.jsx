@@ -33,7 +33,7 @@ Modal.defaultProps = {
 export default Modal;
 
 const Wrapper = styled.div`
-  position: fixed;
+  position: absolute;
   display: flex;
   top: 0;
   left: 0;
