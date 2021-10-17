@@ -100,11 +100,11 @@ const PuzzleWrapper = styled.div`
   display: grid;
   width: 100%;
   height: 100%;
-  margin-bottom: 20px;
   grid-template-rows: 60% minmax(40%, 100px);
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
     grid-template-rows: unset;
+    padding-bottom: 50px;
   }
 `;
 

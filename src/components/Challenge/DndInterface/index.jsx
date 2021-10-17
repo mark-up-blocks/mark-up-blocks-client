@@ -151,7 +151,7 @@ const DndInterfaceWrapper = styled.div`
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-auto-flow: row;
   }
 
   .tag-block-container-droppable {
