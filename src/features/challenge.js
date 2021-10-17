@@ -17,15 +17,15 @@ const challengeSlice = createSlice({
   reducers: {
     addChildTree(state, { payload }) {
       const {
-        prevContainerId, containerId, itemId, index, stageId,
+        challengeIndex, prevContainerId, containerId, itemId, containerIndex, stageId,
       } = payload;
-      const challenge = state.challenges[state.selectedIndex];
+      const challenge = state.challenges[challengeIndex];
       const stage = findBlockTreeById(challenge.elementTree, stageId);
 
       const prevContainer = selectContainer(stage, prevContainerId);
       const container = selectContainer(stage, containerId);
       const blockTree = findBlockTreeById(prevContainer, itemId);
-      const itemIndex = index === -1 ? container.childTrees.length : index;
+      const itemIndex = containerIndex === -1 ? container.childTrees.length : containerIndex;
 
       const isInvalidContainer = !!findBlockTreeById(blockTree, container._id);
       const childTrees = [];
@@ -37,7 +37,7 @@ const challengeSlice = createSlice({
       blockTree.isCorrect = containerId === TYPE.TAG_BLOCK_CONTAINER
         ? false
         : validatePosition({
-          elementTree: challenge.elementTree, container, index, itemId,
+          elementTree: challenge.elementTree, container, index: containerIndex, itemId,
         });
 
       if (container._id === TYPE.TAG_BLOCK_CONTAINER && blockTree.childTrees.length) {

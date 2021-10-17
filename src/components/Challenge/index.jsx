@@ -24,7 +24,12 @@ function Challenge() {
     itemId, containerId, index: containerIndex, prevContainerId,
   }) => {
     dispatch(addChildTree({
-      itemId, containerId, index: containerIndex, prevContainerId, stageId: stage._id,
+      challengeIndex: Number(index),
+      itemId,
+      containerId,
+      containerIndex,
+      prevContainerId,
+      stageId: stage._id,
     }));
   };
   const handleReset = () => dispatch(resetStage(stage._id));
