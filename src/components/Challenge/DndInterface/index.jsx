@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
+import CustomDragLayer from "./CustomDragLayer";
 import TagBlock, { tagBlockSchema } from "./TagBlock";
 import Droppable from "./Droppable";
 import DropContainer from "./DropContainer";
@@ -12,63 +13,110 @@ import { TYPE } from "../../../constants";
 function DndInterface({
   tagBlockContainer, boilerplate, onDrop, className,
 }) {
-  const [hoveredBlock, setHoveredBlock] = useState(null);
-  const [isClicked, setIsClicked] = useState(false);
-  const handleBlockHovered = (hovered) => {
-    if (!hovered || isClicked) {
+  const [selectedBlock, setSelectedBlock] = useState(null);
+  const handleBlockSelect = (selected) => {
+    if (selectedBlock?.isClicked) {
       return;
     }
 
     const {
-      isSubChallenge, block, childTrees, position,
-    } = hovered;
+      _id, isSubChallenge, block, childTrees, position, isClicked, containerId,
+    } = selected;
+    const data = {
+      _id,
+      isSubChallenge,
+      block,
+      childTrees,
+      position,
+      isClicked,
+      containerId: containerId || TYPE.TAG_BLOCK_CONTAINER,
+    };
 
     if (!position) {
+      setSelectedBlock({
+        ...data,
+        enablePreview: false,
+      });
       return;
     }
 
-    setHoveredBlock({
-      isSubChallenge, block, childTrees, position,
+    setSelectedBlock({
+      ...data,
+      enablePreview: true,
     });
   };
-  const handleBlockUnhovered = () => {
-    if (isClicked) {
+  const handleBlockUnselect = () => {
+    if (selectedBlock?.isClicked) {
       return;
     }
 
-    setHoveredBlock(null);
+    setSelectedBlock(null);
   };
   const handlePreviewClick = () => {
-    setIsClicked(false);
-    setHoveredBlock(null);
+    setSelectedBlock(null);
   };
   const handleDrop = (params) => {
     handlePreviewClick();
     onDrop(params);
   };
-  const handleTagBlockClick = (hovered) => {
-    setIsClicked((prev) => !prev);
-    setHoveredBlock((prevHovered) => (prevHovered?._id === hovered._id ? null : hovered));
+  const handleDroppableClick = (params) => {
+    const { containerId, index } = params;
+
+    if (!selectedBlock || !selectedBlock.isClicked) {
+      return;
+    }
+
+    onDrop({
+      itemId: selectedBlock._id, containerId, index, prevContainerId: selectedBlock.containerId,
+    });
+    setSelectedBlock(null);
+  };
+  const handleBlockClick = (selected) => {
+    setSelectedBlock((prevSelected) => {
+      if (prevSelected?._id === selected?._id && prevSelected.isClicked) {
+        return null;
+      }
+
+      const {
+        _id, isSubChallenge, block, childTrees, position, containerId,
+      } = selected;
+      const data = {
+        _id,
+        isSubChallenge,
+        block,
+        childTrees,
+        position,
+        containerId: containerId || TYPE.TAG_BLOCK_CONTAINER,
+      };
+
+      if (!position) {
+        return { ...data, isClicked: true, enablePreview: false };
+      }
+
+      return { ...data, isClicked: true, enablePreview: true };
+    });
   };
 
   return (
     <DndInterfaceWrapper className={className}>
+      <CustomDragLayer />
       <Droppable
         _id={TYPE.TAG_BLOCK_CONTAINER}
         className="tag-block-container-droppable"
         hoveredClassName="tag-block-container-droppable"
         onDrop={handleDrop}
+        onClick={handleDroppableClick}
       >
-        {hoveredBlock && (
-        <Preview
-          isSubChallenge={hoveredBlock.isSubChallenge}
-          block={hoveredBlock.block}
-          childTrees={hoveredBlock.childTrees}
-          className="preview"
-          position={hoveredBlock.position}
-          onClick={handlePreviewClick}
-        />
-        )}
+        {selectedBlock?.enablePreview ? (
+          <Preview
+            isSubChallenge={selectedBlock.isSubChallenge}
+            block={selectedBlock.block}
+            childTrees={selectedBlock.childTrees}
+            className="preview"
+            position={selectedBlock.position}
+            onClick={handlePreviewClick}
+          />
+        ) : null}
         <TagBlockContainer>
           <>
             {tagBlockContainer.childTrees.map(({
@@ -79,6 +127,7 @@ function DndInterface({
                 key={_id}
                 index={index}
                 onDrop={handleDrop}
+                onClick={handleDroppableClick}
               >
                 <TagBlock
                   _id={_id}
@@ -86,9 +135,10 @@ function DndInterface({
                   isSubChallenge={isSubChallenge}
                   containerId={TYPE.TAG_BLOCK_CONTAINER}
                   childTrees={childTrees}
-                  onMouseOver={handleBlockHovered}
-                  onMouseOut={handleBlockUnhovered}
-                  onClick={handleTagBlockClick}
+                  onMouseOver={handleBlockSelect}
+                  onMouseOut={handleBlockUnselect}
+                  onClick={handleBlockClick}
+                  className={_id === selectedBlock?._id ? "selected" : "swing"}
                 />
               </Droppable>
             ))}
@@ -102,8 +152,12 @@ function DndInterface({
           childTrees={boilerplate.childTrees}
           tagName={boilerplate.block.tagName}
           onDrop={handleDrop}
-          droppableClassName={hoveredBlock ? "drop-guide" : ""}
-          droppableHoveredClassName="drop-selected"
+          onClick={handleDroppableClick}
+          onBlockClick={handleBlockSelect}
+          droppableClassName={selectedBlock ? "drop-guide" : ""}
+          droppableHoveredClassName="selected"
+          containerId={TYPE.BOILERPLATE}
+          selectedTagId={selectedBlock?._id}
         />
       </HTMLViewer>
     </DndInterfaceWrapper>
@@ -145,7 +199,7 @@ const DndInterfaceWrapper = styled.div`
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-auto-flow: row;
   }
 
   .tag-block-container-droppable {
@@ -156,6 +210,11 @@ const DndInterfaceWrapper = styled.div`
     align-items: center;
     border: ${({ theme }) => theme.border.container};
     border-radius: ${({ theme }) => theme.border.radius.container};
+  }
+
+  .dragging .swing {
+    animation: none;
+    background-color: ${({ theme }) => theme.color.point};
   }
 `;
 
@@ -175,6 +234,10 @@ const HTMLViewer = styled.div`
   border: ${({ theme }) => theme.border.container};
   border-radius: ${({ theme }) => theme.border.radius.container};
   counter-reset: line;
+
+  .dragging * {
+    color: ${({ theme }) => theme.color.point};
+  }
 
   .tag-text::before {
     position: absolute;

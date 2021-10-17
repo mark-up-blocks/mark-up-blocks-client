@@ -15,8 +15,8 @@ function Display({ boilerplate, elementTree }) {
     <Container>
       {pages.map(({
         _id, key, block, childTrees,
-      }) => (
-        <PageWrapper key={key}>
+      }, index) => (
+        <PageWrapper key={key} index={index}>
           <ElementBlock
             _id={_id}
             block={block}
@@ -59,5 +59,6 @@ const PageWrapper = styled.div`
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
     max-height: 300px;
     overflow: auto;
+    order: ${({ index }) => -index};
   }
 `;

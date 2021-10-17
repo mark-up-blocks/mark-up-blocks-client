@@ -15,7 +15,7 @@ function Tutorial() {
     itemId, containerId, prevContainerId,
   }) => {
     dispatch(addChildTree({
-      itemId, containerId, index: 0, prevContainerId, stageId: stage._id,
+      itemId, containerId, challengeIndex: 0, prevContainerId, stageId: stage._id,
     }));
   };
 
@@ -35,6 +35,7 @@ function Tutorial() {
         <Guide>
           <p className="welcome">Mark Up Blocks에 오신 것을 환영합니다!</p>
           <p className="guide-description">아래 태그 블록을 div 안으로 옮겨볼까요?</p>
+          <p className="note">(드래그가 어렵다면 블록을 클릭하고 div 안을 클릭해보세요!)</p>
         </Guide>
       </div>
       <DndInterface
@@ -68,5 +69,10 @@ const Guide = styled.div`
 
   .guide-description {
     font-size: 1.15rem;
+  }
+
+  .note {
+    margin-top: 10px;
+    font-size: 0.8rem;
   }
 `;

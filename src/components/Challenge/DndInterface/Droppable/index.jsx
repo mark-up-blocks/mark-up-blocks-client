@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function Droppable({
-  children, _id, index, onDrop, className, hoveredClassName,
+  children, _id, index, onDrop, onClick, className, hoveredClassName,
 }) {
   const [{ hovered }, dropRef] = useDrop(() => ({
     accept: Object.values(DRAGGABLE_TYPE),
@@ -28,10 +28,15 @@ function Droppable({
     },
   }), [_id, index]);
 
+  const handleClick = () => {
+    onClick({ containerId: _id, index });
+  };
+
   return (
     <DroppableWrapper
       className={hovered ? hoveredClassName : className}
       ref={dropRef}
+      onClick={handleClick}
     >
       {children}
     </DroppableWrapper>
@@ -46,6 +51,7 @@ Droppable.propTypes = {
   ]).isRequired,
   index: PropTypes.number,
   onDrop: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
   className: PropTypes.string,
   hoveredClassName: PropTypes.string,
 };
@@ -63,4 +69,5 @@ const DroppableWrapper = styled.div`
   margin: 1px 0;
   padding: 3px 0;
   align-content: space-between;
+  cursor: pointer;
 `;
