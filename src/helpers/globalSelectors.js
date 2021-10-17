@@ -10,11 +10,15 @@ function selectContainer(stage, containerId) {
 }
 
 function selectStageByParams(state, { index, id }) {
-  const { challenges, isListLoading } = state.challenge;
+  const { challenges, isListLoading, isChallengeLoading } = state.challenge;
   const requestedChallenge = challenges[index];
 
   if (isListLoading && index !== 0) {
     return { isListLoading: true };
+  }
+
+  if (isChallengeLoading) {
+    return { isChallengeLoading: true };
   }
 
   if (!requestedChallenge) {

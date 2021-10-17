@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Redirect, Route, Switch, useHistory,
@@ -8,13 +8,14 @@ import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
 import GlobalStyle from "./theme/global";
 
-import { fetchChallenges } from "./features/challenge";
+import { fetchChallengeList } from "./features/challenge";
+import {
+  clearStatus, setError, setFinishPopup, setLoading,
+} from "./features/notice";
 import Tutorial from "./components/Tutorial";
 import Header from "./components/Header";
-import Puzzle from "./components/Puzzle";
-import Loading from "./components/ModalTemplate/Loading";
-import Error from "./components/ModalTemplate/Error";
-import FinishPopup from "./components/ModalTemplate/FinishPopup";
+import Challenge from "./components/Challenge";
+import NoticeModal from "./components/NoticeModal";
 
 import { findNextUncompletedChallenge } from "./helpers/blockTreeHandlers";
 import route from "./route";
@@ -23,38 +24,41 @@ import { MESSAGE } from "./constants";
 function App() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { isLoading, challenges, selectedIndex } = useSelector((state) => state.challenge);
-  const [isDone, setIsDone] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const challenge = useSelector((state) => state.challenge);
+  const notice = useSelector((state) => state.notice);
+  const {
+    isListLoading, isChallengeLoading, challenges, selectedIndex,
+  } = challenge;
 
   const handleStageMenuClick = (_id) => history.push(route.selectedChallenge(selectedIndex, _id));
-  const notifyError = (err) => {
-    if (process.env.NODE_ENV === "development") {
-      console.error(err);
-    }
-
-    setHasError(true);
-  };
-  const handleFinishQuiz = (_id) => {
-    const nextSubChallengeId = findNextUncompletedChallenge(
-      challenges[selectedIndex]?.elementTree, _id,
+  const handleFinishQuiz = (stageId) => {
+    const nextStageId = findNextUncompletedChallenge(
+      challenges[selectedIndex]?.elementTree, stageId,
     );
+    const hasRemainingChallenge = challenges.length - 1 >= selectedIndex + 1;
 
-    if (nextSubChallengeId) {
-      history.push(route.selectedChallenge(selectedIndex, nextSubChallengeId));
+    if (isListLoading) {
+      dispatch(setLoading({ message: MESSAGE.LOADING_LIST }));
       return;
     }
 
-    if (challenges.length - 1 >= selectedIndex + 1) {
+    if (nextStageId) {
+      history.push(route.selectedChallenge(selectedIndex, nextStageId));
+      dispatch(clearStatus());
+      return;
+    }
+
+    if (hasRemainingChallenge) {
       history.push(route.nextIndex(selectedIndex));
+      dispatch(clearStatus());
       return;
     }
 
-    setIsDone(true);
+    dispatch(setFinishPopup({ isFinalChallenge: true }));
   };
-  const handleTitleClick = () => {
+  const handleReset = () => {
     history.push(route.home);
-    setHasError(false);
+    dispatch(clearStatus());
   };
   const handleChallengeClick = (index) => {
     if (index === selectedIndex) {
@@ -65,46 +69,48 @@ function App() {
   };
 
   useEffect(() => {
-    dispatch(fetchChallenges({ notifyError }));
-  }, [dispatch]);
+    const notifyError = (err) => {
+      dispatch(setError(err));
+    };
+
+    if (isListLoading) {
+      dispatch(fetchChallengeList({ notifyError }));
+      return;
+    }
+
+    if (isChallengeLoading) {
+      return;
+    }
+
+    dispatch(clearStatus());
+  }, [dispatch, isListLoading, isChallengeLoading]);
 
   return (
     <ThemeProvider theme={theme}>
       <AppWrapper>
         <Header
-          onTitleClick={handleTitleClick}
+          onTitleClick={handleReset}
           onStageMenuClick={handleStageMenuClick}
           onChallengeClick={handleChallengeClick}
         />
-        {hasError && <Error />}
-        {!hasError && (
-        <>
-          {isLoading && <Loading />}
-          {!isLoading && (
+        {notice.status && <NoticeModal onFinish={handleFinishQuiz} onReset={handleReset} />}
+        {!notice.needPreventRender
+          && (
           <Switch>
             <Route exact path={route.home}>
               <Redirect to={route.tutorial} />
             </Route>
             <Route path={route.tutorial}>
-              <Tutorial
-                notifyError={notifyError}
-                onFinish={handleFinishQuiz}
-              />
+              <Tutorial />
             </Route>
             <Route exact path={route.puzzle}>
-              <Puzzle
-                notifyError={notifyError}
-                onFinish={handleFinishQuiz}
-              />
+              <Challenge />
             </Route>
             <Route path="*">
               <div>{MESSAGE.NOT_FOUND}</div>
             </Route>
           </Switch>
           )}
-        </>
-        )}
-        {isDone && <FinishPopup isFinalChallenge={isDone} />}
       </AppWrapper>
       <GlobalStyle />
     </ThemeProvider>
