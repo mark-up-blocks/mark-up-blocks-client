@@ -8,6 +8,10 @@ const MESSAGE = {
 };
 
 const TYPE = {
+  ERROR: "error",
+  LOADING: "loading",
+  ALL_DONE: "allDone",
+  FINISH: "finish",
   BOILERPLATE: "boilerplate",
   ELEMENT_TREE: "elementTree",
   TAG_BLOCK_CONTAINER: "tagBlockContainer",
