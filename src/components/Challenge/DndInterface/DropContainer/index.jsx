@@ -37,6 +37,7 @@ function DropContainer({
               _id={child._id}
               type={child.block.isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
               containerId={_id}
+              content={getTextValue(child)}
             >
               {child.block.isContainer && !child.isSubChallenge
                 ? (

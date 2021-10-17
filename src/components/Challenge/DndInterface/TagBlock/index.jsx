@@ -16,7 +16,7 @@ function TagBlock({
     const position = ref?.current ? ref.current.getBoundingClientRect() : {};
 
     onMouseOver({
-      isSubChallenge, block, childTrees, position,
+      _id, isSubChallenge, block, childTrees, position,
     });
   };
   const handleClick = () => {
@@ -28,21 +28,22 @@ function TagBlock({
   };
 
   return (
-    <TagBlockWrapper
-      className={`swing ${className}`}
-      onMouseOver={handleMouseOver}
-      onMouseOut={onMouseOut}
-      ref={ref}
-      onClick={handleClick}
+    <Draggable
+      _id={_id}
+      type={isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
+      containerId={containerId}
+      content={content}
     >
-      <Draggable
-        _id={_id}
-        type={isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
-        containerId={containerId}
+      <TagBlockWrapper
+        className={className}
+        onMouseOver={handleMouseOver}
+        onMouseOut={onMouseOut}
+        ref={ref}
+        onClick={handleClick}
       >
         <span>{content}</span>
-      </Draggable>
-    </TagBlockWrapper>
+      </TagBlockWrapper>
+    </Draggable>
   );
 }
 
@@ -85,7 +86,7 @@ TagBlock.defaultProps = {
 export default TagBlock;
 
 const TagBlockWrapper = styled.div`
+  padding: 3px 20px;
   border-radius: 10px;
   border: 1px solid ${({ theme }) => theme.color.point};
-  margin: 10px;
 `;

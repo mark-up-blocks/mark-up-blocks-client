@@ -32,16 +32,12 @@ const GlobalStyle = createGlobalStyle`
     animation: 0.3s ease-in-out 0s infinite alternate blink;
   }
 
-  .drop-selected {
+  .selected {
     background-color: ${theme.color.point};
   }
 
   .swing {
     animation: 0.15s ease-in-out 0s infinite alternate swing;
-  }
-
-  .swing:hover {
-    animation: none;
   }
 
   .correct {
