@@ -27,6 +27,10 @@ const challengeSlice = createSlice({
       const blockTree = findBlockTreeById(prevContainer, itemId);
       const itemIndex = containerIndex === -1 ? container.childTrees.length : containerIndex;
 
+      if (!blockTree) {
+        return;
+      }
+
       const isInvalidContainer = !!findBlockTreeById(blockTree, container._id);
       const childTrees = [];
 
