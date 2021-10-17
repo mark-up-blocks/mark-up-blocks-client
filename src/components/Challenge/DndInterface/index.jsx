@@ -20,15 +20,29 @@ function DndInterface({
     }
 
     const {
-      _id, isSubChallenge, block, childTrees, position,
+      _id, isSubChallenge, block, childTrees, position, isClicked, containerId,
     } = selected;
+    const data = {
+      _id,
+      isSubChallenge,
+      block,
+      childTrees,
+      position,
+      isClicked,
+      containerId: containerId || TYPE.TAG_BLOCK_CONTAINER,
+    };
 
     if (!position) {
+      setSelectedBlock({
+        ...data,
+        enablePreview: false,
+      });
       return;
     }
 
     setSelectedBlock({
-      _id, isSubChallenge, block, childTrees, position,
+      ...data,
+      enablePreview: true,
     });
   };
   const handleBlockUnselect = () => {
@@ -52,12 +66,8 @@ function DndInterface({
       return;
     }
 
-    if (containerId === TYPE.TAG_BLOCK_CONTAINER) {
-      return;
-    }
-
     onDrop({
-      itemId: selectedBlock._id, containerId, index, prevContainerId: TYPE.TAG_BLOCK_CONTAINER,
+      itemId: selectedBlock._id, containerId, index, prevContainerId: selectedBlock.containerId,
     });
     setSelectedBlock(null);
   };
@@ -67,7 +77,23 @@ function DndInterface({
         return null;
       }
 
-      return { ...selected, isClicked: true };
+      const {
+        _id, isSubChallenge, block, childTrees, position, containerId,
+      } = selected;
+      const data = {
+        _id,
+        isSubChallenge,
+        block,
+        childTrees,
+        position,
+        containerId: containerId || TYPE.TAG_BLOCK_CONTAINER,
+      };
+
+      if (!position) {
+        return { ...data, isClicked: true, enablePreview: false };
+      }
+
+      return { ...data, isClicked: true, enablePreview: true };
     });
   };
 
@@ -81,7 +107,7 @@ function DndInterface({
         onDrop={handleDrop}
         onClick={handleDroppableClick}
       >
-        {selectedBlock && (
+        {selectedBlock?.enablePreview ? (
           <Preview
             isSubChallenge={selectedBlock.isSubChallenge}
             block={selectedBlock.block}
@@ -90,7 +116,7 @@ function DndInterface({
             position={selectedBlock.position}
             onClick={handlePreviewClick}
           />
-        )}
+        ) : null}
         <TagBlockContainer>
           <>
             {tagBlockContainer.childTrees.map(({
@@ -127,8 +153,11 @@ function DndInterface({
           tagName={boilerplate.block.tagName}
           onDrop={handleDrop}
           onClick={handleDroppableClick}
+          onBlockClick={handleBlockSelect}
           droppableClassName={selectedBlock ? "drop-guide" : ""}
           droppableHoveredClassName="selected"
+          containerId={TYPE.BOILERPLATE}
+          selectedTagId={selectedBlock?._id}
         />
       </HTMLViewer>
     </DndInterfaceWrapper>
@@ -205,6 +234,10 @@ const HTMLViewer = styled.div`
   border: ${({ theme }) => theme.border.container};
   border-radius: ${({ theme }) => theme.border.radius.container};
   counter-reset: line;
+
+  .dragging * {
+    color: ${({ theme }) => theme.color.point};
+  }
 
   .tag-text::before {
     position: absolute;

@@ -5,23 +5,35 @@ import styled from "styled-components";
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
 import { tagBlockSchema } from "../TagBlock";
+import Button from "../../../shared/Button";
 
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function DropContainer({
-  _id, tagName, childTrees,
-  onDrop, onClick,
+  _id, tagName, childTrees, containerId, selectedTagId,
+  onDrop, onClick, onBlockClick,
   className, droppableClassName, droppableHoveredClassName,
 }) {
   function getTextValue(child) {
     return child.isSubChallenge
       ? `<${child.block.tagName} />`
-      : `<${child.block.tagName}>${child.block.property.text}</${child.block.tagName}>`;
+      : `<${child.block.tagName}>${child.block.property.text || ""}</${child.block.tagName}>`;
   }
+
+  const handleTagClick = () => {
+    onBlockClick({ _id, containerId, isClicked: true });
+  };
 
   return (
     <DropContainerWrapper className={className}>
-      <span key="open" className="tag-text parent-tag">{`<${tagName}>`}</span>
+      <div className="tag-text">
+        <TagButton
+          key="open"
+          className={`parent-tag ${selectedTagId === _id ? "selected-tag" : ""}`}
+          onClick={handleTagClick}
+          value={`<${tagName}>`}
+        />
+      </div>
       <>
         <Droppable
           key={_id}
@@ -52,9 +64,24 @@ function DropContainer({
                     onClick={onClick}
                     droppableClassName={droppableClassName}
                     droppableHoveredClassName={droppableHoveredClassName}
+                    onBlockClick={onBlockClick}
+                    containerId={_id}
+                    selectedTagId={selectedTagId}
                   />
                 )
-                : <span className={`tag-text ${child.isCorrect ? "correct" : "wrong"}`}>{getTextValue(child)}</span>}
+                : (
+                  <div className="tag-text">
+                    <TagButton
+                      className={`${child.isCorrect ? "correct" : "wrong"} ${selectedTagId === child._id ? "selected-tag" : ""}`}
+                      value={getTextValue(child)}
+                      onClick={() => onBlockClick({
+                        _id: child._id,
+                        containerId: _id,
+                        isClicked: true,
+                      })}
+                    />
+                  </div>
+                )}
             </Draggable>
             <Droppable
               _id={_id}
@@ -69,14 +96,23 @@ function DropContainer({
           </div>
         ))}
       </>
-      <span key="close" className="tag-text parent-tag">{`</${tagName}>`}</span>
+      <div className="tag-text">
+        <TagButton
+          key="close"
+          className={`parent-tag ${selectedTagId === _id ? "selected-tag" : ""}`}
+          onClick={handleTagClick}
+          value={`</${tagName}>`}
+        />
+      </div>
     </DropContainerWrapper>
   );
 }
 
 DropContainer.propTypes = {
   _id: PropTypes.string.isRequired,
+  containerId: PropTypes.string.isRequired,
   tagName: PropTypes.string.isRequired,
+  selectedTagId: PropTypes.string,
   childTrees: PropTypes.arrayOf(
     PropTypes.shape({
       ...tagBlockSchema,
@@ -85,12 +121,14 @@ DropContainer.propTypes = {
   ).isRequired,
   onDrop: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
+  onBlockClick: PropTypes.func.isRequired,
   className: PropTypes.string,
   droppableClassName: PropTypes.string,
   droppableHoveredClassName: PropTypes.string,
 };
 
 DropContainer.defaultProps = {
+  selectedTagId: "",
   className: "",
   droppableClassName: "",
   droppableHoveredClassName: "",
@@ -106,4 +144,12 @@ const DropContainerWrapper = styled.div`
   .parent-tag {
     color: ${({ theme }) => theme.color.parentTag};
   }
+
+  .selected-tag {
+    color: ${({ theme }) => theme.color.point};
+  }
+`;
+
+const TagButton = styled(Button)`
+  position: relative;
 `;
