@@ -59,16 +59,6 @@ const GlobalStyle = createGlobalStyle`
     transform-origin: top center;
   }
 
-  @font-face {
-    font-family: "Noto Sans Display";
-    src: url("/font/NotoSansDisplay-Black.ttf");
-  }
-
-  @font-face {
-    font-family: "Noto Serif KR";
-    src: url("/font/NotoSerifKR-Light.otf");
-  }
-
   @keyframes blink {
     to {
       background-color: transparent;
