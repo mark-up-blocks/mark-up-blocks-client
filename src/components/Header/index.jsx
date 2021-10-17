@@ -6,17 +6,17 @@ import styled from "styled-components";
 import StageList from "./StageList";
 import Button from "../shared/Button";
 import OptionButton from "./OptionButton";
-import { selectChallenge, selectActiveChallenge } from "../../helpers/globalSelectors";
+import { selectStageByParams } from "../../helpers/globalSelectors";
 
 function Header({ onTitleClick, onChallengeClick, onStageMenuClick }) {
-  const { elementTree } = useSelector(selectChallenge);
-  const { title } = useSelector(selectActiveChallenge);
   const { challenges, selectedIndex } = useSelector((state) => state.challenge);
+  const { name: challengeName, elementTree, stageId } = challenges[selectedIndex];
+  const { title: stageTitle } = useSelector(
+    (state) => selectStageByParams(state, { index: selectedIndex, id: stageId }),
+  );
 
   const [isChallengeListOpen, setIsChallengeListOpen] = useState(false);
   const [isStageListOpen, setIsStageListOpen] = useState(false);
-
-  const challengeName = challenges[selectedIndex].name;
 
   const handleStageMenuClick = (_id) => {
     setIsStageListOpen(false);
@@ -53,13 +53,13 @@ function Header({ onTitleClick, onChallengeClick, onStageMenuClick }) {
             childTrees={elementTree.childTrees}
             onClick={handleStageMenuClick}
             isCompleted={Boolean(elementTree.isCompleted)}
-            selectedTitle={title}
+            selectedTitle={stageTitle}
           />
           )}
         </MenuWrapper>
         )}
         <OpenButton onClick={() => setIsChallengeListOpen((prev) => !prev)} value={challengeName} />
-        <OpenButton onClick={() => setIsStageListOpen((prev) => !prev)} value={title} />
+        <OpenButton onClick={() => setIsStageListOpen((prev) => !prev)} value={stageTitle} />
       </Nav>
     </HeaderWrapper>
   );

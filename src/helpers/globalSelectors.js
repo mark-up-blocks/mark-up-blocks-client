@@ -1,64 +1,73 @@
 import { findBlockTreeById } from "./blockTreeHandlers";
 import { TYPE } from "../constants";
 
-function selectSelectedSubChallenge(state) {
-  const challenge = state.challenges[state.selectedIndex];
-  const challengeId = challenge.selectedSubChallengeId;
-  const selectedSubChallenge = findBlockTreeById(challenge.elementTree, challengeId);
-
-  return selectedSubChallenge;
-}
-
-function selectContainer(selectedSubChallenge, containerId) {
+function selectContainer(stage, containerId) {
   if (containerId === TYPE.TAG_BLOCK_CONTAINER) {
-    return selectedSubChallenge.tagBlockContainer;
+    return stage.tagBlockContainer;
   }
 
-  return findBlockTreeById(selectedSubChallenge.boilerplate, containerId);
+  return findBlockTreeById(stage.boilerplate, containerId);
 }
 
-function selectChallenge(state) {
-  const { isLoading, selectedIndex, challenges } = state.challenge;
+function selectStageByParams(state, { index, id }) {
+  const { challenges, isListLoading, isChallengeLoading } = state.challenge;
+  const requestedChallenge = challenges[index];
 
-  if (isLoading) {
-    return { _id: "", name: "", elementTree: "" };
+  if (isListLoading && index !== 0) {
+    return { isListLoading: true };
   }
 
-  return challenges[selectedIndex];
-}
-
-function selectActiveChallenge(state) {
-  const { selectedIndex, challenges } = state.challenge;
-  const challenge = challenges[selectedIndex];
-  const result = {
-    _id: null,
-    boilerplate: null,
-    tagBlockContainer: null,
-    elementTree: null,
-    isCompleted: false,
-  };
-
-  if (!challenge) {
-    return result;
+  if (isChallengeLoading) {
+    return { isChallengeLoading: true };
   }
 
-  const challengeId = challenge.selectedSubChallengeId;
-  const selectedSubChallenge = findBlockTreeById(challenge.elementTree, challengeId);
+  if (!requestedChallenge) {
+    return { isValid: false };
+  }
 
-  if (!selectedSubChallenge) {
-    return result;
+  if (!requestedChallenge.isLoaded) {
+    return { isValid: true, isLoaded: false, challengeId: requestedChallenge._id };
+  }
+
+  if (!id) {
+    return {
+      isValid: true,
+      isLoaded: true,
+      hasChanged: true,
+      challengeId: requestedChallenge._id,
+      ...requestedChallenge.elementTree,
+    };
+  }
+
+  const { stageId } = requestedChallenge;
+  const stage = findBlockTreeById(requestedChallenge.elementTree, id);
+
+  if (!stage) {
+    return {
+      isValid: false,
+      challengeId: requestedChallenge._id,
+    };
+  }
+
+  if (stageId !== stage._id) {
+    return {
+      isValid: true,
+      isLoaded: true,
+      challengeId: requestedChallenge._id,
+      hasChanged: true,
+      ...stage,
+    };
   }
 
   return {
-    ...selectedSubChallenge,
-    elementTree: selectedSubChallenge,
-    isCompleted: Boolean(selectedSubChallenge.isCompleted),
+    isValid: true,
+    isLoaded: true,
+    challengeId: requestedChallenge._id,
+    ...stage,
   };
 }
 
 export {
-  selectSelectedSubChallenge,
   selectContainer,
-  selectChallenge,
-  selectActiveChallenge,
+  selectStageByParams,
 };

@@ -1,14 +1,18 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getChallenge, getChallengeList } from "../api";
 
-const fetchChallenges = createAsyncThunk(
-  "challenge/fetchChallenges",
+const fetchChallengeList = createAsyncThunk(
+  "challenge/fetchChallengeList",
   async ({ notifyError }) => {
     try {
       const { challenges } = await getChallengeList();
 
       return challenges;
     } catch (err) {
+      if (process.env.NODE_ENV === "development") {
+        console.error(err);
+      }
+
       notifyError(err);
 
       return Promise.reject();
@@ -16,38 +20,18 @@ const fetchChallenges = createAsyncThunk(
   },
 );
 
-const updateChallenge = createAsyncThunk(
-  "challenge/updateChallenge",
-  async ({ subId, index, notifyError }, { getState }) => {
-    const state = getState();
-    const numberIndex = Number.isNaN(Number(index)) ? null : Number(index);
-    const challengeIndex = numberIndex ?? state.challenge.selectedIndex;
-    const challenge = state.challenge.challenges[challengeIndex];
-
-    if (!challenge) {
-      notifyError("invalid index");
-
-      return Promise.reject();
-    }
-
-    if (typeof challenge.elementTree === "object") {
-      return {
-        challengeIndex,
-        subId: subId || challenge.elementTree._id,
-        hasFetched: false,
-      };
-    }
-
+const fetchChallenge = createAsyncThunk(
+  "challenge/fetchChallenge",
+  async ({ id, notifyError }) => {
     try {
-      const { elementTree } = await getChallenge(challenge._id);
+      const { elementTree } = await getChallenge(id);
 
-      return {
-        challengeIndex,
-        hasFetched: true,
-        subId: elementTree._id,
-        elementTree,
-      };
+      return { id, elementTree };
     } catch (err) {
+      if (process.env.NODE_ENV === "development") {
+        console.error(err);
+      }
+
       notifyError(err);
 
       return Promise.reject();
@@ -55,4 +39,4 @@ const updateChallenge = createAsyncThunk(
   },
 );
 
-export { fetchChallenges, updateChallenge };
+export { fetchChallengeList, fetchChallenge };
