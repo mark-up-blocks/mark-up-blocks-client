@@ -9,7 +9,9 @@ import { tagBlockSchema } from "../TagBlock";
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function DropContainer({
-  _id, tagName, childTrees, onDrop, className, droppableClassName, droppableHoveredClassName,
+  _id, tagName, childTrees,
+  onDrop, onClick,
+  className, droppableClassName, droppableHoveredClassName,
 }) {
   function getTextValue(child) {
     return child.isSubChallenge
@@ -26,6 +28,7 @@ function DropContainer({
           _id={_id}
           index={0}
           onDrop={onDrop}
+          onClick={onClick}
           className={`droppable ${droppableClassName}`}
           hoveredClassName={`droppable ${droppableHoveredClassName}`}
         >
@@ -46,6 +49,7 @@ function DropContainer({
                     childTrees={child.childTrees}
                     tagName={child.block.tagName}
                     onDrop={onDrop}
+                    onClick={onClick}
                     droppableClassName={droppableClassName}
                     droppableHoveredClassName={droppableHoveredClassName}
                   />
@@ -56,6 +60,7 @@ function DropContainer({
               _id={_id}
               index={index + 1}
               onDrop={onDrop}
+              onClick={onClick}
               className={`droppable ${droppableClassName}`}
               hoveredClassName={`droppable ${droppableHoveredClassName}`}
             >
@@ -79,6 +84,7 @@ DropContainer.propTypes = {
     }),
   ).isRequired,
   onDrop: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
   className: PropTypes.string,
   droppableClassName: PropTypes.string,
   droppableHoveredClassName: PropTypes.string,

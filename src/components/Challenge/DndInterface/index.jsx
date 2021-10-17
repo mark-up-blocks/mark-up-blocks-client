@@ -45,6 +45,22 @@ function DndInterface({
     handlePreviewClick();
     onDrop(params);
   };
+  const handleDroppableClick = (params) => {
+    const { containerId, index } = params;
+
+    if (!selectedBlock || !selectedBlock.isClicked) {
+      return;
+    }
+
+    if (containerId === TYPE.TAG_BLOCK_CONTAINER) {
+      return;
+    }
+
+    onDrop({
+      itemId: selectedBlock._id, containerId, index, prevContainerId: TYPE.TAG_BLOCK_CONTAINER,
+    });
+    setSelectedBlock(null);
+  };
   const handleBlockClick = (selected) => {
     setSelectedBlock((prevSelected) => {
       if (prevSelected?._id === selected?._id && prevSelected.isClicked) {
@@ -63,6 +79,7 @@ function DndInterface({
         className="tag-block-container-droppable"
         hoveredClassName="tag-block-container-droppable"
         onDrop={handleDrop}
+        onClick={handleDroppableClick}
       >
         {selectedBlock && (
           <Preview
@@ -84,6 +101,7 @@ function DndInterface({
                 key={_id}
                 index={index}
                 onDrop={handleDrop}
+                onClick={handleDroppableClick}
               >
                 <TagBlock
                   _id={_id}
@@ -108,6 +126,7 @@ function DndInterface({
           childTrees={boilerplate.childTrees}
           tagName={boilerplate.block.tagName}
           onDrop={handleDrop}
+          onClick={handleDroppableClick}
           droppableClassName={selectedBlock ? "drop-guide" : ""}
           droppableHoveredClassName="selected"
         />
