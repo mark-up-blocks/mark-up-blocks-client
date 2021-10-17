@@ -37,7 +37,9 @@ const elementTree = {
 const tutorialData = {
   _id: "tutorial",
   name: "tutorial",
-  selectedSubChallengeId: "tutorialTree",
+  stageId: "tutorialTree",
+  isLoaded: true,
+  hasPreviousData: true,
   elementTree: {
     ...elementTree,
     boilerplate: { ...elementTree, childTrees: [] },
@@ -45,7 +47,6 @@ const tutorialData = {
       _id: TYPE.TAG_BLOCK_CONTAINER,
       childTrees: generateBlocks(elementTree),
     },
-    isLoaded: true,
   },
 };
 
