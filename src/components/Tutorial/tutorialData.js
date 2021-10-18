@@ -50,4 +50,5 @@ const tutorialData = {
   },
 };
 
+export { sampleBlock };
 export default tutorialData;
