@@ -53,7 +53,7 @@ function Header({ onTitleClick, onChallengeClick, onStageMenuClick }) {
             childTrees={elementTree.childTrees}
             onClick={handleStageMenuClick}
             isCompleted={Boolean(elementTree.isCompleted)}
-            selectedTitle={stageTitle}
+            stageId={stageId}
           />
           )}
         </MenuWrapper>

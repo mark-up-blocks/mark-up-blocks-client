@@ -4,7 +4,7 @@ import styled from "styled-components";
 import OptionButton from "../OptionButton";
 
 function StageList({
-  _id, title, childTrees, onClick, isCompleted, selectedTitle,
+  _id, title, childTrees, onClick, isCompleted, stageId,
 }) {
   const handleClick = () => onClick(_id);
 
@@ -14,7 +14,7 @@ function StageList({
         onClick={handleClick}
         value={title}
         isCompleted={isCompleted}
-        className={selectedTitle === title ? "selected" : ""}
+        className={stageId === _id ? "selected" : ""}
       />
       <ol>
         {childTrees.map((child) => (child.isSubChallenge
@@ -26,7 +26,7 @@ function StageList({
             childTrees={child.childTrees}
             onClick={onClick}
             isCompleted={child.isCompleted}
-            selectedTitle={selectedTitle}
+            stageId={stageId}
           />
           )
         ))}
@@ -47,7 +47,7 @@ StageList.propTypes = {
     PropTypes.shape(menuSchema),
   ).isRequired,
   onClick: PropTypes.func.isRequired,
-  selectedTitle: PropTypes.string.isRequired,
+  stageId: PropTypes.string.isRequired,
 };
 
 export default StageList;
