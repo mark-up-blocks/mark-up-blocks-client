@@ -31,7 +31,7 @@ function NoticeModal({ onFinish, onReset }) {
         )}
         {status === TYPE.FINISH && (
         <>
-          <pre>{MESSAGE.SUCCESS}</pre>
+          <p className="success">{MESSAGE.SUCCESS}</p>
           <ClickInterface onClick={() => onFinish(stageId)}>
             <div className="forward arrow" />
             <p className="text">{MESSAGE.NEXT_STAGE}</p>
@@ -40,7 +40,7 @@ function NoticeModal({ onFinish, onReset }) {
         )}
         {status === TYPE.ALL_DONE && (
         <>
-          <pre>{MESSAGE.SUCCESS}</pre>
+          <p className="success">{MESSAGE.SUCCESS}</p>
           <p className="emphasis">{MESSAGE.ENDING}</p>
         </>
         )}
@@ -59,6 +59,10 @@ export default NoticeModal;
 const Wrapper = styled(Modal)`
   .error {
     color: ${({ theme }) => theme.color.error};
+  }
+
+  .success {
+    white-space: pre-wrap;
   }
 
   .emphasis {
