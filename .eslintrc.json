@@ -1,0 +1,29 @@
+{
+  "extends": ["react-app", "airbnb"],
+  "rules": {
+    "quotes": ["error", "double"],
+    "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "**/*.spec.jsx",
+          "**/*.spec.js",
+          "./src/app/store.js"
+        ]
+      }
+    ],
+    "no-console": [
+      "error",
+      {
+        "allow": ["warn", "error"]
+      }
+    ],
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": ["_id"]
+      }
+    ]
+  }
+}
