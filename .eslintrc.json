@@ -1,5 +1,9 @@
 {
   "extends": ["react-app", "airbnb"],
+  "env": {
+    "browser": true,
+    "jest": true
+  },
   "rules": {
     "quotes": ["error", "double"],
     "import/prefer-default-export": "off",
