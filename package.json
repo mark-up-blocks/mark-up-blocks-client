@@ -7,7 +7,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prepare": "husky install",
     "pre-commit": "lint-staged"
   },
   "repository": {
@@ -17,10 +16,10 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.1",
     "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
+    "@testing-library/react": "^10.4.9",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.21.4",
-    "lodash.debounce": "^4.0.8",
+    "eslint-config-airbnb": "^18.2.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dnd": "^14.0.4",
@@ -31,94 +30,22 @@
     "react-redux": "^7.2.5",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
+    "redux-logger": "^3.0.6",
     "styled-components": "^5.3.1",
     "styled-reset": "^4.3.4"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
-    "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^7.0.0",
     "lint-staged": "^11.1.2",
-    "redux-logger": "^3.0.6",
     "stylelint": "^13.13.1",
     "stylelint-config-recommended": "^5.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-processor-styled-components": "^1.10.0"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "airbnb"
-    ],
-    "rules": {
-      "quotes": [
-        "error",
-        "double"
-      ],
-      "import/prefer-default-export": "off",
-      "import/no-extraneous-dependencies": [
-        "error",
-        {
-          "devDependencies": [
-            "**/*.spec.jsx",
-            "**/*.spec.js",
-            "./src/app/store.js"
-          ]
-        }
-      ],
-      "no-console": [
-        "error",
-        {
-          "allow": [
-            "warn",
-            "error"
-          ]
-        }
-      ],
-      "no-underscore-dangle": [
-        "error",
-        {
-          "allow": [
-            "_id"
-          ]
-        }
-      ]
-    }
-  },
-  "stylelint": {
-    "processors": [
-      "stylelint-processor-styled-components"
-    ],
-    "extends": [
-      "stylelint-config-recommended",
-      "stylelint-config-styled-components"
-    ],
-    "rules": {
-      "color-no-invalid-hex": true,
-      "color-hex-case": [
-        "lower",
-        {
-          "message": "Lowercase letters are easier to distinguish from numbers"
-        }
-      ],
-      "indentation": [
-        2,
-        {
-          "except": [
-            "block"
-          ],
-          "message": "Please use 2 spaces for indentation.",
-          "severity": "warning"
-        }
-      ]
-    },
-    "ignoreFiles": [
-      "**/*.js"
-    ]
   },
   "lint-staged": {
     "*.{js,jsx}": [
