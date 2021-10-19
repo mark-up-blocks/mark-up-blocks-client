@@ -119,14 +119,8 @@ const challengeSlice = createSlice({
       const challenge = state.challenges[index];
 
       Object.assign(state, { selectedIndex: index, isChallengeLoading: false });
-      challenge.elementTree = {
-        ...elementTree,
-        boilerplate: { ...elementTree, childTrees: [] },
-        tagBlockContainer: {
-          _id: TYPE.TAG_BLOCK_CONTAINER,
-          childTrees: generateBlocks(elementTree),
-        },
-      };
+      challenge.elementTree = elementTree;
+      challenge.stageId = challenge.elementTree._id;
       challenge.isLoaded = true;
     },
     [fetchChallenge.pending]: (state) => {
