@@ -29,7 +29,7 @@
 
 # 주요 기능
 
-![tutorial](https://user-images.githubusercontent.com/60309558/138035645-cf69c75a-55ea-48f3-84da-6a6519f6c581.mp4)
+![tutorial](https://user-images.githubusercontent.com/60309558/138037382-10763ccc-b6f9-476d-913c-b090aef7c86f.gif)
 
 - 드래그 앤 드롭으로 태그블록을 옮겨서 맞는 위치를 찾아주는 형식입니다.
 - 블록을 클릭하거나 호버하면 해당 블록의 스타일을 미리보기로 확인할 수 있습니다.
@@ -99,12 +99,17 @@ HTML 중에서는 태그 종류를 익힌 후 찾아오는 어려움인 계층 �
 - [Task Card](https://github.com/orgs/mark-up-blocks/projects/1)
 
 ### 개발 및 배포 (2, 3주차)
-
+- flow
+  - 브랜치를 기준으로 각 feature에 해당하는 브랜치를 생성 및 작업 후 merge하는 방식으로 진행하였습니다.
 - 기능 구현
     - element tree 렌더링 및 자식 추가, 변경
     - nested drag & drop interface
     - stage 이동
 - 테스트, 문서 작성
+  - client
+    - reducer별 테스트를 포함해 주요 기능 위주로 테스트를 작성하였습니다.
+    - 핵심 기능인 드롭 시 데이터 처리 로직은 challenge reducer의 addChildTree에 포함되어 있습니다.
+  - server: 엔드포인트 별 테스트와, 자체적으로 작성한 schema validator에 대한 테스트를 작성하였습니다.
 - 피드백 및 추가 기능 반영
 
 <br />
@@ -345,7 +350,7 @@ interface BlockTree {
 
   React DnD sortable 예제를 살펴보니 Drag와 Drop를 함께 감싸서 해당 요소 자리에 바로 드롭할 수 있게 되어 있었습니다. 하지만 한 태그가 여러 개의 드롭 장소를 제공해야 하는 제 상황에서는 맞지 않아, 노션의 드롭 가이드라인 표시 방식을 채택했습니다.
 
-  ![drop-guide](https://user-images.githubusercontent.com/60309558/138035617-ba39bea6-1ed8-43f4-9aba-76ad4e4959c8.mp4)
+  ![drop-guide](https://user-images.githubusercontent.com/60309558/138037558-a2e670d4-7d1e-44c2-860b-00ca5e912dad.gif)
 
   부모 요소라면 기본적으로 자식에 해당하는 드롭 가이드라인을 갖고 있도록 하고, 또 뷰어에 있는 드래그가능한 모든 요소에 하나씩 드롭 가이드라인을 주어서 드롭 이벤트 발생시 기존 요소의 인덱스를 함께 넘겨주는 방식으로 해결하였습니다. 부모 요소는 2줄로 렌더링되기 때문에 그 사이에 인덴팅을 포함해 자식 드롭 가이드라인을 보여주고, 일반적인 위치 변경 가이드라인은 동일 레벨 요소와 같은 라인으로 표시되도록 했습니다.
 
@@ -357,7 +362,7 @@ interface BlockTree {
 
 #### Losses
 
-  - 드롭 이벤트 발생시 기존 containerId, 옮길 containerId, 선택한 itemId, 옮길 container의 몇 번째로 들어갈지에 대한 index 등을 모두 넘겨야해서 처리 데이터가 많아졌습니다. 이 부분을 개선 방안은 아직 고민 중입니다.
+  - 드롭 이벤트 발생시 기존 containerId, 옮길 containerId, 선택한 itemId, 옮길 container의 몇 번째로 들어갈지에 대한 index 등을 모두 넘겨야해서 처리 데이터가 많아졌습니다. 이 부분을 개선할 방안은 아직 고민 중입니다.
 
 <br />
 
@@ -367,9 +372,6 @@ interface BlockTree {
 
   그런데 모바일로 접속해보니 challenge를 가져오지도 않았는데 초반 튜토리얼이 로딩되기까지 시간이 오래 걸렸습니다. 사실 튜토리얼은 클라이언트쪽에서 가지고 있는 데이터라서 서버 요청과 상관 없이 보여줄 수 있는데도, challenges 패치를 기다리느라 시간이 오래 걸린 것입니다.
 
-  ![initial-loading](https://user-images.githubusercontent.com/60309558/138035636-203a5acb-6de9-4126-9dae-ff23813f6472.mp4)
-
-  (캡쳐를 위해 의도적으로 지연을 추가하였습니다.)
 
 ### Difficulties
 
@@ -378,6 +380,8 @@ interface BlockTree {
 
 2. 완료 모달과 Loading 모달이 동시에 렌더링되어 겹치게 됩니다.
   - 이를 해결하려면 모두 조건부 렌더링으로 연결해야하는데, hasError > isLoading > isDone 3중첩 구조는 과하게 복잡하다고 생각되었습니다.
+
+  ![multiple-modal](https://user-images.githubusercontent.com/60309558/138037376-589ff7c0-a669-4b3d-a26a-e01863205ca0.gif)
 
 ### Solution
 1. App 컴포넌트에서 관리하던 error, loading 등의 상태를 notice reducer로 분리하고, Loading 모달이 필요한 시점에 각 컴포넌트에서 디스패치하는 방식으로 변경하였습니다.
