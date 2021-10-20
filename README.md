@@ -1,4 +1,4 @@
-# [Mark up blocks](www.markupblocks.com)
+# [Mark up blocks](https://www.markupblocks.com)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/2cddd61c-308f-4560-a0e3-0d038df383f8/deploy-status)](https://app.netlify.com/sites/markupblocks/deploys)
 ![AWS CodePipeline Status](https://generate-pipeline-badges.s3.ap-northeast-2.amazonaws.com/markupblocks.svg)
 
