@@ -10,91 +10,81 @@ import Preview from "./Preview";
 
 import { TYPE } from "../../../constants";
 
+const initialSelected = {
+  _id: "",
+  containerId: TYPE.TAG_BLOCK_CONTAINER,
+  enablePreview: false,
+  isSubChallenge: false,
+  block: null,
+  childTrees: [],
+};
+
 function DndInterface({
   tagBlockContainer, boilerplate, onDrop, className,
 }) {
-  const [selectedBlock, setSelectedBlock] = useState(null);
-  const handleBlockSelect = (selected) => {
-    if (selectedBlock?.isClicked) {
-      return;
-    }
+  const [selected, setSelected] = useState(initialSelected);
 
-    const {
-      _id, isSubChallenge, block, childTrees, position, isClicked, containerId,
-    } = selected;
-    const data = {
-      _id,
-      isSubChallenge,
-      block,
-      childTrees,
-      position,
-      isClicked,
-      containerId: containerId || TYPE.TAG_BLOCK_CONTAINER,
-    };
+  const handleSelect = (data, type) => {
+    setSelected((prevSelected) => {
+      if (!data) {
+        return prevSelected;
+      }
 
-    if (!position) {
-      setSelectedBlock({
-        ...data,
-        enablePreview: false,
-      });
-      return;
-    }
+      const isClicked = type === "click";
+      const {
+        _id, containerId, isSubChallenge, block, childTrees, position,
+      } = data;
+      const result = {
+        _id, containerId, isSubChallenge, block, childTrees, position, isClicked,
+      };
+      const isReClick = prevSelected.isClicked && isClicked && prevSelected._id === _id;
 
-    setSelectedBlock({
-      ...data,
-      enablePreview: true,
+      if (prevSelected.isClicked && !isClicked) {
+        return prevSelected;
+      }
+
+      if (isReClick) {
+        return initialSelected;
+      }
+
+      result.enablePreview = !!position;
+
+      return result;
     });
   };
-  const handleBlockUnselect = () => {
-    if (selectedBlock?.isClicked) {
+  const handleUnselect = () => {
+    setSelected((prevSelected) => {
+      if (prevSelected.isClicked) {
+        return prevSelected;
+      }
+
+      return {
+        _id: "",
+        containerId: "",
+        enablePreview: false,
+        isSubChallenge: false,
+        block: null,
+        childTrees: [],
+      };
+    });
+  };
+  const handleClickDrop = (data) => {
+    const { containerId, index } = data;
+
+    if (!selected._id || !selected.isClicked) {
       return;
     }
 
-    setSelectedBlock(null);
-  };
-  const handlePreviewClick = () => {
-    setSelectedBlock(null);
-  };
-  const handleDrop = (params) => {
-    handlePreviewClick();
-    onDrop(params);
-  };
-  const handleDroppableClick = (params) => {
-    const { containerId, index } = params;
-
-    if (!selectedBlock || !selectedBlock.isClicked) {
+    if (containerId === selected.prevContainerId && containerId === TYPE.TAG_BLOCK_CONTAINER) {
       return;
     }
 
     onDrop({
-      itemId: selectedBlock._id, containerId, index, prevContainerId: selectedBlock.containerId,
+      itemId: selected._id, containerId, prevContainerId: selected.containerId, index,
     });
-    setSelectedBlock(null);
   };
-  const handleBlockClick = (selected) => {
-    setSelectedBlock((prevSelected) => {
-      if (prevSelected?._id === selected?._id && prevSelected.isClicked) {
-        return null;
-      }
-
-      const {
-        _id, isSubChallenge, block, childTrees, position, containerId,
-      } = selected;
-      const data = {
-        _id,
-        isSubChallenge,
-        block,
-        childTrees,
-        position,
-        containerId: containerId || TYPE.TAG_BLOCK_CONTAINER,
-      };
-
-      if (!position) {
-        return { ...data, isClicked: true, enablePreview: false };
-      }
-
-      return { ...data, isClicked: true, enablePreview: true };
-    });
+  const handlePreviewClick = () => {
+    setSelected((prevSelected) => ({ ...prevSelected, enablePreview: false }));
   };
 
   return (
@@ -104,16 +94,16 @@ function DndInterface({
         _id={TYPE.TAG_BLOCK_CONTAINER}
         className="tag-block-container-droppable"
         hoveredClassName="tag-block-container-droppable"
-        onDrop={handleDrop}
-        onClick={handleDroppableClick}
+        onDrop={onDrop}
+        onClick={handleClickDrop}
       >
-        {selectedBlock?.enablePreview ? (
+        {selected.enablePreview ? (
           <Preview
-            isSubChallenge={selectedBlock.isSubChallenge}
-            block={selectedBlock.block}
-            childTrees={selectedBlock.childTrees}
+            isSubChallenge={selected.isSubChallenge}
+            block={selected.block}
+            childTrees={selected.childTrees}
             className="preview"
-            position={selectedBlock.position}
+            position={selected.position}
             onClick={handlePreviewClick}
           />
         ) : null}
@@ -121,26 +111,19 @@ function DndInterface({
           <>
             {tagBlockContainer.childTrees.map(({
               _id, isSubChallenge, block, childTrees,
-            }, index) => (
-              <Droppable
-                _id={TYPE.TAG_BLOCK_CONTAINER}
+            }) => (
+              <TagBlock
+                _id={_id}
                 key={_id}
-                index={index}
-                onDrop={handleDrop}
-                onClick={handleDroppableClick}
-              >
-                <TagBlock
-                  _id={_id}
-                  block={block}
-                  isSubChallenge={isSubChallenge}
-                  containerId={TYPE.TAG_BLOCK_CONTAINER}
-                  childTrees={childTrees}
-                  onMouseOver={handleBlockSelect}
-                  onMouseOut={handleBlockUnselect}
-                  onClick={handleBlockClick}
-                  className={_id === selectedBlock?._id ? "selected" : "swing"}
-                />
-              </Droppable>
+                block={block}
+                isSubChallenge={isSubChallenge}
+                containerId={TYPE.TAG_BLOCK_CONTAINER}
+                childTrees={childTrees}
+                onMouseOver={(data) => handleSelect(data, "hover")}
+                onMouseOut={handleUnselect}
+                onClick={(data) => handleSelect(data, "click")}
+                className={_id === selected?._id ? "selected" : "swing"}
+              />
             ))}
           </>
         </TagBlockContainer>
@@ -149,15 +132,15 @@ function DndInterface({
         <LineNumberSpace />
         <DropContainer
           _id={boilerplate._id}
+          containerId={boilerplate._id}
           childTrees={boilerplate.childTrees}
           tagName={boilerplate.block.tagName}
-          onDrop={handleDrop}
-          onClick={handleDroppableClick}
-          onBlockClick={handleBlockSelect}
-          droppableClassName={selectedBlock ? "drop-guide" : ""}
+          onDrop={onDrop}
+          onClick={handleClickDrop}
+          onBlockClick={(data) => handleSelect(data, "click")}
+          droppableClassName={selected._id ? "drop-guide" : ""}
           droppableHoveredClassName="selected"
-          containerId={TYPE.BOILERPLATE}
-          selectedTagId={selectedBlock?._id}
+          selectedTagId={selected?._id}
         />
       </HTMLViewer>
     </DndInterfaceWrapper>
