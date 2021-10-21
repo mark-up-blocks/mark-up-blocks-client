@@ -75,7 +75,7 @@ function DndInterface({
       return;
     }
 
-    if (containerId === selected.prevContainerId && containerId === TYPE.TAG_BLOCK_CONTAINER) {
+    if (containerId === selected.containerId && containerId === TYPE.TAG_BLOCK_CONTAINER) {
       return;
     }
 
