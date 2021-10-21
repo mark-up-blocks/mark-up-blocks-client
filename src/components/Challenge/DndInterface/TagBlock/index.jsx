@@ -16,14 +16,14 @@ function TagBlock({
     const position = ref?.current ? ref.current.getBoundingClientRect() : {};
 
     onMouseOver({
-      _id, isSubChallenge, block, childTrees, position,
+      _id, isSubChallenge, block, childTrees, position, containerId,
     });
   };
   const handleClick = () => {
     const position = ref?.current ? ref.current.getBoundingClientRect() : {};
 
     onClick({
-      _id, isSubChallenge, block, childTrees, position,
+      _id, isSubChallenge, block, childTrees, position, containerId,
     });
   };
 
