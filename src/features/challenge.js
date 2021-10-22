@@ -25,7 +25,7 @@ const challengeSlice = createSlice({
       const prevContainer = selectContainer(stage, prevContainerId);
       const container = selectContainer(stage, containerId);
       const blockTree = findBlockTreeById(prevContainer, itemId);
-      const itemIndex = containerIndex === -1 ? container.childTrees.length : containerIndex;
+      let itemIndex = containerIndex === -1 ? container.childTrees.length : containerIndex;
 
       if (!blockTree) {
         return;
@@ -37,12 +37,16 @@ const challengeSlice = createSlice({
         return;
       }
 
-      const prevIndex = prevContainer.childTrees.findIndex((child) => child === blockTree);
-      const isSamePlace = (prevContainer === container)
-        && ((prevIndex && containerIndex) || (prevIndex + 1 === containerIndex));
+      if (prevContainer === container) {
+        const prevIndex = prevContainer.childTrees.findIndex((child) => child === blockTree);
 
-      if (isSamePlace) {
-        return;
+        if ((prevIndex === itemIndex) || (prevIndex + 1 === itemIndex)) {
+          return;
+        }
+
+        if (itemIndex > prevIndex) {
+          itemIndex -= 1;
+        }
       }
 
       blockTree.isCorrect = containerId === TYPE.TAG_BLOCK_CONTAINER
