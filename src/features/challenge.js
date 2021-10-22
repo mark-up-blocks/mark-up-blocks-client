@@ -98,14 +98,25 @@ const challengeSlice = createSlice({
       stage.hasPreviousData = true;
     },
     changeStage(state, { payload }) {
-      const stageId = payload;
-      const challenge = state.challenges[state.selectedIndex];
+      const { stageId, index } = payload;
+
+      if (Number.isNaN(Number(index))) {
+        return;
+      }
+
+      const challenge = state.challenges[index];
+
+      if (!challenge) {
+        return;
+      }
+
       const stage = findBlockTreeById(challenge.elementTree, stageId);
 
       if (!stage) {
         return;
       }
 
+      Object.assign(state, { selectedIndex: index });
       challenge.stageId = stageId;
     },
   },
