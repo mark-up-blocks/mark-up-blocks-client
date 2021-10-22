@@ -5,8 +5,8 @@ import styled from "styled-components";
 
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
-function Droppable({
-  children, _id, index, onDrop, onClick, className, hoveredClassName,
+function DropArea({
+  _id, index, onDrop, onClick, className, needHighlight,
 }) {
   const [{ hovered }, dropRef] = useDrop(() => ({
     accept: Object.values(DRAGGABLE_TYPE),
@@ -28,46 +28,37 @@ function Droppable({
     },
   }), [_id, index]);
 
-  const handleClick = () => {
-    onClick({ containerId: _id, index });
-  };
+  const handleClick = () => onClick({ containerId: _id, index });
 
   return (
-    <DroppableWrapper
-      className={hovered ? hoveredClassName : className}
+    <Area
       ref={dropRef}
+      className={className}
+      hovered={hovered && needHighlight}
       onClick={handleClick}
-    >
-      {children}
-    </DroppableWrapper>
+    />
   );
 }
 
-Droppable.propTypes = {
+DropArea.propTypes = {
   _id: PropTypes.string.isRequired,
-  children: PropTypes.oneOfType([
-    PropTypes.element,
-    PropTypes.arrayOf(PropTypes.element),
-  ]).isRequired,
   index: PropTypes.number,
   onDrop: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   className: PropTypes.string,
-  hoveredClassName: PropTypes.string,
+  needHighlight: PropTypes.bool,
 };
 
-Droppable.defaultProps = {
+DropArea.defaultProps = {
   index: -1,
   className: "",
-  hoveredClassName: "",
+  needHighlight: false,
 };
 
-export default Droppable;
-
-const DroppableWrapper = styled.div`
-  display: grid;
-  margin: 1px 0;
+const Area = styled.div`
   padding: 3px 0;
-  align-content: space-between;
+  background-color: ${({ hovered, theme }) => (hovered ? theme.color.point : "transparent")};
   cursor: pointer;
 `;
+
+export default DropArea;

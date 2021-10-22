@@ -2,52 +2,58 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Draggable from "../Draggable";
-import { formatTagName } from "../../../../helpers/dataFormatters";
 
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function TagBlock({
-  _id, isSubChallenge, block, containerId, childTrees, className, onMouseOver, onMouseOut, onClick,
+  _id, content, type, containerId, className, onMouseOver, onMouseOut, onClick,
 }) {
   const ref = useRef(null);
-  const { tagName, isContainer, property } = block;
-  const content = formatTagName(isContainer, tagName, property.text);
-  const handleMouseOver = () => {
-    const position = ref?.current ? ref.current.getBoundingClientRect() : {};
+  const handleSelect = (func) => {
+    const position = ref?.current ? ref.current.getBoundingClientRect() : null;
 
-    onMouseOver({
-      _id, isSubChallenge, block, childTrees, position, containerId,
-    });
-  };
-  const handleClick = () => {
-    const position = ref?.current ? ref.current.getBoundingClientRect() : {};
-
-    onClick({
-      _id, isSubChallenge, block, childTrees, position, containerId,
-    });
+    func({ _id, position, containerId });
   };
 
   return (
     <Draggable
       _id={_id}
-      type={isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
+      type={type}
       containerId={containerId}
       content={content}
     >
       <TagBlockWrapper
         className={className}
-        onMouseOver={handleMouseOver}
+        onMouseOver={() => handleSelect(onMouseOver)}
         onMouseOut={onMouseOut}
         ref={ref}
-        onClick={handleClick}
+        onClick={() => handleSelect(onClick)}
       >
-        <span>{content}</span>
+        {content}
       </TagBlockWrapper>
     </Draggable>
   );
 }
 
-export const tagBlockSchema = {
+TagBlock.propTypes = {
+  _id: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(Object.values(DRAGGABLE_TYPE)).isRequired,
+  containerId: PropTypes.string.isRequired,
+  className: PropTypes.string.isRequired,
+  onMouseOver: PropTypes.func.isRequired,
+  onMouseOut: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+
+const TagBlockWrapper = styled.div`
+  padding: 3px 20px;
+  margin: 5px;
+  border-radius: 10px;
+  border: 1px solid ${({ theme }) => theme.color.point};
+`;
+
+const tagBlockSchema = {
   _id: PropTypes.string.isRequired,
   isSubChallenge: PropTypes.bool.isRequired,
   block: PropTypes.shape({
@@ -63,30 +69,5 @@ export const tagBlockSchema = {
   }).isRequired,
 };
 
-TagBlock.propTypes = {
-  ...tagBlockSchema,
-  containerId: PropTypes.string.isRequired,
-  childTrees: PropTypes.arrayOf(
-    PropTypes.shape(tagBlockSchema),
-  ),
-  className: PropTypes.string,
-  onMouseOver: PropTypes.func,
-  onMouseOut: PropTypes.func,
-  onClick: PropTypes.func,
-};
-
-TagBlock.defaultProps = {
-  childTrees: [],
-  className: "",
-  onMouseOver: () => {},
-  onMouseOut: () => {},
-  onClick: () => {},
-};
-
+export { tagBlockSchema };
 export default TagBlock;
-
-const TagBlockWrapper = styled.div`
-  padding: 3px 20px;
-  border-radius: 10px;
-  border: 1px solid ${({ theme }) => theme.color.point};
-`;

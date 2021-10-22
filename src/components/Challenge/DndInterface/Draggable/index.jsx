@@ -39,11 +39,10 @@ Draggable.propTypes = {
   content: PropTypes.string.isRequired,
 };
 
-export default Draggable;
-
 const DraggableWrapper = styled.div`
-  margin: 1px 20px;
-  padding: 2px;
+  margin: 0px 20px;
   cursor: pointer;
   border-radius: ${({ theme }) => theme.border.radius.container};
 `;
+
+export default Draggable;

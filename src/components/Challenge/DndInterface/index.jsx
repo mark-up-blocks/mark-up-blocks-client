@@ -1,133 +1,78 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import CustomDragLayer from "./CustomDragLayer";
 import TagBlock, { tagBlockSchema } from "./TagBlock";
-import Droppable from "./Droppable";
+import DropArea from "./DropArea";
 import DropContainer from "./DropContainer";
 import Preview from "./Preview";
 
-import { TYPE } from "../../../constants";
-
-const initialSelected = {
-  _id: "",
-  containerId: TYPE.TAG_BLOCK_CONTAINER,
-  enablePreview: false,
-  isSubChallenge: false,
-  block: null,
-  childTrees: [],
-};
+import { usePick } from "../../../hooks/usePick";
+import { formatTagName } from "../../../helpers/dataFormatters";
+import { TYPE, DRAGGABLE_TYPE } from "../../../constants";
 
 function DndInterface({
   tagBlockContainer, boilerplate, onDrop, className,
 }) {
-  const [selected, setSelected] = useState(initialSelected);
-
-  const handleSelect = (data, type) => {
-    setSelected((prevSelected) => {
-      if (!data) {
-        return prevSelected;
-      }
-
-      const isClicked = type === "click";
-      const {
-        _id, containerId, isSubChallenge, block, childTrees, position,
-      } = data;
-      const result = {
-        _id, containerId, isSubChallenge, block, childTrees, position, isClicked,
-      };
-      const isReClick = prevSelected.isClicked && isClicked && prevSelected._id === _id;
-
-      if (prevSelected.isClicked && !isClicked) {
-        return prevSelected;
-      }
-
-      if (isReClick) {
-        return initialSelected;
-      }
-
-      result.enablePreview = !!position;
-
-      return result;
-    });
-  };
-  const handleUnselect = () => {
-    setSelected((prevSelected) => {
-      if (prevSelected.isClicked) {
-        return prevSelected;
-      }
-
-      return {
-        _id: "",
-        containerId: "",
-        enablePreview: false,
-        isSubChallenge: false,
-        block: null,
-        childTrees: [],
-      };
-    });
-  };
-  const handleClickDrop = (data) => {
-    const { containerId, index } = data;
-
-    if (!selected._id || !selected.isClicked) {
+  const {
+    picked, onPick, onUnpick, onReset,
+  } = usePick();
+  const handleClickDrop = ({ index, containerId }) => {
+    if (!picked._id) {
       return;
     }
 
-    if (containerId === selected.containerId && containerId === TYPE.TAG_BLOCK_CONTAINER) {
+    if (containerId === picked.containerId && containerId === TYPE.TAG_BLOCK_CONTAINER) {
       return;
     }
 
+    onReset();
     onDrop({
-      itemId: selected._id, containerId, prevContainerId: selected.containerId, index,
+      itemId: picked._id,
+      prevContainerId: picked.containerId,
+      index,
+      containerId,
     });
-  };
-  const handlePreviewClick = () => {
-    setSelected((prevSelected) => ({ ...prevSelected, enablePreview: false }));
   };
 
   return (
     <DndInterfaceWrapper className={className}>
       <CustomDragLayer />
-      <Droppable
-        _id={TYPE.TAG_BLOCK_CONTAINER}
-        className="tag-block-container-droppable"
-        hoveredClassName="tag-block-container-droppable"
-        onDrop={onDrop}
-        onClick={handleClickDrop}
-      >
-        {selected.enablePreview ? (
-          <Preview
-            isSubChallenge={selected.isSubChallenge}
-            block={selected.block}
-            childTrees={selected.childTrees}
-            className="preview"
-            position={selected.position}
-            onClick={handlePreviewClick}
-          />
-        ) : null}
-        <TagBlockContainer>
-          <>
-            {tagBlockContainer.childTrees.map(({
-              _id, isSubChallenge, block, childTrees,
-            }) => (
-              <TagBlock
-                _id={_id}
-                key={_id}
-                block={block}
-                isSubChallenge={isSubChallenge}
-                containerId={TYPE.TAG_BLOCK_CONTAINER}
-                childTrees={childTrees}
-                onMouseOver={(data) => handleSelect(data, "hover")}
-                onMouseOut={handleUnselect}
-                onClick={(data) => handleSelect(data, "click")}
-                className={_id === selected?._id ? "selected" : "swing"}
-              />
-            ))}
-          </>
-        </TagBlockContainer>
-      </Droppable>
+      <TagBlockContainer>
+        {picked.enablePreview && (
+        <Preview
+          isSubChallenge={picked.isSubChallenge}
+          block={picked.block}
+          childTrees={picked.childTrees}
+          className="preview"
+          position={picked.position}
+          onClick={onUnpick}
+        />
+        )}
+        <DropArea
+          _id={TYPE.TAG_BLOCK_CONTAINER}
+          index={-1}
+          onDrop={onDrop}
+          onClick={handleClickDrop}
+          className="tag-block-container-drop-area"
+        />
+        <div className="flex-wrap">
+          {tagBlockContainer.childTrees.map(({ _id, block }) => (
+            <TagBlock
+              _id={_id}
+              key={_id}
+              containerId={TYPE.TAG_BLOCK_CONTAINER}
+              content={formatTagName(block.isContainer, block.tagName, block.property.text)}
+              className={`tag-block ${picked._id === _id ? "selected" : "swing"}`}
+              type={block.isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
+              onMouseOver={(data) => onPick(data, "hover")}
+              onMouseOut={onUnpick}
+              onClick={(data) => onPick(data, "click")}
+            />
+          ))}
+        </div>
+      </TagBlockContainer>
       <HTMLViewer>
         <LineNumberSpace />
         <DropContainer
@@ -137,10 +82,9 @@ function DndInterface({
           tagName={boilerplate.block.tagName}
           onDrop={onDrop}
           onClick={handleClickDrop}
-          onBlockClick={(data) => handleSelect(data, "click")}
-          droppableClassName={selected._id ? "drop-guide" : ""}
-          droppableHoveredClassName="selected"
-          selectedTagId={selected?._id}
+          onBlockClick={(data) => onPick(data, "click")}
+          selectedTagId={picked._id}
+          isDropAreaActive={!!picked._id}
         />
       </HTMLViewer>
     </DndInterfaceWrapper>
@@ -172,8 +116,6 @@ DndInterface.defaultProps = {
   className: "",
 };
 
-export default DndInterface;
-
 const DndInterfaceWrapper = styled.div`
   display: grid;
   width: 100%;
@@ -185,16 +127,6 @@ const DndInterfaceWrapper = styled.div`
     grid-auto-flow: row;
   }
 
-  .tag-block-container-droppable {
-    position: relative;
-    display: flex;
-    margin: 10px;
-    justify-content: center;
-    align-items: center;
-    border: ${({ theme }) => theme.border.container};
-    border-radius: ${({ theme }) => theme.border.radius.container};
-  }
-
   .dragging .swing {
     animation: none;
     background-color: ${({ theme }) => theme.color.point};
@@ -202,10 +134,30 @@ const DndInterfaceWrapper = styled.div`
 `;
 
 const TagBlockContainer = styled.div`
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
+  margin: 10px;
+  padding: 10px;
   justify-content: center;
   align-items: center;
+  border: ${({ theme }) => theme.border.container};
+  border-radius: ${({ theme }) => theme.border.radius.container};
+
+  .tag-block-container-drop-area {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tag-block {
+    position: relative;
+  }
 `;
 
 const HTMLViewer = styled.div`
@@ -239,3 +191,5 @@ const LineNumberSpace = styled.div`
   margin-right: 5px;
   background-color: ${({ theme }) => theme.color.main};
 `;
+
+export default DndInterface;
