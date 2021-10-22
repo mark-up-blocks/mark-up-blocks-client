@@ -22,7 +22,7 @@ describe("StageList Component", () => {
     );
 
     expect(getByText("layout")).toBeInTheDocument();
-    expect(container.querySelector(".selected").textContent).toBe("layout");
+    expect(container.querySelector(".selected-stage").textContent).toBe("layout");
 
     fireEvent.click(getByText("layout"));
     expect(onClick).toBeCalledTimes(1);
@@ -49,7 +49,7 @@ describe("StageList Component", () => {
     expect(getByText("elementTree1Child")).toBeInTheDocument();
     expect(queryByText("elementTree1Child2")).toBeNull();
 
-    expect(container.querySelector(".selected").textContent).toBe("elementTree1Child");
+    expect(container.querySelector(".selected-stage").textContent).toBe("elementTree1Child");
 
     fireEvent.click(getByText("layout"));
     expect(onClick).toBeCalledTimes(1);
@@ -83,7 +83,7 @@ describe("StageList Component", () => {
     expect(queryByText("elementTree2GrandChild2")).toBeNull();
     expect(queryByText("elementTree2GrandGrandChild")).toBeNull();
 
-    expect(container.querySelector(".selected").textContent).toBe("elementTree2GrandChild");
+    expect(container.querySelector(".selected-stage").textContent).toBe("elementTree2GrandChild");
 
     fireEvent.click(getByText("layout"));
     expect(onClick).toBeCalledTimes(1);
