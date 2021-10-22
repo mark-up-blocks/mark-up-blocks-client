@@ -33,8 +33,8 @@ function DropArea({
   return (
     <Area
       ref={dropRef}
-      className={className}
-      hovered={hovered && needHighlight}
+      className={`${className} ${hovered ? "animation-none" : ""}`}
+      isHighlighted={hovered && needHighlight}
       onClick={handleClick}
     />
   );
@@ -56,8 +56,8 @@ DropArea.defaultProps = {
 };
 
 const Area = styled.div`
-  padding: 3px 0;
-  background-color: ${({ hovered, theme }) => (hovered ? theme.color.point : "transparent")};
+  padding: 2px 0;
+  background-color: ${({ isHighlighted, theme }) => (isHighlighted ? theme.color.preview : "transparent")};
   cursor: pointer;
 `;
 

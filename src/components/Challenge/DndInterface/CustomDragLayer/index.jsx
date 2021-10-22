@@ -1,7 +1,10 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { useDragLayer } from "react-dnd";
 import styled from "styled-components";
 
+import HighlightedTag from "../HighlightedTag";
+import { selectBlockTreeById } from "../../../../helpers/globalSelectors";
 import { getItemStyles } from "../../../../helpers/dataFormatters";
 
 function CustomDragLayer() {
@@ -14,6 +17,9 @@ function CustomDragLayer() {
     currentOffset: monitor.getSourceClientOffset(),
     isDragging: monitor.isDragging(),
   }));
+  const blockTree = useSelector(
+    (state) => selectBlockTreeById(state, item?.prevContainerId, item?.itemId),
+  );
 
   if (!isDragging) {
     return null;
@@ -21,7 +27,16 @@ function CustomDragLayer() {
 
   return (
     <Layer>
-      <span style={getItemStyles(initialOffset, currentOffset)} className="dragging-content">{item.content}</span>
+      <span style={getItemStyles(initialOffset, currentOffset)} className="dragging-content">
+        {blockTree && (
+        <HighlightedTag
+          tagName={blockTree.block.tagName}
+          text={blockTree.block.property.text}
+          isSubChallenge={blockTree.isSubChallenge}
+          isContainer={blockTree.block.isContainer}
+        />
+        )}
+      </span>
     </Layer>
   );
 }

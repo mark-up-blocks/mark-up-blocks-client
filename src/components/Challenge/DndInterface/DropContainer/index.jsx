@@ -4,8 +4,8 @@ import styled from "styled-components";
 
 import Draggable from "../Draggable";
 import DropArea from "../DropArea";
+import HighlightedTag from "../HighlightedTag";
 import { tagBlockSchema } from "../TagBlock";
-import Button from "../../../shared/Button";
 
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
@@ -14,24 +14,24 @@ function DropContainer({
   onDrop, onClick, onBlockClick,
   className, isDropAreaActive,
 }) {
-  function getTextValue(child) {
-    return child.isSubChallenge
-      ? `<${child.block.tagName} />`
-      : `<${child.block.tagName}>${child.block.property.text || ""}</${child.block.tagName}>`;
-  }
-
   const handleTagClick = () => {
     onBlockClick({ _id, containerId, isClicked: true });
   };
 
   return (
     <DropContainerWrapper className={className}>
-      <div className="tag-text">
-        <TagButton
-          key="open"
-          className={`parent-tag ${selectedTagId === _id ? "selected-tag" : ""}`}
-          onClick={handleTagClick}
-          value={`<${tagName}>`}
+      <div
+        className="tag-text"
+        onClick={handleTagClick}
+        onKeyPress={handleTagClick}
+        role="button"
+        tabIndex="0"
+      >
+        <HighlightedTag
+          isContainer
+          isSubChallenge={false}
+          tagName={tagName}
+          type="open"
         />
       </div>
       <DropArea
@@ -49,7 +49,6 @@ function DropContainer({
             key={child._id}
             type={child.block.isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
             containerId={_id}
-            content={getTextValue(child)}
           >
             {child.block.isContainer && !child.isSubChallenge
               ? (
@@ -66,15 +65,22 @@ function DropContainer({
                 />
               )
               : (
-                <div className="tag-text">
-                  <TagButton
-                    className={`${child.isCorrect ? "correct" : "wrong"} ${selectedTagId === child._id ? "selected-tag" : ""}`}
-                    value={getTextValue(child)}
-                    onClick={() => onBlockClick({
-                      _id: child._id,
-                      containerId: _id,
-                      isClicked: true,
-                    })}
+                <div
+                  className={`tag-text ${selectedTagId === child._id ? "selected-tag" : ""}`}
+                  onClick={() => onBlockClick({
+                    _id: child._id,
+                    containerId: _id,
+                    isClicked: true,
+                  })}
+                  onKeyPress={handleTagClick}
+                  role="button"
+                  tabIndex="0"
+                >
+                  <HighlightedTag
+                    isContainer={false}
+                    isSubChallenge={child.isSubChallenge}
+                    tagName={child.block.tagName}
+                    text={child.block.property.text}
                   />
                 </div>
               )}
@@ -89,12 +95,18 @@ function DropContainer({
           </Draggable>
         ))}
       </>
-      <div className="tag-text">
-        <TagButton
-          key="close"
-          className={`parent-tag ${selectedTagId === _id ? "selected-tag" : ""}`}
-          onClick={handleTagClick}
-          value={`</${tagName}>`}
+      <div
+        className="tag-text"
+        onClick={handleTagClick}
+        onKeyPress={handleTagClick}
+        role="button"
+        tabIndex="0"
+      >
+        <HighlightedTag
+          isContainer
+          isSubChallenge={false}
+          tagName={tagName}
+          type="close"
         />
       </div>
     </DropContainerWrapper>
@@ -126,24 +138,12 @@ DropContainer.defaultProps = {
 
 const DropContainerWrapper = styled.div`
   .drop-area {
-    margin: 3px 0px;
+    margin: 4px 0px;
   }
 
   .first-drop-area {
-    margin: 3px 20px;
+    margin: 4px 20px;
   }
-
-  .parent-tag {
-    color: ${({ theme }) => theme.color.parentTag};
-  }
-
-  .selected-tag {
-    color: ${({ theme }) => theme.color.point};
-  }
-`;
-
-const TagButton = styled(Button)`
-  position: relative;
 `;
 
 export default DropContainer;

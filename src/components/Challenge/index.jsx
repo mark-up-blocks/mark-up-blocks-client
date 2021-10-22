@@ -122,9 +122,9 @@ const ResetButton = styled(Button)`
   width: 80px;
   height: 40px;
   border-radius: 2px;
-  background-color: ${({ theme }) => theme.color.focus};
+  background-color: ${({ theme }) => theme.color.inner};
 
   :hover {
-    background-color: ${({ theme }) => theme.color.main};
+    background-color: ${({ theme }) => theme.color.point};
   }
 `;

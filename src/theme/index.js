@@ -1,22 +1,18 @@
 const color = {
-  main: "#FBC00E",
+  main: "#202227",
+  sub: "#1b1d21",
   inner: "#ffffff",
-  focus: "#ffddad",
+  guide: "#eccb7359",
   text: "#000000",
-  inactive: "#808080",
+  inactive: "#46494d",
   error: "#d22020",
   errorBackground: "#d082c259",
-  point: "#58ea9b",
-  dropGuide: "#90eebb59",
-  preview: "#9d9d9d",
-  parentTag: "#d082c2",
-};
-
-const border = {
-  container: "2px solid #FBC00E",
-  radius: {
-    container: "4px",
-  },
+  point: "#3c68e2",
+  preview: "#00acff",
+  childTag: "#fdc502",
+  parentTag: "#ff4f68",
+  challengeTag: "#bc70fd",
+  border: "#4b4d51",
 };
 
 const screenSize = {
@@ -27,7 +23,6 @@ const screenSize = {
 
 const theme = {
   color,
-  border,
   screenSize,
 };
 

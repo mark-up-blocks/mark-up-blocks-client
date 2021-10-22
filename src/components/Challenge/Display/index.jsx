@@ -50,11 +50,11 @@ const Container = styled.div`
 const PageWrapper = styled.div`
   display: flex;
   overflow: auto;
-  margin: 10px;
   justify-content: center;
   align-items: center;
-  border: ${({ theme }) => theme.border.container};
-  border-radius: ${({ theme }) => theme.border.radius.container};
+  border-right: 1px solid ${({ theme }) => theme.color.border};
+  border-bottom: 1px solid ${({ theme }) => theme.color.border};
+  background-color: ${({ theme }) => theme.color.inner};
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
     max-height: 300px;

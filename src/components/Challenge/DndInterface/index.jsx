@@ -9,7 +9,6 @@ import DropContainer from "./DropContainer";
 import Preview from "./Preview";
 
 import { usePick } from "../../../hooks/usePick";
-import { formatTagName } from "../../../helpers/dataFormatters";
 import { TYPE, DRAGGABLE_TYPE } from "../../../constants";
 
 function DndInterface({
@@ -35,6 +34,10 @@ function DndInterface({
       containerId,
     });
   };
+  const handleDrop = (data) => {
+    onReset();
+    onDrop(data);
+  };
 
   return (
     <DndInterfaceWrapper className={className}>
@@ -53,18 +56,21 @@ function DndInterface({
         <DropArea
           _id={TYPE.TAG_BLOCK_CONTAINER}
           index={-1}
-          onDrop={onDrop}
+          onDrop={handleDrop}
           onClick={handleClickDrop}
           className="tag-block-container-drop-area"
         />
         <div className="flex-wrap">
-          {tagBlockContainer.childTrees.map(({ _id, block }) => (
+          {tagBlockContainer.childTrees.map(({ _id, block, isSubChallenge }) => (
             <TagBlock
               _id={_id}
               key={_id}
               containerId={TYPE.TAG_BLOCK_CONTAINER}
-              content={formatTagName(block.isContainer, block.tagName, block.property.text)}
-              className={`tag-block ${picked._id === _id ? "selected" : "swing"}`}
+              tagName={block.tagName}
+              isSubChallenge={isSubChallenge}
+              isContainer={block.isContainer}
+              text={block.property.text || ""}
+              className={`tag-block ${picked._id === _id ? "selected-tag-block" : "swing"}`}
               type={block.isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
               onMouseOver={(data) => onPick(data, "hover")}
               onMouseOut={onUnpick}
@@ -80,7 +86,7 @@ function DndInterface({
           containerId={boilerplate._id}
           childTrees={boilerplate.childTrees}
           tagName={boilerplate.block.tagName}
-          onDrop={onDrop}
+          onDrop={handleDrop}
           onClick={handleClickDrop}
           onBlockClick={(data) => onPick(data, "click")}
           selectedTagId={picked._id}
@@ -131,17 +137,33 @@ const DndInterfaceWrapper = styled.div`
     animation: none;
     background-color: ${({ theme }) => theme.color.point};
   }
+
+  .challenge-tag {
+    color: ${({ theme }) => theme.color.challengeTag};
+  }
+
+  .parent-tag {
+    color: ${({ theme }) => theme.color.parentTag};
+  }
+
+  .selected-tag {
+    color: ${({ theme }) => theme.color.point};
+  }
+
+  .child-tag {
+    color: ${({ theme }) => theme.color.childTag};
+  }
 `;
 
 const TagBlockContainer = styled.div`
   position: relative;
   display: flex;
-  margin: 10px;
   padding: 10px;
   justify-content: center;
   align-items: center;
-  border: ${({ theme }) => theme.border.container};
-  border-radius: ${({ theme }) => theme.border.radius.container};
+  border-top: 1px solid ${({ theme }) => theme.color.border};
+  border-right: 1px solid ${({ theme }) => theme.color.border};
+  border-bottom: 1px solid ${({ theme }) => theme.color.border};
 
   .tag-block-container-drop-area {
     position: absolute;
@@ -158,6 +180,10 @@ const TagBlockContainer = styled.div`
   .tag-block {
     position: relative;
   }
+
+  .selected-tag-block {
+    background-color: ${({ theme }) => theme.color.preview};
+  }
 `;
 
 const HTMLViewer = styled.div`
@@ -165,10 +191,14 @@ const HTMLViewer = styled.div`
   display: grid;
   grid-template-columns: 30px auto;
   align-items: center;
-  margin: 10px;
-  border: ${({ theme }) => theme.border.container};
-  border-radius: ${({ theme }) => theme.border.radius.container};
+  border-top: 1px solid ${({ theme }) => theme.color.border};
+  border-right: 1px solid ${({ theme }) => theme.color.border};
+  border-bottom: 1px solid ${({ theme }) => theme.color.border};
   counter-reset: line;
+
+  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
+    border-top: none;
+  }
 
   .dragging * {
     color: ${({ theme }) => theme.color.point};
@@ -179,9 +209,10 @@ const HTMLViewer = styled.div`
     right: 100%;
     margin-right: -20px;
     text-align: right;
+    font-size: 0.8rem;
     counter-increment: line;
     content: counter(line);
-    color: ${({ theme }) => theme.color.inner};
+    color: ${({ theme }) => theme.color.inactive};
   }
 `;
 

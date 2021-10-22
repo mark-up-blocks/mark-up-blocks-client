@@ -57,6 +57,8 @@ NoticeModal.propTypes = {
 export default NoticeModal;
 
 const Wrapper = styled(Modal)`
+  color: ${({ theme }) => theme.color.main};
+
   .error {
     color: ${({ theme }) => theme.color.error};
   }
@@ -77,11 +79,11 @@ const Wrapper = styled(Modal)`
 
 const ClickInterface = styled.div`
   margin-top: 10px;
-  color: ${({ theme }) => theme.color.main};
+  color: ${({ theme }) => theme.color.point};
   cursor: pointer;
 
   :hover {
-    color: ${({ theme }) => theme.color.focus};
+    color: ${({ theme }) => theme.color.guide};
   }
 
   .arrow {
@@ -91,7 +93,6 @@ const ClickInterface = styled.div`
     padding: 0;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
-    border-radius: ${({ theme }) => theme.border.radius.container};
   }
 
   .arrow.forward {

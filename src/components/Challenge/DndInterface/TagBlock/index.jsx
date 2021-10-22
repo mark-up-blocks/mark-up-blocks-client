@@ -2,11 +2,13 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Draggable from "../Draggable";
+import HighlightedTag from "../HighlightedTag";
 
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function TagBlock({
-  _id, content, type, containerId, className, onMouseOver, onMouseOut, onClick,
+  _id, type, containerId, className, onMouseOver, onMouseOut, onClick,
+  tagName, text, isSubChallenge, isContainer,
 }) {
   const ref = useRef(null);
   const handleSelect = (func) => {
@@ -20,7 +22,6 @@ function TagBlock({
       _id={_id}
       type={type}
       containerId={containerId}
-      content={content}
     >
       <TagBlockWrapper
         className={className}
@@ -29,7 +30,12 @@ function TagBlock({
         ref={ref}
         onClick={() => handleSelect(onClick)}
       >
-        {content}
+        <HighlightedTag
+          tagName={tagName}
+          text={text}
+          isSubChallenge={isSubChallenge}
+          isContainer={isContainer}
+        />
       </TagBlockWrapper>
     </Draggable>
   );
@@ -37,7 +43,10 @@ function TagBlock({
 
 TagBlock.propTypes = {
   _id: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
+  tagName: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  isSubChallenge: PropTypes.bool.isRequired,
+  isContainer: PropTypes.bool.isRequired,
   type: PropTypes.oneOf(Object.values(DRAGGABLE_TYPE)).isRequired,
   containerId: PropTypes.string.isRequired,
   className: PropTypes.string.isRequired,
@@ -47,10 +56,10 @@ TagBlock.propTypes = {
 };
 
 const TagBlockWrapper = styled.div`
-  padding: 3px 20px;
+  padding: 5px 20px;
   margin: 5px;
-  border-radius: 10px;
-  border: 1px solid ${({ theme }) => theme.color.point};
+  border-radius: 6px;
+  background-color: ${({ theme }) => theme.color.point};
 `;
 
 const tagBlockSchema = {

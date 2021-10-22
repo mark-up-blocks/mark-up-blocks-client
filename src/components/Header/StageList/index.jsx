@@ -14,7 +14,7 @@ function StageList({
         onClick={handleClick}
         value={title}
         isCompleted={isCompleted}
-        className={stageId === _id ? "selected" : ""}
+        className={stageId === _id ? "selected-stage" : ""}
       />
       <ol>
         {childTrees.map((child) => (child.isSubChallenge
@@ -55,7 +55,7 @@ export default StageList;
 const Li = styled.li`
   margin: 5px 0px 5px 15px;
 
-  .selected {
-    background-color: ${({ theme }) => theme.color.main};
+  .selected-stage {
+    background-color: ${({ theme }) => theme.color.point};
   }
 `;
