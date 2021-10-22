@@ -37,6 +37,14 @@ const challengeSlice = createSlice({
         return;
       }
 
+      const prevIndex = prevContainer.childTrees.findIndex((child) => child === blockTree);
+      const isSamePlace = (prevContainer === container)
+        && ((prevIndex && containerIndex) || (prevIndex + 1 === containerIndex));
+
+      if (isSamePlace) {
+        return;
+      }
+
       blockTree.isCorrect = containerId === TYPE.TAG_BLOCK_CONTAINER
         ? false
         : validatePosition({
