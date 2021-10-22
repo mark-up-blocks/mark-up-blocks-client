@@ -1,6 +1,7 @@
 const route = {
   home: "/",
-  tutorial: "/0",
+  tutorialMain: "/0",
+  tutorial: "/0/:id?",
   puzzle: "/:index/:id?",
   selectedPuzzle: (index) => `/${index}`,
   nextIndex: (index) => `/${index + 1}`,

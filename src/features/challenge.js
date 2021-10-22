@@ -116,8 +116,8 @@ const challengeSlice = createSlice({
         return;
       }
 
-      Object.assign(state, { selectedIndex: index });
       challenge.stageId = stageId;
+      Object.assign(state, { selectedIndex: index });
     },
   },
   extraReducers: {

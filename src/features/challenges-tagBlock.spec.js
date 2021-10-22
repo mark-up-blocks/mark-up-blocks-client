@@ -1,4 +1,4 @@
-import reducer, { addChildTree, resetStage } from "./challenge";
+import reducer, { addChildTree, resetStage, initializeStage } from "./challenge";
 import tutorialData, { sampleBlock } from "../components/Tutorial/tutorialData";
 import { flatChallenge, nestedChallenge, deeplyNestedChallenge } from "../helpers/test/mockData";
 
@@ -16,7 +16,7 @@ describe("challenge reducer test (handling block logic)", () => {
         challengeIndex: 0,
         prevContainerId: "tagBlockContainer",
         containerId: "tutorialTree",
-        itemId: "tutorial1",
+        itemId: "tutorial-in-order",
         stageId: "tutorialTree",
       };
 
@@ -25,16 +25,11 @@ describe("challenge reducer test (handling block logic)", () => {
         elementTree: {
           _id: "tutorialTree",
           childTrees: [sampleBlock],
-          boilerplate: {
-            childTrees: [],
-          },
-          tagBlockContainer: {
-            childTrees: [sampleBlock],
-          },
         },
       });
 
-      const updatedState = reducer(initialState, addChildTree(payload));
+      const initializedStage = reducer(initialState, initializeStage(payload.stageId));
+      const updatedState = reducer(initializedStage, addChildTree(payload));
 
       test("should move item by payload", () => {
         expect(updatedState.challenges[payload.challengeIndex]).toMatchObject({

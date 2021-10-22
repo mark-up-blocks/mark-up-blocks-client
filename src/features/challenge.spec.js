@@ -153,7 +153,7 @@ describe("challenge reducer test", () => {
         ],
       };
 
-      const updatedState = reducer(prevState, changeStage("elementTree1Child"));
+      const updatedState = reducer(prevState, changeStage({ index: 1, stageId: "elementTree1Child" }));
       const challenge = updatedState.challenges[1];
 
       expect(challenge.stageId).toBe("elementTree1Child");
@@ -171,7 +171,7 @@ describe("challenge reducer test", () => {
         ],
       };
 
-      const updatedState = reducer(prevState, changeStage("invalidStageId"));
+      const updatedState = reducer(prevState, changeStage({ index: 1, stageId: "invalidStageId" }));
 
       expect(updatedState).toMatchObject(prevState);
     });
