@@ -240,7 +240,7 @@ interface BlockTree {
 }
 ```
 
-  이 상태에서는 유저가 현재 진행 중인 단계를 변경하면, 먼저 rootChallenge의 data를 순회 → 기존 단계 탐색 → 기존 단계의 data 자리에 현재 data(tagBlockContainer, boilerplate, answer 3종이 하나로 통합된 과정은 바로 다음 이슈에서 다룹니다.) 보관 과정을 거쳤습니다. 이후 선택 단계 탐색 → 최상위에 있던 data를 선택 단계 데이터로 교체됩니다.
+  이 상태에서는 유저가 현재 진행 중인 단계를 변경하면, 먼저 rootChallenge의 data를 순회 → 기존 단계 탐색 → 기존 단계의 data 자리에 현재 data(tagBlockContainer, boilerplate, answer 3종이 하나로 통합된 과정은 바로 다음 이슈에서 다룹니다.) 보관 과정을 거쳤습니다. 이후 선택 단계 탐색 → 최상위에 있던 data를 선택 단계 데이터로 교체합니다.
 
 ### Difficulties
 1. 트리 중 일부를 별도로 보관하면 필연적으로 중복이 발생합니다.
