@@ -98,7 +98,7 @@ function App() {
           && (
           <Switch>
             <Route exact path={route.home}>
-              <Redirect to={route.tutorial} />
+              <Redirect to={route.tutorialMain} />
             </Route>
             <Route path={route.tutorial}>
               <Tutorial />

@@ -57,13 +57,13 @@ function Challenge() {
       return;
     }
 
+    if (stage.hasChanged) {
+      dispatch(changeStage({ stageId: stage._id, index: Number(index) }));
+    }
+
     if (!stage.hasPreviousData) {
       dispatch(initializeStage(stage._id));
       return;
-    }
-
-    if (stage.hasChanged) {
-      dispatch(changeStage(stage._id));
     }
 
     if (stage.isCompleted) {
@@ -80,6 +80,7 @@ function Challenge() {
     stage.hasPreviousData,
     stage.hasChanged,
     stage.isCompleted,
+    index,
   ]);
 
   return (
@@ -122,9 +123,9 @@ const ResetButton = styled(Button)`
   width: 80px;
   height: 40px;
   border-radius: 2px;
-  background-color: ${({ theme }) => theme.color.focus};
+  background-color: ${({ theme }) => theme.color.inner};
 
   :hover {
-    background-color: ${({ theme }) => theme.color.main};
+    background-color: ${({ theme }) => theme.color.point};
   }
 `;

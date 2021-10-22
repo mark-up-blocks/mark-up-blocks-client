@@ -4,12 +4,11 @@ import Button from "../../shared/Button";
 const OptionButton = styled(Button)`
   width: 100%;
   padding: 5px;
-  color: ${({ theme }) => theme.color.text};
-  background-color: ${({ theme, isCompleted }) => (isCompleted ? theme.color.inactive : "transparent")};
+  color: ${({ theme, isCompleted }) => (isCompleted ? theme.color.inactive : theme.color.inner)};
   text-align: left;
 
   :hover {
-    background-color: ${({ theme }) => theme.color.focus};
+    background-color: ${({ theme }) => theme.color.preview};
   }
 `;
 

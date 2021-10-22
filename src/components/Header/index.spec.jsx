@@ -78,7 +78,7 @@ describe("Header Component", () => {
       const challengeList = container.querySelector("nav").children[0].children;
       const [flat, nested, deeplyNested] = [...challengeList];
 
-      expect(flat.classList.contains("selected")).toBeTruthy();
+      expect(flat.classList.contains("selected-challenge")).toBeTruthy();
       expect(flat.textContent).toBe("flat");
       expect(nested.textContent).toBe("nested");
       expect(deeplyNested.textContent).toBe("deeply nested");
@@ -195,9 +195,9 @@ describe("Header Component", () => {
       fireEvent.click(getByRole("button", { name: "layout" }));
       expect(container.querySelector("nav").children.length).toBe(3);
 
-      expect(container.querySelector(".selected").textContent).toBe("layout");
+      expect(container.querySelector(".selected-stage").textContent).toBe("layout");
 
-      fireEvent.click(container.querySelector(".selected"));
+      fireEvent.click(container.querySelector(".selected-stage"));
       expect(container.querySelector("nav").children.length).toBe(2);
 
       expect(onStageMenuClick).toBeCalledTimes(1);

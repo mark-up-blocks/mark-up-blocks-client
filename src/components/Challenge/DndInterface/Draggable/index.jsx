@@ -7,11 +7,13 @@ import styled from "styled-components";
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function Draggable({
-  children, _id, type, containerId, content,
+  children, _id, type, containerId,
 }) {
   const [{ isDragging }, dragRef, dragPreview] = useDrag(() => ({
     type,
-    item: { itemId: _id, prevContainerId: containerId, content },
+    item: {
+      itemId: _id, prevContainerId: containerId,
+    },
     collect: (monitor) => ({ isDragging: monitor.isDragging() }),
   }));
 
@@ -36,13 +38,11 @@ Draggable.propTypes = {
   _id: PropTypes.string.isRequired,
   type: PropTypes.oneOf(Object.values(DRAGGABLE_TYPE)).isRequired,
   containerId: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
 };
 
 const DraggableWrapper = styled.div`
   margin: 0px 20px;
   cursor: pointer;
-  border-radius: ${({ theme }) => theme.border.radius.container};
 `;
 
 export default Draggable;

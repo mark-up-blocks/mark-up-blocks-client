@@ -79,8 +79,6 @@ const PreviewWrapper = styled.div`
   left: ${({ left }) => `${left}px`};
   padding: 10px;
   background-color: ${({ theme }) => theme.color.preview};
-  border: 1px solid ${({ theme }) => theme.color.main};
-  border-radius: ${({ theme }) => theme.border.radius.container};
   justify-content: start;
 
   .preview-element {
@@ -88,7 +86,6 @@ const PreviewWrapper = styled.div`
     margin: auto;
     padding: 10px;
     background-color: white;
-    border-radius: ${({ theme }) => theme.border.radius.container};
     justify-content: center;
     align-items: center;
   }

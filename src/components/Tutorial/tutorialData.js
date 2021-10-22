@@ -1,29 +1,47 @@
-import { generateBlocks } from "../../helpers/tagBlockGenerators";
-import { TYPE } from "../../constants";
-
-const sampleBlock = {
-  _id: "tutorial1",
-  title: "tutorialBlock",
+const inOrderChildTrees = ["tomato", "gold", "lightseagreen"].map((color) => ({
+  _id: `tutorial-in-order-${color}`,
+  title: `tutorial-in-order-${color}`,
   isSubChallenge: false,
   block: {
-    _id: "tutorial1",
-    tagName: "p",
+    _id: `tutorial-in-order-${color}-block`,
+    tagName: "span",
     isContainer: false,
     property: {
-      text: "Move me",
       style: {
-        width: "100px",
+        width: "30px",
         height: "30px",
-        backgroundColor: "gold",
+        backgroundColor: color,
+        borderRadius: "50%",
       },
     },
   },
   childTrees: [],
+}));
+
+const sampleBlock = {
+  _id: "tutorial-in-order",
+  title: "in order",
+  isSubChallenge: true,
+  block: {
+    _id: "tutorial-in-order-block",
+    tagName: "div",
+    isContainer: true,
+    property: {
+      style: {
+        display: "flex",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        width: "200px",
+        height: "40px",
+      },
+    },
+  },
+  childTrees: inOrderChildTrees,
 };
 
 const elementTree = {
   _id: "tutorialTree",
-  title: "tutorial",
+  title: "drag",
   isSubChallenge: true,
   block: {
     _id: "tutorialTree",
@@ -39,15 +57,7 @@ const tutorialData = {
   name: "tutorial",
   stageId: "tutorialTree",
   isLoaded: true,
-  hasPreviousData: true,
-  elementTree: {
-    ...elementTree,
-    boilerplate: { ...elementTree, childTrees: [] },
-    tagBlockContainer: {
-      _id: TYPE.TAG_BLOCK_CONTAINER,
-      childTrees: generateBlocks(elementTree),
-    },
-  },
+  elementTree,
 };
 
 export { sampleBlock };

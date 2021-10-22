@@ -37,8 +37,9 @@ function Header({ onTitleClick, onChallengeClick, onStageMenuClick }) {
               <OptionButton
                 key={challenge._id}
                 onClick={() => handleChallengeClick(index)}
-                className={selectedIndex === index ? "selected" : ""}
+                className={selectedIndex === index ? "selected-challenge" : ""}
                 value={challenge.name}
+                isCompleted={Boolean(challenge.isCompleted)}
               />
             ))}
           </ChallengeListWrapper>
@@ -76,20 +77,18 @@ export default Header;
 const HeaderWrapper = styled.header`
   display: flex;
   position: relative;
-  color: ${({ theme }) => theme.color.inner};
-  background-color: ${({ theme }) => theme.color.main};
+  background-color: ${({ theme }) => theme.color.sub};
   justify-content: space-between;
   align-items: center;
 `;
 
 const Title = styled.h2`
   margin: 10px;
-  font-size: 1.5rem;
-  font-family: "Noto Sans Display", sans-serif;
+  font-size: 1.2rem;
   cursor: pointer;
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 `;
 
@@ -102,17 +101,15 @@ const Nav = styled.nav`
 const OpenButton = styled(Button)`
   width: 100px;
   margin: 10px;
-  padding: 5px 10px;
-  font-size: 1.15em;
-  color: ${({ theme }) => theme.color.main};
-  background-color: ${({ theme }) => theme.color.inner};
-  border: none;
-  border-radius: ${({ theme }) => theme.border.radius.container};
+  padding: 10px;
+  font-size: 0.9em;
+  color: ${({ theme }) => theme.color.inner};
+  border-bottom: 5px solid transparent;
   cursor: pointer;
   overflow: hidden;
 
   &:hover {
-    background-color: ${({ theme }) => theme.color.focus};
+    border-bottom: 5px solid ${({ theme }) => theme.color.point};
   }
 `;
 
@@ -122,20 +119,18 @@ const ListWrapper = styled.ol`
   top: 48px;
   min-width: 100px;
   padding: 5px;
-  background-color: ${({ theme }) => theme.color.inner};
-  border: 2px solid ${({ theme }) => theme.color.main};
-  border-radius: ${({ theme }) => theme.border.radius.container};
-  box-shadow: 2px 2px 3px gray;
+  background-color: ${({ theme }) => theme.color.sub};
+  box-shadow: 2px 2px 1px ${({ theme }) => theme.color.sub};
 `;
 
 const MenuWrapper = styled(ListWrapper)`
-  right: 10px;
+  right: 1px;
 `;
 
 const ChallengeListWrapper = styled(ListWrapper)`
   right: 120px;
 
-  .selected {
-    background-color: ${({ theme }) => theme.color.main};
+  .selected-challenge {
+    background-color: ${({ theme }) => theme.color.point};
   }
 `;

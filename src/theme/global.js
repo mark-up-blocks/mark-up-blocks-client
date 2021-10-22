@@ -15,7 +15,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: "Noto Serif KR";
+    font-family: sans-serif;
+    background-color: ${theme.color.main};
+    color: ${theme.color.inner};
   }
 
   a {
@@ -29,11 +31,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .drop-guide {
-    animation: 0.3s ease-in-out 0s infinite alternate blink;
-  }
-
-  .selected {
-    background-color: ${theme.color.point};
+    animation: 0.5s ease-in-out 0s infinite alternate blink;
   }
 
   .swing {
@@ -41,12 +39,10 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .correct {
-    border-radius: ${theme.border.radius.container};
     animation: 0.2s ease-in-out 0.1s 2 correctBlink;
   }
 
   .wrong {
-    border-radius: ${theme.border.radius.container};
     animation: 0.2s ease-in-out 0.1s 2 errorBlink;
   }
 
@@ -55,13 +51,17 @@ const GlobalStyle = createGlobalStyle`
     transform-origin: top center;
   }
 
+  .animation-none {
+    animation: none;
+  }
+
   @keyframes blink {
     to {
       background-color: transparent;
     }
 
     to {
-      background-color: ${theme.color.dropGuide};
+      background-color: ${theme.color.guide};
     }
   }
 
@@ -91,19 +91,19 @@ const GlobalStyle = createGlobalStyle`
 
   @keyframes swing {
     0%, 25% {
-      transform: rotate(0.5deg);
+      transform: rotate(0.3deg);
     }
 
     25%, 50% {
-      transform: rotate(-0.5deg);
+      transform: rotate(-0.3deg);
     }
 
     50%, 75% {
-      transform: rotate(-1deg);
+      transform: rotate(-0.7deg);
     }
 
     75%, 100% {
-      transform: rotate(1deg);
+      transform: rotate(0.7deg);
     }
   }
 

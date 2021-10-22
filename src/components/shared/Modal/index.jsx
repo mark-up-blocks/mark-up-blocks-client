@@ -60,6 +60,5 @@ const ModalWrapper = styled.div`
   align-items: center;
   padding: 20px;
   text-align: center;
-  border-radius: ${({ theme }) => theme.border.radius.container};
   background-color: ${({ theme }) => theme.color.inner};
 `;
