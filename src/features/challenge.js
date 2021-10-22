@@ -32,9 +32,16 @@ const challengeSlice = createSlice({
       }
 
       const isInvalidContainer = !!findBlockTreeById(blockTree, container._id);
-      const childTrees = [];
 
       if (isInvalidContainer) {
+        return;
+      }
+
+      const prevIndex = prevContainer.childTrees.findIndex((child) => child === blockTree);
+      const isSamePlace = (prevContainer === container)
+        && ((prevIndex && containerIndex) || (prevIndex + 1 === containerIndex));
+
+      if (isSamePlace) {
         return;
       }
 
@@ -44,24 +51,10 @@ const challengeSlice = createSlice({
           elementTree: challenge.elementTree, container, index: containerIndex, itemId,
         });
 
-      if (container._id === TYPE.TAG_BLOCK_CONTAINER && blockTree.childTrees.length) {
-        const tagBlocks = generateBlocks(blockTree, false);
-        const challengeTagBlocks = generateBlocks(stage);
-
-        childTrees.push({ ...blockTree, childTrees: [] });
-        tagBlocks.forEach((child) => {
-          if (challengeTagBlocks.find(({ _id }) => _id === child._id)) {
-            childTrees.push({ ...child, childTrees: [] });
-          }
-        });
-      } else {
-        childTrees.push(blockTree);
-      }
-
       prevContainer.childTrees = prevContainer.childTrees.filter((child) => child._id !== itemId);
       container.childTrees = [
         ...container.childTrees.slice(0, itemIndex),
-        ...childTrees,
+        blockTree,
         ...container.childTrees.slice(itemIndex),
       ];
       stage.isCompleted = compareChildTreeByBlockIds(

@@ -9,6 +9,15 @@ function selectContainer(stage, containerId) {
   return findBlockTreeById(stage.boilerplate, containerId);
 }
 
+function selectBlockTreeById(state, containerId, id) {
+  const { challenges, selectedIndex } = state.challenge;
+  const challenge = challenges[selectedIndex];
+  const stage = findBlockTreeById(challenge.elementTree, challenge.stageId);
+  const container = selectContainer(stage, containerId);
+
+  return findBlockTreeById(container, id);
+}
+
 function selectStageByParams(state, { index, id }) {
   const { challenges, isListLoading, isChallengeLoading } = state.challenge;
   const requestedChallenge = challenges[index];
@@ -70,4 +79,5 @@ function selectStageByParams(state, { index, id }) {
 export {
   selectContainer,
   selectStageByParams,
+  selectBlockTreeById,
 };
