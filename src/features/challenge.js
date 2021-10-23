@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchChallengeList, fetchChallenge } from "./challengeThunks";
 import { generateBlocks } from "../helpers/tagBlockGenerators";
-import { findBlockTreeById, compareChildTreeByBlockIds, validatePosition } from "../helpers/blockTreeHandlers";
+import {
+  findBlockTreeById, compareChildTreeByBlockIds, validatePosition, findNextUncompletedChallenge,
+} from "../helpers/blockTreeHandlers";
 import { selectContainer } from "../helpers/globalSelectors";
 import tutorialData from "../components/Tutorial/tutorialData";
 import { TYPE } from "../constants";
@@ -64,6 +66,14 @@ const challengeSlice = createSlice({
       stage.isCompleted = compareChildTreeByBlockIds(
         stage, stage.boilerplate,
       );
+
+      if (stage.isCompleted) {
+        const nextStage = findNextUncompletedChallenge(challenge.elementTree, stageId);
+
+        if (!nextStage) {
+          challenge.isCompleted = true;
+        }
+      }
     },
     resetStage(state, { payload }) {
       const stageId = payload;
