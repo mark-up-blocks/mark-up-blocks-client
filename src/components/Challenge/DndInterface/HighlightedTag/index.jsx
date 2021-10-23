@@ -4,6 +4,26 @@ import PropTypes from "prop-types";
 function HighlightedTag({
   tagName, text, isSubChallenge, isContainer, type,
 }) {
+  if (isSubChallenge && type === "open") {
+    return (
+      <>
+        <span key="self-open">{"<"}</span>
+        <span key="self-tagName" className="challenge-tag">{tagName}</span>
+        <span key="self-close">{">"}</span>
+      </>
+    );
+  }
+
+  if (isSubChallenge && type === "close") {
+    return (
+      <>
+        <span key="self-open">{"</"}</span>
+        <span key="self-tagName" className="challenge-tag">{tagName}</span>
+        <span key="self-close">{">"}</span>
+      </>
+    );
+  }
+
   if (isContainer && type === "open") {
     return (
       <>
@@ -25,11 +45,13 @@ function HighlightedTag({
   }
 
   if (isSubChallenge && type === "self-closing") {
-    <>
-      <span key="self-open">{"<"}</span>
-      <span key="self-tagName" className="challenge-tag">{tagName}</span>
-      <span key="self-close">{" />"}</span>
-    </>;
+    return (
+      <>
+        <span key="self-open">{"<"}</span>
+        <span key="self-tagName" className="challenge-tag">{tagName}</span>
+        <span key="self-close">{" />"}</span>
+      </>
+    );
   }
 
   if (isSubChallenge) {

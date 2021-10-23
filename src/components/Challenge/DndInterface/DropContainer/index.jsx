@@ -10,7 +10,7 @@ import { tagBlockSchema } from "../TagBlock";
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function DropContainer({
-  _id, tagName, childTrees, containerId, selectedTagId,
+  _id, tagName, childTrees, containerId, selectedTagId, isSubChallenge,
   onDrop, onClick, onBlockClick,
   className, isDropAreaActive,
 }) {
@@ -22,14 +22,14 @@ function DropContainer({
     <DropContainerWrapper className={className}>
       <div
         className="tag-text"
-        onClick={handleTagClick}
-        onKeyPress={handleTagClick}
+        onClick={isSubChallenge ? () => {} : handleTagClick}
+        onKeyPress={isSubChallenge ? () => {} : handleTagClick}
         role="button"
         tabIndex="0"
       >
         <HighlightedTag
           isContainer
-          isSubChallenge={false}
+          isSubChallenge={isSubChallenge}
           tagName={tagName}
           type="open"
         />
@@ -62,6 +62,7 @@ function DropContainer({
                   containerId={_id}
                   selectedTagId={selectedTagId}
                   isDropAreaActive={isDropAreaActive}
+                  isSubChallenge={false}
                 />
               )
               : (
@@ -97,14 +98,14 @@ function DropContainer({
       </>
       <div
         className="tag-text"
-        onClick={handleTagClick}
-        onKeyPress={handleTagClick}
+        onClick={isSubChallenge ? () => {} : handleTagClick}
+        onKeyPress={isSubChallenge ? () => {} : handleTagClick}
         role="button"
         tabIndex="0"
       >
         <HighlightedTag
           isContainer
-          isSubChallenge={false}
+          isSubChallenge={isSubChallenge}
           tagName={tagName}
           type="close"
         />
@@ -124,6 +125,7 @@ DropContainer.propTypes = {
       isCorrect: PropTypes.bool,
     }),
   ).isRequired,
+  isSubChallenge: PropTypes.bool.isRequired,
   onDrop: PropTypes.func.isRequired,
   onBlockClick: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
