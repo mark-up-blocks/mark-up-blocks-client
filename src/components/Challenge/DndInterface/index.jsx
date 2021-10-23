@@ -86,6 +86,7 @@ function DndInterface({
           containerId={boilerplate._id}
           childTrees={boilerplate.childTrees}
           tagName={boilerplate.block.tagName}
+          isSubChallenge
           onDrop={handleDrop}
           onClick={handleClickDrop}
           onBlockClick={(data) => onPick(data, "click")}
