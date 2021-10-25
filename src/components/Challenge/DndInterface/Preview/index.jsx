@@ -11,9 +11,9 @@ function Preview({
   const styles = Object.entries(block?.property?.style || {})
     .map(([key, value]) => [convertCamelToKebab(key), value])
     .sort((a, b) => b[0] > a[0]);
-  const previewChildTrees = block.isContainer
+  const previewChildTrees = !isSubChallenge && block.isContainer && childTrees.length
     ? [{ _id: "virtualChild", block: { tagName: "span", property: { text: "child" }, isContainer: false } }]
-    : [];
+    : childTrees;
   const { top, left } = calcPosition(position, { width: 300, height: 150 });
 
   return (
@@ -22,7 +22,7 @@ function Preview({
         <ElementBlock
           _id="preview"
           block={block}
-          childTrees={isSubChallenge ? childTrees : previewChildTrees}
+          childTrees={previewChildTrees}
         />
       </div>
       <div className="preview-style">

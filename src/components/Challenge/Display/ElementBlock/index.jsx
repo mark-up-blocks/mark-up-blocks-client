@@ -2,7 +2,7 @@ import React, { createElement } from "react";
 import PropTypes from "prop-types";
 
 function ElementBlock({ _id, block, childTrees }) {
-  const { tagName, isContainer } = block;
+  const { tagName } = block;
 
   function preventDefault(event) {
     event.preventDefault();
@@ -22,7 +22,7 @@ function ElementBlock({ _id, block, childTrees }) {
     property.onSubmit = preventDefault;
   }
 
-  if (isContainer) {
+  if (childTrees.length > 0) {
     return createElement(
       tagName,
       property,
