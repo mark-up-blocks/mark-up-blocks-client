@@ -37,10 +37,6 @@ function ElementBlock({ _id, block, childTrees }) {
     );
   }
 
-  if (["input", "textarea"].includes(tagName)) {
-    property.readOnly = true;
-  }
-
   if (block.property.text) {
     return createElement(
       tagName,
