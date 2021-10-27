@@ -15,6 +15,9 @@ function Preview({
     ? [{ _id: "virtualChild", block: { tagName: "span", property: { text: "child" }, isContainer: false } }]
     : childTrees;
   const { top, left } = calcPosition(position, { width: 300, height: 150 });
+  const refURL = block.tagName === "svg"
+    ? `${process.env.REACT_APP_REF_URI_SVG}/${block.tagName}`
+    : `${process.env.REACT_APP_REF_URI}/${block.tagName}`;
 
   return (
     <PreviewWrapper className={className} top={top} left={left} onClick={onClick}>
@@ -26,6 +29,7 @@ function Preview({
         />
       </div>
       <div className="preview-style">
+        <a href={refURL}>{block.tagName}</a>
         {styles.map(([key, value]) => (
           <p key={key}>{`${key}: ${value};`}</p>
         ))}
@@ -82,6 +86,7 @@ const PreviewWrapper = styled.div`
   justify-content: start;
 
   .preview-element {
+    position: relative;
     display: flex;
     margin: auto;
     padding: 10px;
