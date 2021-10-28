@@ -19,25 +19,19 @@ function DropContainer({
   };
 
   return (
-    <DropContainerWrapper className={className}>
-      <div
-        className="tag-text"
-        onClick={isSubChallenge ? () => {} : handleTagClick}
-        onKeyPress={isSubChallenge ? () => {} : handleTagClick}
-        role="button"
-        tabIndex="0"
-      >
+    <div className={className}>
+      <TextTag onClick={isSubChallenge ? () => {} : handleTagClick}>
         <HighlightedTag
           tagType="container-open"
           tagName={tagName}
         />
-      </div>
-      <DropArea
+      </TextTag>
+      <FirstDropArea
         _id={_id}
         onDrop={onDrop}
         index={0}
         onClick={onClick}
-        className={`first-drop-area ${isDropAreaActive ? "drop-guide" : ""}`}
+        className={isDropAreaActive ? "drop-guide" : ""}
         needHighlight
       />
       <>
@@ -64,48 +58,39 @@ function DropContainer({
                 />
               )
               : (
-                <div
-                  className={`tag-text ${selectedTagId === child._id ? "selected-tag" : ""}`}
+                <TextTag
                   onClick={() => onBlockClick({
                     _id: child._id,
                     containerId: _id,
                     isClicked: true,
                   })}
-                  onKeyPress={handleTagClick}
-                  role="button"
-                  tabIndex="0"
                 >
                   <HighlightedTag
                     tagType={child.isSubChallenge ? "stage" : "tag"}
+                    className={selectedTagId === child._id ? "selected-tag" : ""}
                     tagName={child.block.tagName}
                     text={child.isSubChallenge ? child.title : child.block.property.text}
                   />
-                </div>
+                </TextTag>
               )}
-            <DropArea
+            <BackwardDropArea
               _id={_id}
               onDrop={onDrop}
               onClick={onClick}
               index={index + 1}
-              className={`drop-area ${isDropAreaActive ? "drop-guide" : ""}`}
+              className={isDropAreaActive ? "drop-guide" : ""}
               needHighlight
             />
           </Draggable>
         ))}
       </>
-      <div
-        className="tag-text"
-        onClick={isSubChallenge ? () => {} : handleTagClick}
-        onKeyPress={isSubChallenge ? () => {} : handleTagClick}
-        role="button"
-        tabIndex="0"
-      >
+      <TextTag onClick={isSubChallenge ? () => {} : handleTagClick}>
         <HighlightedTag
           tagType="container-close"
           tagName={tagName}
         />
-      </div>
-    </DropContainerWrapper>
+      </TextTag>
+    </div>
   );
 }
 
@@ -133,14 +118,26 @@ DropContainer.defaultProps = {
   className: "",
 };
 
-const DropContainerWrapper = styled.div`
-  .drop-area {
-    margin: 4px 0px;
-  }
+const FirstDropArea = styled(DropArea)`
+  margin: 4px 20px;
+`;
 
-  .first-drop-area {
-    margin: 4px 20px;
+const BackwardDropArea = styled(DropArea)`
+  margin: 4px 0;
+`;
+
+const TextTag = styled.div`
+  :before {
+    position: absolute;
+    right: 100%;
+    margin-right: -20px;
+    text-align: right;
+    font-size: 0.8rem;
+    counter-increment: line;
+    content: counter(line);
+    color: ${({ theme }) => theme.color.inactive};
   }
 `;
 
+export { TextTag };
 export default DropContainer;

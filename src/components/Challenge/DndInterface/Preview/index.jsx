@@ -21,19 +21,19 @@ function Preview({
 
   return (
     <PreviewWrapper className={className} top={top} left={left} onClick={onClick}>
-      <div className="preview-element">
+      <PreviewElement>
         <ElementBlock
           _id="preview"
           block={block}
           childTrees={previewChildTrees}
         />
-      </div>
-      <div className="preview-style">
+      </PreviewElement>
+      <PreviewStyleProperty>
         <a href={refURL}>{block.tagName}</a>
         {styles.map(([key, value]) => (
-          <p key={key}>{`${key}: ${value};`}</p>
+          <PreviewStylePair key={key}>{`${key}: ${value};`}</PreviewStylePair>
         ))}
-      </div>
+      </PreviewStyleProperty>
     </PreviewWrapper>
   );
 }
@@ -71,8 +71,6 @@ Preview.defaultProps = {
   className: "",
 };
 
-export default Preview;
-
 const PreviewWrapper = styled.div`
   display: grid;
   position: absolute;
@@ -84,26 +82,28 @@ const PreviewWrapper = styled.div`
   padding: 10px;
   background-color: ${({ theme }) => theme.color.preview};
   justify-content: start;
-
-  .preview-element {
-    position: relative;
-    display: flex;
-    margin: auto;
-    padding: 10px;
-    background-color: white;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .preview-style {
-    width: 100%;
-    max-height: 30px;
-    margin: 5px;
-    padding: 5px;
-    color: white;
-
-    p {
-      padding: 2px;
-    }
-  }
 `;
+
+const PreviewElement = styled.div`
+  position: relative;
+  display: flex;
+  margin: auto;
+  padding: 10px;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+`;
+
+const PreviewStyleProperty = styled.div`
+  width: 100%;
+  max-height: 30px;
+  margin: 5px;
+  padding: 5px;
+  color: white;
+`;
+
+const PreviewStylePair = styled.p`
+  padding: 2px;
+`;
+
+export default Preview;

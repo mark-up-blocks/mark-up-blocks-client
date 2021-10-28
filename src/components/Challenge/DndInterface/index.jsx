@@ -42,7 +42,7 @@ function DndInterface({
   return (
     <DndInterfaceWrapper className={className}>
       <CustomDragLayer />
-      <TagBlockContainer>
+      <TagBlockShowcase>
         {picked.enablePreview && (
         <Preview
           tagType={picked.tagType}
@@ -53,14 +53,13 @@ function DndInterface({
           onClick={onUnpick}
         />
         )}
-        <DropArea
+        <TagBlockShowcaseDropArea
           _id={TYPE.TAG_BLOCK_CONTAINER}
           index={-1}
           onDrop={handleDrop}
           onClick={handleClickDrop}
-          className="tag-block-container-drop-area"
         />
-        <div className="flex-wrap">
+        <TagBlockContainer>
           {tagBlockContainer.childTrees.map(({
             _id, block, title, tagType,
           }) => (
@@ -71,7 +70,7 @@ function DndInterface({
               tagName={block.tagName}
               tagType={tagType}
               text={tagType === "stage" ? title : block.property.text || ""}
-              className={`tag-block ${picked._id === _id ? "selected-tag-block" : "swing"}`}
+              className={picked._id === _id ? "selected-tag-block" : "swing"}
               type={block.isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
               onMouseOver={(data) => onPick(data, "hover")}
               onMouseOut={onUnpick}
@@ -79,8 +78,8 @@ function DndInterface({
               title={title}
             />
           ))}
-        </div>
-      </TagBlockContainer>
+        </TagBlockContainer>
+      </TagBlockShowcase>
       <HTMLViewer>
         <LineNumberSpace />
         <DropContainer
@@ -140,7 +139,7 @@ const DndInterfaceWrapper = styled.div`
 
   .dragging .swing {
     animation: none;
-    background-color: ${({ theme }) => theme.color.point};
+    background-color: ${({ theme }) => theme.color.preview};
   }
 
   .selected-tag {
@@ -148,7 +147,7 @@ const DndInterfaceWrapper = styled.div`
   }
 `;
 
-const TagBlockContainer = styled.div`
+const TagBlockShowcase = styled.div`
   position: relative;
   display: flex;
   padding: 10px;
@@ -156,24 +155,21 @@ const TagBlockContainer = styled.div`
   align-items: center;
   border: 1px solid ${({ theme }) => theme.color.border};
   border-left: none;
+`;
 
-  .tag-block-container-drop-area {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-  }
+const TagBlockShowcaseDropArea = styled(DropArea)`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+`;
 
-  .flex-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .tag-block {
-    position: relative;
-  }
+const TagBlockContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 
   .selected-tag-block {
+    position: relative;
     background-color: ${({ theme }) => theme.color.preview};
   }
 `;
@@ -193,17 +189,6 @@ const HTMLViewer = styled.div`
 
   .dragging * {
     color: ${({ theme }) => theme.color.point};
-  }
-
-  .tag-text::before {
-    position: absolute;
-    right: 100%;
-    margin-right: -20px;
-    text-align: right;
-    font-size: 0.8rem;
-    counter-increment: line;
-    content: counter(line);
-    color: ${({ theme }) => theme.color.inactive};
   }
 `;
 

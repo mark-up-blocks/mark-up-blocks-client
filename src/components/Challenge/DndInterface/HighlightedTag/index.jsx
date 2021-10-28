@@ -2,30 +2,32 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-function HighlightedTag({ tagType, tagName, text }) {
+function HighlightedTag({
+  tagType, tagName, text, className,
+}) {
   if (tagType === "container-open" || tagType === "container-close") {
     return (
       <Tag>
-        <span>{tagType === "container-open" ? "<" : "</"}</span>
+        <span className={className}>{tagType === "container-open" ? "<" : "</"}</span>
         <span className="container">{tagName}</span>
-        <span>{">"}</span>
+        <span className={className}>{">"}</span>
       </Tag>
     );
   }
 
   return (
     <Tag>
-      <span>{"<"}</span>
+      <span className={className}>{"<"}</span>
       <span className={tagType}>{tagName}</span>
       {(tagType === "tag" && !text)
-        ? <span>{" />"}</span>
+        ? <span className={className}>{" />"}</span>
         : (
           <>
-            <span>{">"}</span>
+            <span className={className}>{">"}</span>
             <span>{text}</span>
-            <span>{"</"}</span>
+            <span className={className}>{"</"}</span>
             <span className={tagType}>{tagName}</span>
-            <span>{">"}</span>
+            <span className={className}>{">"}</span>
           </>
         )}
     </Tag>
@@ -42,10 +44,12 @@ HighlightedTag.propTypes = {
   ]).isRequired,
   tagName: PropTypes.string.isRequired,
   text: PropTypes.string,
+  className: PropTypes.string,
 };
 
 HighlightedTag.defaultProps = {
   text: "",
+  className: "",
 };
 
 const Tag = styled.span`

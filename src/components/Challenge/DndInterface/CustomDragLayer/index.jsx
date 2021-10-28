@@ -40,8 +40,6 @@ function CustomDragLayer() {
   );
 }
 
-export default CustomDragLayer;
-
 const Layer = styled.div`
   position: fixed;
   display: flex;
@@ -56,3 +54,5 @@ const Layer = styled.div`
     height: 25px;
   }
 `;
+
+export default CustomDragLayer;
