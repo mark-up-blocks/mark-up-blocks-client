@@ -7,18 +7,6 @@ import HighlightedTag from "../HighlightedTag";
 import { selectBlockTreeById } from "../../../../helpers/globalSelectors";
 import { getItemStyles } from "../../../../helpers/dataFormatters";
 
-function getTagType(blockTree) {
-  if (blockTree.isSubChallenge) {
-    return "stage";
-  }
-
-  if (blockTree.block.isContainer) {
-    return "container";
-  }
-
-  return "tag";
-}
-
 function CustomDragLayer() {
   const {
     isDragging, item, initialOffset, currentOffset,
@@ -32,7 +20,6 @@ function CustomDragLayer() {
   const blockTree = useSelector(
     (state) => selectBlockTreeById(state, item?.prevContainerId, item?.itemId),
   );
-  const tagType = blockTree ? getTagType(blockTree) : "tag";
 
   if (!isDragging) {
     return null;
@@ -43,9 +30,9 @@ function CustomDragLayer() {
       <span style={getItemStyles(initialOffset, currentOffset)} className="dragging-content">
         {blockTree && (
         <HighlightedTag
-          tagType={tagType}
+          tagType={blockTree.tagType}
           tagName={blockTree.block.tagName}
-          text={tagType === "stage" ? blockTree.title : blockTree.block.property.text}
+          text={blockTree.tagType === "stage" ? blockTree.title : blockTree.block.property.text}
         />
         )}
       </span>

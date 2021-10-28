@@ -11,18 +11,6 @@ import Preview from "./Preview";
 import { usePick } from "../../../hooks/usePick";
 import { TYPE, DRAGGABLE_TYPE } from "../../../constants";
 
-function getTagType(isSubChallenge, isContainer) {
-  if (isSubChallenge) {
-    return "stage";
-  }
-
-  if (isContainer) {
-    return "container";
-  }
-
-  return "tag";
-}
-
 function DndInterface({
   tagBlockContainer, boilerplate, onDrop, className,
 }) {
@@ -74,15 +62,15 @@ function DndInterface({
         />
         <div className="flex-wrap">
           {tagBlockContainer.childTrees.map(({
-            _id, block, isSubChallenge, title,
+            _id, block, title, tagType,
           }) => (
             <TagBlock
               _id={_id}
               key={_id}
               containerId={TYPE.TAG_BLOCK_CONTAINER}
               tagName={block.tagName}
-              tagType={getTagType(isSubChallenge, block.isContainer)}
-              text={isSubChallenge ? title : block.property.text || ""}
+              tagType={tagType}
+              text={tagType === "stage" ? title : block.property.text || ""}
               className={`tag-block ${picked._id === _id ? "selected-tag-block" : "swing"}`}
               type={block.isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
               onMouseOver={(data) => onPick(data, "hover")}
