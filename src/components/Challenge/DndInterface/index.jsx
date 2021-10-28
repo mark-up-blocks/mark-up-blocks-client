@@ -1,19 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 import CustomDragLayer from "./CustomDragLayer";
-import TagBlock, { tagBlockSchema } from "./TagBlock";
+import TagBlock from "./TagBlock";
 import DropArea from "./DropArea";
 import DropContainer from "./DropContainer";
 import Preview from "./Preview";
 
+import { selectStage } from "../../../helpers/globalSelectors";
 import { usePick } from "../../../hooks/usePick";
 import { TYPE, DRAGGABLE_TYPE } from "../../../constants";
 
-function DndInterface({
-  tagBlockContainer, boilerplate, onDrop, className,
-}) {
+function DndInterface({ onDrop, className }) {
+  const stage = useSelector(selectStage);
   const {
     picked, onPick, onUnpick, onReset,
   } = usePick();
@@ -42,51 +43,46 @@ function DndInterface({
   return (
     <DndInterfaceWrapper className={className}>
       <CustomDragLayer />
-      <TagBlockContainer>
-        {picked.enablePreview && (
-        <Preview
-          isSubChallenge={picked.isSubChallenge}
-          block={picked.block}
-          childTrees={picked.childTrees}
-          className="preview"
-          position={picked.position}
-          onClick={onUnpick}
-        />
+      <TagBlockShowcase>
+        {picked.position && (
+          <Preview
+            _id={picked._id}
+            containerId={picked.containerId}
+            position={picked.position}
+            onClick={onUnpick}
+          />
         )}
-        <DropArea
+        <TagBlockShowcaseDropArea
           _id={TYPE.TAG_BLOCK_CONTAINER}
           index={-1}
           onDrop={handleDrop}
           onClick={handleClickDrop}
-          className="tag-block-container-drop-area"
         />
-        <div className="flex-wrap">
-          {tagBlockContainer.childTrees.map(({ _id, block, isSubChallenge }) => (
+        <TagBlockContainer>
+          {stage.tagBlockContainer.childTrees.map(({
+            _id, block, title, tagType,
+          }) => (
             <TagBlock
-              _id={_id}
               key={_id}
+              _id={_id}
               containerId={TYPE.TAG_BLOCK_CONTAINER}
               tagName={block.tagName}
-              isSubChallenge={isSubChallenge}
-              isContainer={block.isContainer}
-              text={block.property.text || ""}
-              className={`tag-block ${picked._id === _id ? "selected-tag-block" : "swing"}`}
+              tagType={tagType}
+              text={tagType === "stage" ? title : block.property.text || ""}
+              className={picked._id === _id ? "selected-tag-block" : "swing"}
               type={block.isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
               onMouseOver={(data) => onPick(data, "hover")}
               onMouseOut={onUnpick}
               onClick={(data) => onPick(data, "click")}
             />
           ))}
-        </div>
-      </TagBlockContainer>
+        </TagBlockContainer>
+      </TagBlockShowcase>
       <HTMLViewer>
         <LineNumberSpace />
         <DropContainer
-          _id={boilerplate._id}
-          containerId={boilerplate._id}
-          childTrees={boilerplate.childTrees}
-          tagName={boilerplate.block.tagName}
-          isSubChallenge
+          _id={stage.boilerplate._id}
+          containerId=""
           onDrop={handleDrop}
           onClick={handleClickDrop}
           onBlockClick={(data) => onPick(data, "click")}
@@ -99,22 +95,6 @@ function DndInterface({
 }
 
 DndInterface.propTypes = {
-  tagBlockContainer: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    childTrees: PropTypes.arrayOf(
-      PropTypes.shape(tagBlockSchema),
-    ).isRequired,
-  }).isRequired,
-  boilerplate: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    childTrees: PropTypes.arrayOf(
-      PropTypes.shape(tagBlockSchema),
-    ).isRequired,
-    block: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      tagName: PropTypes.string.isRequired,
-    }),
-  }).isRequired,
   onDrop: PropTypes.func.isRequired,
   className: PropTypes.string,
 };
@@ -136,53 +116,37 @@ const DndInterfaceWrapper = styled.div`
 
   .dragging .swing {
     animation: none;
-    background-color: ${({ theme }) => theme.color.point};
-  }
-
-  .challenge-tag {
-    color: ${({ theme }) => theme.color.challengeTag};
-  }
-
-  .parent-tag {
-    color: ${({ theme }) => theme.color.parentTag};
+    background-color: ${({ theme }) => theme.color.preview};
   }
 
   .selected-tag {
     color: ${({ theme }) => theme.color.point};
   }
-
-  .child-tag {
-    color: ${({ theme }) => theme.color.childTag};
-  }
 `;
 
-const TagBlockContainer = styled.div`
+const TagBlockShowcase = styled.div`
   position: relative;
   display: flex;
   padding: 10px;
   justify-content: center;
   align-items: center;
-  border-top: 1px solid ${({ theme }) => theme.color.border};
-  border-right: 1px solid ${({ theme }) => theme.color.border};
-  border-bottom: 1px solid ${({ theme }) => theme.color.border};
+  border: 1px solid ${({ theme }) => theme.color.border};
+  border-left: none;
+`;
 
-  .tag-block-container-drop-area {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-  }
+const TagBlockShowcaseDropArea = styled(DropArea)`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+`;
 
-  .flex-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .tag-block {
-    position: relative;
-  }
+const TagBlockContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 
   .selected-tag-block {
+    position: relative;
     background-color: ${({ theme }) => theme.color.preview};
   }
 `;
@@ -192,9 +156,8 @@ const HTMLViewer = styled.div`
   display: grid;
   grid-template-columns: 30px auto;
   align-items: center;
-  border-top: 1px solid ${({ theme }) => theme.color.border};
-  border-right: 1px solid ${({ theme }) => theme.color.border};
-  border-bottom: 1px solid ${({ theme }) => theme.color.border};
+  border: 1px solid ${({ theme }) => theme.color.border};
+  border-left: none;
   counter-reset: line;
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
@@ -203,17 +166,6 @@ const HTMLViewer = styled.div`
 
   .dragging * {
     color: ${({ theme }) => theme.color.point};
-  }
-
-  .tag-text::before {
-    position: absolute;
-    right: 100%;
-    margin-right: -20px;
-    text-align: right;
-    font-size: 0.8rem;
-    counter-increment: line;
-    content: counter(line);
-    color: ${({ theme }) => theme.color.inactive};
   }
 `;
 

@@ -84,25 +84,19 @@ function Challenge() {
   ]);
 
   return (
-    <PuzzleWrapper>
+    <ChallengeWrapper>
       {canRender && (
         <>
-          <Display boilerplate={stage.boilerplate} elementTree={stage.elementTree} />
-          <DndInterface
-            tagBlockContainer={stage.tagBlockContainer}
-            boilerplate={stage.boilerplate}
-            onDrop={handleDrop}
-          />
+          <Display />
+          <DndInterface onDrop={handleDrop} />
           <ResetButton value="reset" onClick={handleReset} />
         </>
       )}
-    </PuzzleWrapper>
+    </ChallengeWrapper>
   );
 }
 
-export default Challenge;
-
-const PuzzleWrapper = styled.div`
+const ChallengeWrapper = styled.div`
   display: grid;
   width: 100%;
   height: 100%;
@@ -129,3 +123,5 @@ const ResetButton = styled(Button)`
     background-color: ${({ theme }) => theme.color.point};
   }
 `;
+
+export default Challenge;

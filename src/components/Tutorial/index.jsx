@@ -92,8 +92,6 @@ function Tutorial() {
   );
 }
 
-export default Tutorial;
-
 const TutorialWrapper = styled.div`
   display: grid;
   width: 100%;
@@ -121,3 +119,5 @@ const Guide = styled.div`
     font-size: 0.8rem;
   }
 `;
+
+export default Tutorial;

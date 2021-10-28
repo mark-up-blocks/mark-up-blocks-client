@@ -50,8 +50,6 @@ StageList.propTypes = {
   stageId: PropTypes.string.isRequired,
 };
 
-export default StageList;
-
 const Li = styled.li`
   margin: 5px 0px 5px 15px;
 
@@ -59,3 +57,5 @@ const Li = styled.li`
     background-color: ${({ theme }) => theme.color.point};
   }
 `;
+
+export default StageList;

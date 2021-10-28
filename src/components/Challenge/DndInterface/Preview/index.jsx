@@ -1,17 +1,24 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import ElementBlock from "../../Display/ElementBlock";
+
+import { selectBlockTreeById } from "../../../../helpers/globalSelectors";
 import { convertCamelToKebab, calcPosition } from "../../../../helpers/dataFormatters";
 
 function Preview({
-  isSubChallenge, block, childTrees, position, className, onClick,
+  _id, containerId, position, onClick,
 }) {
+  const blockTree = useSelector(
+    (state) => selectBlockTreeById(state, containerId, _id),
+  );
+  const { block, tagType, childTrees } = blockTree;
   const styles = Object.entries(block?.property?.style || {})
     .map(([key, value]) => [convertCamelToKebab(key), value])
     .sort((a, b) => b[0] > a[0]);
-  const previewChildTrees = !isSubChallenge && block.isContainer && childTrees.length
+  const previewChildTrees = tagType === "container" && !childTrees.length
     ? [{ _id: "virtualChild", block: { tagName: "span", property: { text: "child" }, isContainer: false } }]
     : childTrees;
   const { top, left } = calcPosition(position, { width: 300, height: 150 });
@@ -20,58 +27,33 @@ function Preview({
     : `${process.env.REACT_APP_REF_URI}/${block.tagName}`;
 
   return (
-    <PreviewWrapper className={className} top={top} left={left} onClick={onClick}>
-      <div className="preview-element">
+    <PreviewWrapper top={top} left={left} onClick={onClick}>
+      <PreviewElement>
         <ElementBlock
           _id="preview"
           block={block}
           childTrees={previewChildTrees}
         />
-      </div>
-      <div className="preview-style">
+      </PreviewElement>
+      <PreviewStyleProperty>
         <a href={refURL}>{block.tagName}</a>
         {styles.map(([key, value]) => (
-          <p key={key}>{`${key}: ${value};`}</p>
+          <PreviewStylePair key={key}>{`${key}: ${value};`}</PreviewStylePair>
         ))}
-      </div>
+      </PreviewStyleProperty>
     </PreviewWrapper>
   );
 }
 
-export const tagBlockSchema = {
-  isSubChallenge: PropTypes.bool.isRequired,
-  block: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    tagName: PropTypes.string.isRequired,
-    isContainer: PropTypes.bool.isRequired,
-    property: PropTypes.objectOf(
-      PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.objectOf(PropTypes.string),
-      ]).isRequired,
-    ).isRequired,
-  }).isRequired,
-};
-
 Preview.propTypes = {
-  ...tagBlockSchema,
-  childTrees: PropTypes.arrayOf(
-    PropTypes.shape(tagBlockSchema),
-  ),
-  className: PropTypes.string,
+  _id: PropTypes.string.isRequired,
+  containerId: PropTypes.string.isRequired,
   position: PropTypes.shape({
     top: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
   }).isRequired,
   onClick: PropTypes.func.isRequired,
 };
-
-Preview.defaultProps = {
-  childTrees: [],
-  className: "",
-};
-
-export default Preview;
 
 const PreviewWrapper = styled.div`
   display: grid;
@@ -84,26 +66,28 @@ const PreviewWrapper = styled.div`
   padding: 10px;
   background-color: ${({ theme }) => theme.color.preview};
   justify-content: start;
-
-  .preview-element {
-    position: relative;
-    display: flex;
-    margin: auto;
-    padding: 10px;
-    background-color: white;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .preview-style {
-    width: 100%;
-    max-height: 30px;
-    margin: 5px;
-    padding: 5px;
-    color: white;
-
-    p {
-      padding: 2px;
-    }
-  }
 `;
+
+const PreviewElement = styled.div`
+  position: relative;
+  display: flex;
+  margin: auto;
+  padding: 10px;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+`;
+
+const PreviewStyleProperty = styled.div`
+  width: 100%;
+  max-height: 30px;
+  margin: 5px;
+  padding: 5px;
+  color: white;
+`;
+
+const PreviewStylePair = styled.p`
+  padding: 2px;
+`;
+
+export default Preview;

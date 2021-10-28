@@ -27,21 +27,18 @@ function CustomDragLayer() {
 
   return (
     <Layer>
-      <span style={getItemStyles(initialOffset, currentOffset)} className="dragging-content">
+      <span style={getItemStyles(initialOffset, currentOffset)}>
         {blockTree && (
         <HighlightedTag
+          tagType={blockTree.tagType}
           tagName={blockTree.block.tagName}
-          text={blockTree.block.property.text}
-          isSubChallenge={blockTree.isSubChallenge}
-          isContainer={blockTree.block.isContainer}
+          text={blockTree.tagType === "stage" ? blockTree.title : blockTree.block.property.text}
         />
         )}
       </span>
     </Layer>
   );
 }
-
-export default CustomDragLayer;
 
 const Layer = styled.div`
   position: fixed;
@@ -52,8 +49,6 @@ const Layer = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
-
-  .dragging-content {
-    height: 25px;
-  }
 `;
+
+export default CustomDragLayer;

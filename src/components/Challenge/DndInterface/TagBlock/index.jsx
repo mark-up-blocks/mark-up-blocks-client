@@ -8,7 +8,7 @@ import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function TagBlock({
   _id, type, containerId, className, onMouseOver, onMouseOut, onClick,
-  tagName, text, isSubChallenge, isContainer,
+  tagName, text, tagType,
 }) {
   const ref = useRef(null);
   const handleSelect = (func) => {
@@ -31,10 +31,9 @@ function TagBlock({
         onClick={() => handleSelect(onClick)}
       >
         <HighlightedTag
+          tagType={tagType}
           tagName={tagName}
           text={text}
-          isSubChallenge={isSubChallenge}
-          isContainer={isContainer}
         />
       </TagBlockWrapper>
     </Draggable>
@@ -44,9 +43,8 @@ function TagBlock({
 TagBlock.propTypes = {
   _id: PropTypes.string.isRequired,
   tagName: PropTypes.string.isRequired,
+  tagType: PropTypes.oneOf(["stage", "container", "tag"]).isRequired,
   text: PropTypes.string.isRequired,
-  isSubChallenge: PropTypes.bool.isRequired,
-  isContainer: PropTypes.bool.isRequired,
   type: PropTypes.oneOf(Object.values(DRAGGABLE_TYPE)).isRequired,
   containerId: PropTypes.string.isRequired,
   className: PropTypes.string.isRequired,
@@ -62,21 +60,4 @@ const TagBlockWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.point};
 `;
 
-const tagBlockSchema = {
-  _id: PropTypes.string.isRequired,
-  isSubChallenge: PropTypes.bool.isRequired,
-  block: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    tagName: PropTypes.string.isRequired,
-    isContainer: PropTypes.bool.isRequired,
-    property: PropTypes.objectOf(
-      PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.objectOf(PropTypes.string),
-      ]).isRequired,
-    ).isRequired,
-  }).isRequired,
-};
-
-export { tagBlockSchema };
 export default TagBlock;

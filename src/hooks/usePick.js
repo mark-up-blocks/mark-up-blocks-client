@@ -1,7 +1,4 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
-
-import { selectBlockTreeById } from "../helpers/globalSelectors";
 
 const initialPicked = {
   _id: "",
@@ -13,9 +10,6 @@ const initialPicked = {
 
 function usePick() {
   const [picked, setPicked] = useState(initialPicked);
-  const pickedBlockTree = useSelector(
-    (state) => selectBlockTreeById(state, picked.containerId, picked._id),
-  );
   const handleReset = () => setPicked(initialPicked);
   const handleUnpick = () => {
     if (picked.isClicked) {
@@ -52,9 +46,7 @@ function usePick() {
   };
 
   return {
-    picked: pickedBlockTree
-      ? { ...picked, ...pickedBlockTree, enablePreview: !!picked.position }
-      : picked,
+    picked,
     onPick: handlePick,
     onUnpick: handleUnpick,
     onReset: handleReset,

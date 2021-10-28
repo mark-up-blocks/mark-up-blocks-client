@@ -30,8 +30,6 @@ Modal.defaultProps = {
   onClick: () => {},
 };
 
-export default Modal;
-
 const Wrapper = styled.div`
   position: absolute;
   display: flex;
@@ -62,3 +60,5 @@ const ModalWrapper = styled.div`
   text-align: center;
   background-color: ${({ theme }) => theme.color.inner};
 `;
+
+export default Modal;
