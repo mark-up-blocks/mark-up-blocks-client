@@ -27,7 +27,7 @@ function CustomDragLayer() {
 
   return (
     <Layer>
-      <span style={getItemStyles(initialOffset, currentOffset)} className="dragging-content">
+      <span style={getItemStyles(initialOffset, currentOffset)}>
         {blockTree && (
         <HighlightedTag
           tagType={blockTree.tagType}
@@ -49,10 +49,6 @@ const Layer = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
-
-  .dragging-content {
-    height: 25px;
-  }
 `;
 
 export default CustomDragLayer;
