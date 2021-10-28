@@ -72,8 +72,6 @@ Header.propTypes = {
   onStageMenuClick: PropTypes.func.isRequired,
 };
 
-export default Header;
-
 const HeaderWrapper = styled.header`
   display: flex;
   position: relative;
@@ -134,3 +132,5 @@ const ChallengeListWrapper = styled(ListWrapper)`
     background-color: ${({ theme }) => theme.color.point};
   }
 `;
+
+export default Header;

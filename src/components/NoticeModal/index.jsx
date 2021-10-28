@@ -54,8 +54,6 @@ NoticeModal.propTypes = {
   onReset: PropTypes.func.isRequired,
 };
 
-export default NoticeModal;
-
 const Wrapper = styled(Modal)`
   color: ${({ theme }) => theme.color.main};
 
@@ -108,3 +106,5 @@ const ClickInterface = styled.div`
     font-size: 0.8rem;
   }
 `;
+
+export default NoticeModal;
