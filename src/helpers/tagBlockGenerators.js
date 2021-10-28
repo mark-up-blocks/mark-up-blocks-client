@@ -26,7 +26,7 @@ function validateBlockTree(node) {
   }
 
   if (block === null || typeof block !== "object") {
-    return null;
+    return false;
   }
 
   const {
