@@ -63,8 +63,8 @@ function DndInterface({ onDrop, className }) {
             _id, block, title, tagType,
           }) => (
             <TagBlock
-              _id={_id}
               key={_id}
+              _id={_id}
               containerId={TYPE.TAG_BLOCK_CONTAINER}
               tagName={block.tagName}
               tagType={tagType}
@@ -74,7 +74,6 @@ function DndInterface({ onDrop, className }) {
               onMouseOver={(data) => onPick(data, "hover")}
               onMouseOut={onUnpick}
               onClick={(data) => onPick(data, "click")}
-              title={title}
             />
           ))}
         </TagBlockContainer>

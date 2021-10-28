@@ -60,21 +60,4 @@ const TagBlockWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.point};
 `;
 
-const tagBlockSchema = {
-  _id: PropTypes.string.isRequired,
-  isSubChallenge: PropTypes.bool.isRequired,
-  block: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    tagName: PropTypes.string.isRequired,
-    isContainer: PropTypes.bool.isRequired,
-    property: PropTypes.objectOf(
-      PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.objectOf(PropTypes.string),
-      ]).isRequired,
-    ).isRequired,
-  }).isRequired,
-};
-
-export { tagBlockSchema };
 export default TagBlock;
