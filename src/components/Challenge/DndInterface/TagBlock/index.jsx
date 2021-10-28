@@ -8,7 +8,7 @@ import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function TagBlock({
   _id, type, containerId, className, onMouseOver, onMouseOut, onClick,
-  tagName, text, isSubChallenge, isContainer,
+  tagName, text, isSubChallenge, isContainer, title,
 }) {
   const ref = useRef(null);
   const handleSelect = (func) => {
@@ -35,6 +35,7 @@ function TagBlock({
           text={text}
           isSubChallenge={isSubChallenge}
           isContainer={isContainer}
+          title={title}
         />
       </TagBlockWrapper>
     </Draggable>
@@ -53,6 +54,7 @@ TagBlock.propTypes = {
   onMouseOver: PropTypes.func.isRequired,
   onMouseOut: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 const TagBlockWrapper = styled.div`

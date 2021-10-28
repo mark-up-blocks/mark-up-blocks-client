@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 function HighlightedTag({
-  tagName, text, isSubChallenge, isContainer, type,
+  tagName, text, isSubChallenge, isContainer, type, title,
 }) {
   if (isSubChallenge && type === "open") {
     return (
@@ -60,7 +60,7 @@ function HighlightedTag({
         <span key="open-open">{"<"}</span>
         <span key="open-tagName" className="challenge-tag">{tagName}</span>
         <span key="open-close">{">"}</span>
-        <span key="text">stage</span>
+        <span key="text">{title}</span>
         <span key="close-open">{"</"}</span>
         <span key="close-tagName" className="challenge-tag">{tagName}</span>
         <span key="close-close">{">"}</span>
@@ -110,6 +110,7 @@ HighlightedTag.propTypes = {
   isSubChallenge: PropTypes.bool.isRequired,
   isContainer: PropTypes.bool.isRequired,
   type: PropTypes.string,
+  title: PropTypes.string.isRequired,
 };
 
 HighlightedTag.defaultProps = {

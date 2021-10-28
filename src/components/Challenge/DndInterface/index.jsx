@@ -61,7 +61,9 @@ function DndInterface({
           className="tag-block-container-drop-area"
         />
         <div className="flex-wrap">
-          {tagBlockContainer.childTrees.map(({ _id, block, isSubChallenge }) => (
+          {tagBlockContainer.childTrees.map(({
+            _id, block, isSubChallenge, title,
+          }) => (
             <TagBlock
               _id={_id}
               key={_id}
@@ -75,6 +77,7 @@ function DndInterface({
               onMouseOver={(data) => onPick(data, "hover")}
               onMouseOut={onUnpick}
               onClick={(data) => onPick(data, "click")}
+              title={title}
             />
           ))}
         </div>
@@ -92,6 +95,7 @@ function DndInterface({
           onBlockClick={(data) => onPick(data, "click")}
           selectedTagId={picked._id}
           isDropAreaActive={!!picked._id}
+          title={boilerplate.title}
         />
       </HTMLViewer>
     </DndInterfaceWrapper>
@@ -106,6 +110,7 @@ DndInterface.propTypes = {
     ).isRequired,
   }).isRequired,
   boilerplate: PropTypes.shape({
+    title: PropTypes.string.isRequired,
     _id: PropTypes.string.isRequired,
     childTrees: PropTypes.arrayOf(
       PropTypes.shape(tagBlockSchema),

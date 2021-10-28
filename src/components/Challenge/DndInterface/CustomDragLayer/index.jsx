@@ -34,6 +34,7 @@ function CustomDragLayer() {
           text={blockTree.block.property.text}
           isSubChallenge={blockTree.isSubChallenge}
           isContainer={blockTree.block.isContainer}
+          title={blockTree.title}
         />
         )}
       </span>
