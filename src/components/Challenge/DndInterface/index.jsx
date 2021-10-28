@@ -45,7 +45,7 @@ function DndInterface({
       <TagBlockContainer>
         {picked.enablePreview && (
         <Preview
-          isSubChallenge={picked.isSubChallenge}
+          tagType={picked.tagType}
           block={picked.block}
           childTrees={picked.childTrees}
           className="preview"

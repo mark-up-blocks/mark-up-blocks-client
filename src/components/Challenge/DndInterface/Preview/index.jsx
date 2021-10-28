@@ -6,12 +6,12 @@ import ElementBlock from "../../Display/ElementBlock";
 import { convertCamelToKebab, calcPosition } from "../../../../helpers/dataFormatters";
 
 function Preview({
-  isSubChallenge, block, childTrees, position, className, onClick,
+  tagType, block, childTrees, position, className, onClick,
 }) {
   const styles = Object.entries(block?.property?.style || {})
     .map(([key, value]) => [convertCamelToKebab(key), value])
     .sort((a, b) => b[0] > a[0]);
-  const previewChildTrees = !isSubChallenge && block.isContainer && childTrees.length
+  const previewChildTrees = tagType === "container" && !childTrees.length
     ? [{ _id: "virtualChild", block: { tagName: "span", property: { text: "child" }, isContainer: false } }]
     : childTrees;
   const { top, left } = calcPosition(position, { width: 300, height: 150 });
@@ -39,7 +39,7 @@ function Preview({
 }
 
 export const tagBlockSchema = {
-  isSubChallenge: PropTypes.bool.isRequired,
+  tagType: PropTypes.oneOf(["stage", "container", "tag"]),
   block: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     tagName: PropTypes.string.isRequired,
