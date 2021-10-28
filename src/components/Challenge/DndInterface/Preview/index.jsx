@@ -1,13 +1,20 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import ElementBlock from "../../Display/ElementBlock";
+
+import { selectBlockTreeById } from "../../../../helpers/globalSelectors";
 import { convertCamelToKebab, calcPosition } from "../../../../helpers/dataFormatters";
 
 function Preview({
-  tagType, block, childTrees, position, className, onClick,
+  _id, containerId, position, onClick,
 }) {
+  const blockTree = useSelector(
+    (state) => selectBlockTreeById(state, containerId, _id),
+  );
+  const { block, tagType, childTrees } = blockTree;
   const styles = Object.entries(block?.property?.style || {})
     .map(([key, value]) => [convertCamelToKebab(key), value])
     .sort((a, b) => b[0] > a[0]);
@@ -20,7 +27,7 @@ function Preview({
     : `${process.env.REACT_APP_REF_URI}/${block.tagName}`;
 
   return (
-    <PreviewWrapper className={className} top={top} left={left} onClick={onClick}>
+    <PreviewWrapper top={top} left={left} onClick={onClick}>
       <PreviewElement>
         <ElementBlock
           _id="preview"
@@ -38,37 +45,14 @@ function Preview({
   );
 }
 
-export const tagBlockSchema = {
-  tagType: PropTypes.oneOf(["stage", "container", "tag"]),
-  block: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    tagName: PropTypes.string.isRequired,
-    isContainer: PropTypes.bool.isRequired,
-    property: PropTypes.objectOf(
-      PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.objectOf(PropTypes.string),
-      ]).isRequired,
-    ).isRequired,
-  }).isRequired,
-};
-
 Preview.propTypes = {
-  ...tagBlockSchema,
-  childTrees: PropTypes.arrayOf(
-    PropTypes.shape(tagBlockSchema),
-  ),
-  className: PropTypes.string,
+  _id: PropTypes.string.isRequired,
+  containerId: PropTypes.string.isRequired,
   position: PropTypes.shape({
     top: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
   }).isRequired,
   onClick: PropTypes.func.isRequired,
-};
-
-Preview.defaultProps = {
-  childTrees: [],
-  className: "",
 };
 
 const PreviewWrapper = styled.div`

@@ -44,15 +44,13 @@ function DndInterface({ onDrop, className }) {
     <DndInterfaceWrapper className={className}>
       <CustomDragLayer />
       <TagBlockShowcase>
-        {picked.enablePreview && (
-        <Preview
-          tagType={picked.tagType}
-          block={picked.block}
-          childTrees={picked.childTrees}
-          className="preview"
-          position={picked.position}
-          onClick={onUnpick}
-        />
+        {picked.position && (
+          <Preview
+            _id={picked._id}
+            containerId={picked.containerId}
+            position={picked.position}
+            onClick={onUnpick}
+          />
         )}
         <TagBlockShowcaseDropArea
           _id={TYPE.TAG_BLOCK_CONTAINER}
