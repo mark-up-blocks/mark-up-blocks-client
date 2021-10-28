@@ -1,29 +1,32 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import Draggable from "../Draggable";
 import DropArea from "../DropArea";
 import HighlightedTag from "../HighlightedTag";
-import { tagBlockSchema } from "../TagBlock";
 
+import { selectBlockTreeById } from "../../../../helpers/globalSelectors";
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function DropContainer({
-  _id, tagName, childTrees, containerId, selectedTagId, isSubChallenge,
+  _id, containerId, selectedTagId,
   onDrop, onClick, onBlockClick,
-  className, isDropAreaActive,
+  isDropAreaActive,
 }) {
+  const blockTree = useSelector((state) => selectBlockTreeById(state, containerId, _id));
+  const { block, childTrees } = blockTree;
   const handleTagClick = () => {
     onBlockClick({ _id, containerId, isClicked: true });
   };
 
   return (
-    <div className={className}>
-      <TextTag onClick={isSubChallenge ? () => {} : handleTagClick}>
+    <div>
+      <TextTag onClick={containerId ? () => {} : handleTagClick}>
         <HighlightedTag
           tagType="container-open"
-          tagName={tagName}
+          tagName={block.tagName}
         />
       </TextTag>
       <FirstDropArea
@@ -46,15 +49,12 @@ function DropContainer({
               ? (
                 <DropContainer
                   _id={child._id}
-                  childTrees={child.childTrees}
-                  tagName={child.block.tagName}
-                  onDrop={onDrop}
-                  onBlockClick={onBlockClick}
-                  onClick={onClick}
                   containerId={_id}
                   selectedTagId={selectedTagId}
+                  onDrop={onDrop}
+                  onClick={onClick}
+                  onBlockClick={onBlockClick}
                   isDropAreaActive={isDropAreaActive}
-                  isSubChallenge={false}
                 />
               )
               : (
@@ -84,10 +84,10 @@ function DropContainer({
           </Draggable>
         ))}
       </>
-      <TextTag onClick={isSubChallenge ? () => {} : handleTagClick}>
+      <TextTag onClick={containerId ? () => {} : handleTagClick}>
         <HighlightedTag
           tagType="container-close"
-          tagName={tagName}
+          tagName={block.tagName}
         />
       </TextTag>
     </div>
@@ -97,25 +97,15 @@ function DropContainer({
 DropContainer.propTypes = {
   _id: PropTypes.string.isRequired,
   containerId: PropTypes.string.isRequired,
-  tagName: PropTypes.string.isRequired,
   selectedTagId: PropTypes.string,
-  childTrees: PropTypes.arrayOf(
-    PropTypes.shape({
-      ...tagBlockSchema,
-      isCorrect: PropTypes.bool,
-    }),
-  ).isRequired,
-  isSubChallenge: PropTypes.bool.isRequired,
-  onDrop: PropTypes.func.isRequired,
   onBlockClick: PropTypes.func.isRequired,
+  onDrop: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
-  className: PropTypes.string,
   isDropAreaActive: PropTypes.bool.isRequired,
 };
 
 DropContainer.defaultProps = {
   selectedTagId: "",
-  className: "",
 };
 
 const FirstDropArea = styled(DropArea)`

@@ -9,11 +9,19 @@ function selectContainer(stage, containerId) {
   return findBlockTreeById(stage.boilerplate, containerId);
 }
 
+function selectStage(state) {
+  const { challenges, selectedIndex } = state.challenge;
+  const challenge = challenges[selectedIndex];
+  const stage = findBlockTreeById(challenge.elementTree, challenge.stageId);
+
+  return stage;
+}
+
 function selectBlockTreeById(state, containerId, id) {
   const { challenges, selectedIndex } = state.challenge;
   const challenge = challenges[selectedIndex];
   const stage = findBlockTreeById(challenge.elementTree, challenge.stageId);
-  const container = selectContainer(stage, containerId);
+  const container = containerId ? selectContainer(stage, containerId) : stage.boilerplate;
 
   return findBlockTreeById(container, id);
 }
@@ -78,6 +86,7 @@ function selectStageByParams(state, { index, id }) {
 
 export {
   selectContainer,
+  selectStage,
   selectStageByParams,
   selectBlockTreeById,
 };

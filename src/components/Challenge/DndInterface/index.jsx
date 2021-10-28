@@ -1,19 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 import CustomDragLayer from "./CustomDragLayer";
-import TagBlock, { tagBlockSchema } from "./TagBlock";
+import TagBlock from "./TagBlock";
 import DropArea from "./DropArea";
 import DropContainer from "./DropContainer";
 import Preview from "./Preview";
 
+import { selectStage } from "../../../helpers/globalSelectors";
 import { usePick } from "../../../hooks/usePick";
 import { TYPE, DRAGGABLE_TYPE } from "../../../constants";
 
-function DndInterface({
-  tagBlockContainer, boilerplate, onDrop, className,
-}) {
+function DndInterface({ onDrop, className }) {
+  const stage = useSelector(selectStage);
   const {
     picked, onPick, onUnpick, onReset,
   } = usePick();
@@ -60,7 +61,7 @@ function DndInterface({
           onClick={handleClickDrop}
         />
         <TagBlockContainer>
-          {tagBlockContainer.childTrees.map(({
+          {stage.tagBlockContainer.childTrees.map(({
             _id, block, title, tagType,
           }) => (
             <TagBlock
@@ -83,17 +84,13 @@ function DndInterface({
       <HTMLViewer>
         <LineNumberSpace />
         <DropContainer
-          _id={boilerplate._id}
-          containerId={boilerplate._id}
-          childTrees={boilerplate.childTrees}
-          tagName={boilerplate.block.tagName}
-          isSubChallenge
+          _id={stage.boilerplate._id}
+          containerId=""
           onDrop={handleDrop}
           onClick={handleClickDrop}
           onBlockClick={(data) => onPick(data, "click")}
           selectedTagId={picked._id}
           isDropAreaActive={!!picked._id}
-          title={boilerplate.title}
         />
       </HTMLViewer>
     </DndInterfaceWrapper>
@@ -101,23 +98,6 @@ function DndInterface({
 }
 
 DndInterface.propTypes = {
-  tagBlockContainer: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    childTrees: PropTypes.arrayOf(
-      PropTypes.shape(tagBlockSchema),
-    ).isRequired,
-  }).isRequired,
-  boilerplate: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    _id: PropTypes.string.isRequired,
-    childTrees: PropTypes.arrayOf(
-      PropTypes.shape(tagBlockSchema),
-    ).isRequired,
-    block: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      tagName: PropTypes.string.isRequired,
-    }),
-  }).isRequired,
   onDrop: PropTypes.func.isRequired,
   className: PropTypes.string,
 };

@@ -1,14 +1,17 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 import ElementBlock from "./ElementBlock";
+
+import { selectStage } from "../../../helpers/globalSelectors";
 import { TYPE } from "../../../constants";
 
-function Display({ boilerplate, elementTree }) {
+function Display() {
+  const stage = useSelector(selectStage);
   const pages = [
-    { ...boilerplate, key: TYPE.BOILERPLATE },
-    { ...elementTree, key: TYPE.ELEMENT_TREE },
+    { ...stage.boilerplate, key: TYPE.BOILERPLATE },
+    { ...stage.elementTree, key: TYPE.ELEMENT_TREE },
   ];
 
   return (
@@ -27,13 +30,6 @@ function Display({ boilerplate, elementTree }) {
     </Container>
   );
 }
-
-Display.propTypes = {
-  boilerplate: PropTypes.shape(ElementBlock.propTypes).isRequired,
-  elementTree: PropTypes.shape(ElementBlock.propTypes).isRequired,
-};
-
-export default Display;
 
 const Container = styled.div`
   display: grid;
@@ -62,3 +58,5 @@ const PageWrapper = styled.div`
     order: ${({ index }) => -index};
   }
 `;
+
+export default Display;
