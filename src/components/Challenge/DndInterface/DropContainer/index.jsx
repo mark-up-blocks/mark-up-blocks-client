@@ -10,7 +10,7 @@ import { tagBlockSchema } from "../TagBlock";
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function DropContainer({
-  _id, tagName, childTrees, containerId, selectedTagId, isSubChallenge, title,
+  _id, tagName, childTrees, containerId, selectedTagId, isSubChallenge,
   onDrop, onClick, onBlockClick,
   className, isDropAreaActive,
 }) {
@@ -28,11 +28,8 @@ function DropContainer({
         tabIndex="0"
       >
         <HighlightedTag
-          isContainer
-          isSubChallenge={isSubChallenge}
+          tagType="container-open"
           tagName={tagName}
-          type="open"
-          title={title}
         />
       </div>
       <DropArea
@@ -79,11 +76,9 @@ function DropContainer({
                   tabIndex="0"
                 >
                   <HighlightedTag
-                    isContainer={false}
-                    isSubChallenge={child.isSubChallenge}
+                    tagType={child.isSubChallenge ? "stage" : "tag"}
                     tagName={child.block.tagName}
-                    text={child.block.property.text}
-                    title={child.title}
+                    text={child.isSubChallenge ? child.title : child.block.property.text}
                   />
                 </div>
               )}
@@ -106,11 +101,8 @@ function DropContainer({
         tabIndex="0"
       >
         <HighlightedTag
-          isContainer
-          isSubChallenge={isSubChallenge}
+          tagType="container-close"
           tagName={tagName}
-          type="close"
-          title={title}
         />
       </div>
     </DropContainerWrapper>
@@ -134,7 +126,6 @@ DropContainer.propTypes = {
   onClick: PropTypes.func.isRequired,
   className: PropTypes.string,
   isDropAreaActive: PropTypes.bool.isRequired,
-  title: PropTypes.string.isRequired,
 };
 
 DropContainer.defaultProps = {

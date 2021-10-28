@@ -1,121 +1,65 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
-function HighlightedTag({
-  tagName, text, isSubChallenge, isContainer, type, title,
-}) {
-  if (isSubChallenge && type === "open") {
+function HighlightedTag({ tagType, tagName, text }) {
+  if (tagType === "container-open" || tagType === "container-close") {
     return (
-      <>
-        <span key="self-open">{"<"}</span>
-        <span key="self-tagName" className="challenge-tag">{tagName}</span>
-        <span key="self-close">{">"}</span>
-      </>
-    );
-  }
-
-  if (isSubChallenge && type === "close") {
-    return (
-      <>
-        <span key="self-open">{"</"}</span>
-        <span key="self-tagName" className="challenge-tag">{tagName}</span>
-        <span key="self-close">{">"}</span>
-      </>
-    );
-  }
-
-  if (isContainer && type === "open") {
-    return (
-      <>
-        <span key="open-open">{"<"}</span>
-        <span key="open-tagName" className="parent-tag">{tagName}</span>
-        <span key="open-close">{">"}</span>
-      </>
-    );
-  }
-
-  if (isContainer && type === "close") {
-    return (
-      <>
-        <span key="close-open">{"</"}</span>
-        <span key="close-tagName" className="parent-tag">{tagName}</span>
-        <span key="close-close">{">"}</span>
-      </>
-    );
-  }
-
-  if (isSubChallenge && type === "self-closing") {
-    return (
-      <>
-        <span key="self-open">{"<"}</span>
-        <span key="self-tagName" className="challenge-tag">{tagName}</span>
-        <span key="self-close">{" />"}</span>
-      </>
-    );
-  }
-
-  if (isSubChallenge) {
-    return (
-      <>
-        <span key="open-open">{"<"}</span>
-        <span key="open-tagName" className="challenge-tag">{tagName}</span>
-        <span key="open-close">{">"}</span>
-        <span key="text">{title}</span>
-        <span key="close-open">{"</"}</span>
-        <span key="close-tagName" className="challenge-tag">{tagName}</span>
-        <span key="close-close">{">"}</span>
-      </>
-    );
-  }
-
-  if (isContainer) {
-    return (
-      <>
-        <span key="open-open">{"<"}</span>
-        <span key="open-tagName" className="parent-tag">{tagName}</span>
-        <span key="open-close">{">"}</span>
-        <span key="close-open">{"</"}</span>
-        <span key="close-tagName" className="parent-tag">{tagName}</span>
-        <span key="close-close">{">"}</span>
-      </>
-    );
-  }
-
-  if (text) {
-    return (
-      <>
-        <span key="open-open">{"<"}</span>
-        <span key="open-tagName" className="child-tag">{tagName}</span>
-        <span key="open-close">{">"}</span>
-        <span key="text">{text}</span>
-        <span key="close-open">{"</"}</span>
-        <span key="close-tagName" className="child-tag">{tagName}</span>
-        <span key="close-close">{">"}</span>
-      </>
+      <Tag>
+        <span>{tagType === "container-open" ? "<" : "</"}</span>
+        <span className="container">{tagName}</span>
+        <span>{">"}</span>
+      </Tag>
     );
   }
 
   return (
-    <>
-      <span key="self-open">{"<"}</span>
-      <span key="self-tagName" className="child-tag">{tagName}</span>
-      <span key="self-close">{" />"}</span>
-    </>
+    <Tag>
+      <span>{"<"}</span>
+      <span className={tagType}>{tagName}</span>
+      {(tagType === "tag" && !text)
+        ? <span>{" />"}</span>
+        : (
+          <>
+            <span>{">"}</span>
+            <span>{text}</span>
+            <span>{"</"}</span>
+            <span className={tagType}>{tagName}</span>
+            <span>{">"}</span>
+          </>
+        )}
+    </Tag>
   );
 }
 
 HighlightedTag.propTypes = {
+  tagType: PropTypes.oneOf([
+    "stage",
+    "container",
+    "container-open",
+    "container-close",
+    "tag",
+  ]).isRequired,
   tagName: PropTypes.string.isRequired,
   text: PropTypes.string,
-  isSubChallenge: PropTypes.bool.isRequired,
-  isContainer: PropTypes.bool.isRequired,
-  type: PropTypes.string,
-  title: PropTypes.string.isRequired,
 };
 
 HighlightedTag.defaultProps = {
   text: "",
-  type: "",
 };
+
+const Tag = styled.span`
+  .stage {
+    color: ${({ theme }) => theme.color.challengeTag};
+  }
+
+  .container {
+    color: ${({ theme }) => theme.color.parentTag};
+  }
+
+  .tag {
+    color: ${({ theme }) => theme.color.childTag};
+  }
+`;
 
 export default HighlightedTag;

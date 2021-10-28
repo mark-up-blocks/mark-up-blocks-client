@@ -11,6 +11,18 @@ import Preview from "./Preview";
 import { usePick } from "../../../hooks/usePick";
 import { TYPE, DRAGGABLE_TYPE } from "../../../constants";
 
+function getTagType(isSubChallenge, isContainer) {
+  if (isSubChallenge) {
+    return "stage";
+  }
+
+  if (isContainer) {
+    return "container";
+  }
+
+  return "tag";
+}
+
 function DndInterface({
   tagBlockContainer, boilerplate, onDrop, className,
 }) {
@@ -69,9 +81,8 @@ function DndInterface({
               key={_id}
               containerId={TYPE.TAG_BLOCK_CONTAINER}
               tagName={block.tagName}
-              isSubChallenge={isSubChallenge}
-              isContainer={block.isContainer}
-              text={block.property.text || ""}
+              tagType={getTagType(isSubChallenge, block.isContainer)}
+              text={isSubChallenge ? title : block.property.text || ""}
               className={`tag-block ${picked._id === _id ? "selected-tag-block" : "swing"}`}
               type={block.isContainer ? DRAGGABLE_TYPE.CONTAINER : DRAGGABLE_TYPE.TAG}
               onMouseOver={(data) => onPick(data, "hover")}
@@ -144,20 +155,8 @@ const DndInterfaceWrapper = styled.div`
     background-color: ${({ theme }) => theme.color.point};
   }
 
-  .challenge-tag {
-    color: ${({ theme }) => theme.color.challengeTag};
-  }
-
-  .parent-tag {
-    color: ${({ theme }) => theme.color.parentTag};
-  }
-
   .selected-tag {
     color: ${({ theme }) => theme.color.point};
-  }
-
-  .child-tag {
-    color: ${({ theme }) => theme.color.childTag};
   }
 `;
 
@@ -167,9 +166,8 @@ const TagBlockContainer = styled.div`
   padding: 10px;
   justify-content: center;
   align-items: center;
-  border-top: 1px solid ${({ theme }) => theme.color.border};
-  border-right: 1px solid ${({ theme }) => theme.color.border};
-  border-bottom: 1px solid ${({ theme }) => theme.color.border};
+  border: 1px solid ${({ theme }) => theme.color.border};
+  border-left: none;
 
   .tag-block-container-drop-area {
     position: absolute;
@@ -197,9 +195,8 @@ const HTMLViewer = styled.div`
   display: grid;
   grid-template-columns: 30px auto;
   align-items: center;
-  border-top: 1px solid ${({ theme }) => theme.color.border};
-  border-right: 1px solid ${({ theme }) => theme.color.border};
-  border-bottom: 1px solid ${({ theme }) => theme.color.border};
+  border: 1px solid ${({ theme }) => theme.color.border};
+  border-left: none;
   counter-reset: line;
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
