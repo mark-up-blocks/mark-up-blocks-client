@@ -2,7 +2,7 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/2cddd61c-308f-4560-a0e3-0d038df383f8/deploy-status)](https://app.netlify.com/sites/markupblocks/deploys)
 ![AWS CodePipeline Status](https://generate-pipeline-badges.s3.ap-northeast-2.amazonaws.com/markupblocks.svg)
 
-| ![site-cover](https://user-images.githubusercontent.com/60309558/138035641-41b72f96-d6d1-4910-8c6d-3bd5bfd3993c.png) |
+| ![site-cover](https://user-images.githubusercontent.com/60309558/139607714-8e3e7762-f57c-44ae-9c66-c03e9b066523.png) |
 |:--:|
 | *google 챌린지 첫 번째 stage layout 화면* |
 
@@ -29,7 +29,7 @@
 
 # 주요 기능
 
-![tutorial](https://user-images.githubusercontent.com/60309558/138037382-10763ccc-b6f9-476d-913c-b090aef7c86f.gif)
+![tutorial_renewal](https://user-images.githubusercontent.com/60309558/139607223-52b0bf8e-ca64-4603-818f-4a5238804bee.gif)
 
 - 드래그 앤 드롭으로 태그블록을 옮겨서 맞는 위치를 찾아주는 형식입니다.
 - 블록을 클릭하거나 호버하면 해당 블록의 스타일을 미리보기로 확인할 수 있습니다.
@@ -81,7 +81,7 @@ HTML 중에서는 태그 종류를 익힌 후 찾아오는 어려움인 계층 �
     - 유사한 인지도의 react-beautiful-dnd는 이름에서 나타나듯이 주요 강점이 predefined effects인데, 애니메이션 효과가 크게 필요하지 않은 프로젝트여서 선택하지 않았습니다.
     - 가장 높은 인지도를 가지고 있는 react-draggable은 HOC 형태의 인터페이스를 제공하고, 터치 지원 관련 문서가 상대적으로 적어 선택하지 않았습니다.
 - Redux: 변동이 잦은 태그블록들의 상태관리를 위해 사용하였습니다.
-- MongoDB: 데이터를 트리 구조로 저장하기 위해 사용하였습니다.
+- MongoDB: 데이터 저장 시 트리 구조의 특성을 반영하기 위해 사용하였습니다.
 
 ### 작업 중 배제된 기술 스택
 
@@ -351,7 +351,7 @@ interface BlockTree {
 
   React DnD sortable 예제를 살펴보니 Drag와 Drop을 함께 감싸서 해당 요소 자리에 바로 드롭할 수 있게 되어 있었습니다. 하지만 한 태그가 여러 개의 드롭 장소를 제공해야 하는 제 상황에서는 맞지 않아, 노션의 드롭 가이드라인 표시 방식을 채택했습니다.
 
-  ![drop-guide](https://user-images.githubusercontent.com/60309558/138037558-a2e670d4-7d1e-44c2-860b-00ca5e912dad.gif)
+  ![nested_drop_renewal](https://user-images.githubusercontent.com/60309558/139605742-83ec1ee9-9402-4249-8c14-41891b71dd5b.gif)
 
   부모 요소라면 기본적으로 자식에 해당하는 드롭 가이드라인을 갖고 있도록 하고, 또 뷰어에 있는 드래그 가능한 모든 요소에 하나씩 드롭 가이드라인을 주어서 드롭 이벤트 발생 시 기존 요소의 인덱스를 함께 넘겨주는 방식으로 해결하였습니다. 부모 요소는 2줄로 렌더링되기 때문에 그사이에 인덴팅을 포함해 자식 드롭 가이드라인을 보여주고, 일반적인 위치 변경 가이드라인은 동일 레벨 요소와 같은 라인으로 표시되도록 했습니다.
 
@@ -383,6 +383,8 @@ interface BlockTree {
   - 이를 해결하려면 모두 조건부 렌더링으로 연결해야 하는데, hasError > isLoading > isDone 3중첩 구조는 과하게 복잡하다고 생각되었습니다.
 
   ![multiple-modal](https://user-images.githubusercontent.com/60309558/138037376-589ff7c0-a669-4b3d-a26a-e01863205ca0.gif)
+
+  *UI 변경 전 해결된 이슈로, 위의 이미지는 이전 UI입니다.*
 
 ### Solution
 1. App 컴포넌트에서 관리하던 error, loading 등의 상태를 notice reducer로 분리하고, Loading 모달이 필요한 시점에 각 컴포넌트에서 디스패치하는 방식으로 변경하였습니다.
