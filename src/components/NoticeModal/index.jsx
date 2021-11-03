@@ -9,7 +9,7 @@ import { MESSAGE, TYPE } from "../../constants";
 
 function NoticeModal({ onFinish, onReset }) {
   const {
-    status, message, stageId, preventClear,
+    status, message, stageId, needPreventClear,
   } = useSelector((state) => state.notice);
 
   return (
@@ -19,7 +19,7 @@ function NoticeModal({ onFinish, onReset }) {
         <>
           <p className="error">{MESSAGE.ERROR}</p>
           <p className="message">{message}</p>
-          {!preventClear && (
+          {!needPreventClear && (
           <ClickInterface onClick={onReset}>
             <div className="backward arrow" />
             <p className="text">{MESSAGE.GO_HOME}</p>

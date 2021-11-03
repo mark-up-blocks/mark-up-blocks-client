@@ -57,6 +57,37 @@ describe("NoticeModal Component", () => {
     });
   });
 
+  describe("error status with truthy needPreventClear", () => {
+    beforeEach(async () => {
+      useSelector.mockImplementation((selector) => selector({
+        notice: {
+          status: "error",
+          needPreventRender: true,
+          message: "error message",
+          needPreventClear: true,
+        },
+      }));
+    });
+    afterEach(() => useSelector.mockClear());
+
+    test("should not render reset button when needPreventClear is true", () => {
+      const onFinish = jest.fn();
+      const onReset = jest.fn();
+
+      const { getByText, queryByText } = render(
+        <MockTheme>
+          <NoticeModal
+            onFinish={onFinish}
+            onReset={onReset}
+          />
+        </MockTheme>,
+      );
+
+      expect(getByText("error message")).toBeInTheDocument();
+      expect(queryByText(MESSAGE.GO_HOME)).toBeNull();
+    });
+  });
+
   describe("loading status", () => {
     beforeEach(async () => {
       useSelector.mockImplementation((selector) => selector({

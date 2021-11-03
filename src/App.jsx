@@ -89,7 +89,7 @@ function App() {
         console.error(err);
       }
 
-      dispatch(setError({ message: MESSAGE.INTERNAL_SERVER_ERROR, preventClear: true }));
+      dispatch(setError({ message: MESSAGE.INTERNAL_SERVER_ERROR, needPreventClear: true }));
     };
 
     if (isListLoading) {

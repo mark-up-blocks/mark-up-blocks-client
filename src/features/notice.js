@@ -7,7 +7,7 @@ const initialState = {
   needPreventRender: false,
   message: "",
   stageId: "",
-  preventClear: false,
+  needPreventClear: false,
 };
 
 const noticeSlice = createSlice({
@@ -20,14 +20,14 @@ const noticeSlice = createSlice({
     setError(state, { payload }) {
       const message = payload?.message || MESSAGE.INTERNAL_SERVER_ERROR;
       const stageId = payload?.stageId || "";
-      const preventClear = payload?.preventClear || false;
+      const needPreventClear = payload?.needPreventClear || false;
 
       Object.assign(state, {
         status: TYPE.ERROR,
         needPreventRender: true,
         message,
         stageId,
-        preventClear,
+        needPreventClear,
       });
     },
     setLoading(state, { payload }) {
