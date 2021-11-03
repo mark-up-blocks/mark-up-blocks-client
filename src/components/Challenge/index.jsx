@@ -35,7 +35,13 @@ function Challenge() {
   const handleReset = () => dispatch(resetStage(stage._id));
 
   useEffect(() => {
-    const notifyError = (err) => dispatch(setError(err));
+    const notifyError = (err) => {
+      if (process.env.NODE_ENV === "development") {
+        console.error(err);
+      }
+
+      dispatch(setError({ message: MESSAGE.CHALLENGE_NOT_FOUND }));
+    };
 
     if (stage.isListLoading) {
       dispatch(setLoading({ message: MESSAGE.LOADING_LIST }));
