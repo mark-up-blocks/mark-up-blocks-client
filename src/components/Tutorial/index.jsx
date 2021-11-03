@@ -30,10 +30,8 @@ function Tutorial() {
   const isInOrderStage = stage._id === "tutorial-in-order";
 
   useEffect(() => {
-    const notifyError = (err) => dispatch(setError(err));
-
     if (!stage.isValid) {
-      notifyError({ message: MESSAGE.INVALID_STAGE_ID, stageId: stage._id });
+      dispatch(setError({ message: MESSAGE.INVALID_STAGE_ID, stageId: stage._id }));
       return;
     }
 

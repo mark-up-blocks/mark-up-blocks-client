@@ -8,7 +8,9 @@ import Modal from "../shared/Modal";
 import { MESSAGE, TYPE } from "../../constants";
 
 function NoticeModal({ onFinish, onReset }) {
-  const { status, message, stageId } = useSelector((state) => state.notice);
+  const {
+    status, message, stageId, preventClear,
+  } = useSelector((state) => state.notice);
 
   return (
     <Wrapper>
@@ -17,10 +19,12 @@ function NoticeModal({ onFinish, onReset }) {
         <>
           <p className="error">{MESSAGE.ERROR}</p>
           <p className="message">{message}</p>
+          {!preventClear && (
           <ClickInterface onClick={onReset}>
             <div className="backward arrow" />
             <p className="text">{MESSAGE.GO_HOME}</p>
           </ClickInterface>
+          )}
         </>
         )}
         {status === TYPE.LOADING && (

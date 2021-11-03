@@ -19,7 +19,7 @@ import NoticeModal from "./components/NoticeModal";
 
 import { findNextUncompletedChallenge } from "./helpers/blockTreeHandlers";
 import route from "./route";
-import { MESSAGE } from "./constants";
+import { MESSAGE, TYPE } from "./constants";
 
 function App() {
   const dispatch = useDispatch();
@@ -36,7 +36,13 @@ function App() {
       challenges[selectedIndex]?.elementTree, stageId,
     );
     const hasRemainingChallenge = challenges.length - 1 >= selectedIndex + 1;
-    const notifyError = (err) => dispatch(setError(err));
+    const notifyError = (err) => {
+      if (process.env.NODE_ENV === "development") {
+        console.error(err);
+      }
+
+      dispatch(setError({ message: MESSAGE.CHALLENGE_NOT_FOUND }));
+    };
 
     if (isListLoading) {
       dispatch(setLoading({ message: MESSAGE.LOADING_LIST }));
@@ -79,7 +85,11 @@ function App() {
 
   useEffect(() => {
     const notifyError = (err) => {
-      dispatch(setError(err));
+      if (process.env.NODE_ENV === "development") {
+        console.error(err);
+      }
+
+      dispatch(setError({ message: MESSAGE.INTERNAL_SERVER_ERROR, preventClear: true }));
     };
 
     if (isListLoading) {
@@ -92,8 +102,10 @@ function App() {
       return;
     }
 
-    dispatch(clearStatus());
-  }, [dispatch, isListLoading, isChallengeLoading]);
+    if (notice.status === TYPE.LOADING && !isListLoading && !isChallengeLoading) {
+      dispatch(clearStatus());
+    }
+  }, [dispatch, isListLoading, isChallengeLoading, notice.status]);
 
   return (
     <ThemeProvider theme={theme}>

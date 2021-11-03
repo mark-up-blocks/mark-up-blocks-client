@@ -8,6 +8,7 @@ const initialState = {
   needPreventRender: false,
   message: "",
   stageId: "",
+  preventClear: false,
 };
 
 describe("notice reducer test", () => {
@@ -23,6 +24,7 @@ describe("notice reducer test", () => {
       needPreventRender: true,
       message: "prev message",
       stageId: "mockStageId1",
+      preventClear: false,
     };
 
     test("should reset state as initial state", () => {
@@ -42,6 +44,7 @@ describe("notice reducer test", () => {
         needPreventRender: true,
         message: "new error",
         stageId: "mockStageId2",
+        preventClear: false,
       });
     });
 
@@ -51,6 +54,7 @@ describe("notice reducer test", () => {
         needPreventRender: true,
         message: MESSAGE.INTERNAL_SERVER_ERROR,
         stageId: "",
+        preventClear: false,
       });
     });
   });
@@ -67,6 +71,7 @@ describe("notice reducer test", () => {
         needPreventRender: true,
         message: "new loading state",
         stageId: "mockStageId3",
+        preventClear: false,
       });
     });
 
@@ -76,6 +81,7 @@ describe("notice reducer test", () => {
         needPreventRender: true,
         message: MESSAGE.LOADING,
         stageId: "",
+        preventClear: false,
       });
     });
   });
@@ -92,6 +98,7 @@ describe("notice reducer test", () => {
         needPreventRender: false,
         message: "",
         stageId: "mockStageId4",
+        preventClear: false,
       });
     });
 
@@ -106,6 +113,7 @@ describe("notice reducer test", () => {
         needPreventRender: false,
         message: "",
         stageId: "mockStageId5",
+        preventClear: false,
       });
     });
   });
