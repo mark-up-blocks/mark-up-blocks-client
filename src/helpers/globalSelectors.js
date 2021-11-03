@@ -27,7 +27,9 @@ function selectBlockTreeById(state, containerId, id) {
 }
 
 function selectStageByParams(state, { index, id }) {
-  const { challenges, isListLoading, isChallengeLoading } = state.challenge;
+  const {
+    challenges, isListLoading, isChallengeLoading, selectedIndex,
+  } = state.challenge;
   const requestedChallenge = challenges[index];
 
   if (isListLoading && index !== 0) {
@@ -42,15 +44,20 @@ function selectStageByParams(state, { index, id }) {
     return { isValid: false };
   }
 
-  if (!requestedChallenge.isLoaded) {
-    return { isValid: true, isLoaded: false, challengeId: requestedChallenge._id };
+  if (index !== selectedIndex && !requestedChallenge.isLoaded) {
+    return {
+      isValid: true,
+      isLoaded: false,
+      hasChanged: true,
+      challengeId: requestedChallenge._id,
+    };
   }
 
   if (!id) {
     return {
       isValid: true,
       isLoaded: true,
-      hasChanged: true,
+      hasChanged: index !== selectedIndex,
       challengeId: requestedChallenge._id,
       ...requestedChallenge.elementTree,
     };

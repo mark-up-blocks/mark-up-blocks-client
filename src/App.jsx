@@ -8,7 +8,7 @@ import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
 import GlobalStyle from "./theme/global";
 
-import { fetchChallengeList } from "./features/challenge";
+import { fetchChallenge, fetchChallengeList } from "./features/challenge";
 import {
   clearStatus, setError, setFinishPopup, setLoading,
 } from "./features/notice";
@@ -36,10 +36,19 @@ function App() {
       challenges[selectedIndex]?.elementTree, stageId,
     );
     const hasRemainingChallenge = challenges.length - 1 >= selectedIndex + 1;
+    const notifyError = (err) => dispatch(setError(err));
 
     if (isListLoading) {
       dispatch(setLoading({ message: MESSAGE.LOADING_LIST }));
       return;
+    }
+
+    if (hasRemainingChallenge) {
+      const nextChallenge = challenge.challenges[selectedIndex + 1];
+
+      if (!nextChallenge.isLoaded) {
+        dispatch(fetchChallenge({ id: nextChallenge._id, notifyError }));
+      }
     }
 
     if (nextStageId) {
@@ -79,6 +88,7 @@ function App() {
     }
 
     if (isChallengeLoading) {
+      dispatch(setLoading({ message: MESSAGE.LOADING_CHALLENGE }));
       return;
     }
 

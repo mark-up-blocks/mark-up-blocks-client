@@ -51,14 +51,13 @@ function Challenge() {
       return;
     }
 
-    if (!stage.isLoaded) {
-      dispatch(setLoading({ message: MESSAGE.LOADING_CHALLENGE }));
-      dispatch(fetchChallenge({ id: stage.challengeId, notifyError }));
-      return;
-    }
-
     if (stage.hasChanged) {
       dispatch(changeStage({ stageId: stage._id, index: Number(index) }));
+    }
+
+    if (!stage.isLoaded) {
+      dispatch(fetchChallenge({ id: stage.challengeId, notifyError }));
+      return;
     }
 
     if (!stage.hasPreviousData) {
