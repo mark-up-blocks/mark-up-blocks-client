@@ -8,6 +8,7 @@ const initialState = {
   needPreventRender: false,
   message: "",
   stageId: "",
+  needPreventClear: false,
 };
 
 describe("notice reducer test", () => {
@@ -23,6 +24,7 @@ describe("notice reducer test", () => {
       needPreventRender: true,
       message: "prev message",
       stageId: "mockStageId1",
+      needPreventClear: false,
     };
 
     test("should reset state as initial state", () => {
@@ -42,6 +44,7 @@ describe("notice reducer test", () => {
         needPreventRender: true,
         message: "new error",
         stageId: "mockStageId2",
+        needPreventClear: false,
       });
     });
 
@@ -51,6 +54,17 @@ describe("notice reducer test", () => {
         needPreventRender: true,
         message: MESSAGE.INTERNAL_SERVER_ERROR,
         stageId: "",
+        needPreventClear: false,
+      });
+    });
+
+    test("should handle setError when needPreventClear is true", () => {
+      expect(reducer(initialState, setError({ needPreventClear: true }))).toEqual({
+        status: "error",
+        needPreventRender: true,
+        message: MESSAGE.INTERNAL_SERVER_ERROR,
+        stageId: "",
+        needPreventClear: true,
       });
     });
   });
@@ -67,6 +81,7 @@ describe("notice reducer test", () => {
         needPreventRender: true,
         message: "new loading state",
         stageId: "mockStageId3",
+        needPreventClear: false,
       });
     });
 
@@ -76,6 +91,7 @@ describe("notice reducer test", () => {
         needPreventRender: true,
         message: MESSAGE.LOADING,
         stageId: "",
+        needPreventClear: false,
       });
     });
   });
@@ -92,6 +108,7 @@ describe("notice reducer test", () => {
         needPreventRender: false,
         message: "",
         stageId: "mockStageId4",
+        needPreventClear: false,
       });
     });
 
@@ -106,6 +123,7 @@ describe("notice reducer test", () => {
         needPreventRender: false,
         message: "",
         stageId: "mockStageId5",
+        needPreventClear: false,
       });
     });
   });

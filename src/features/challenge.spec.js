@@ -64,7 +64,7 @@ describe("challenge reducer test", () => {
       const updatedState = reducer(prevState, fetchChallenge.fulfilled(payload));
 
       expect(updatedState.isChallengeLoading).toEqual(false);
-      expect(updatedState.selectedIndex).toEqual(1);
+      expect(updatedState.challenges[1].isLoaded).toEqual(true);
 
       const challenge = updatedState.challenges[1];
 
@@ -75,7 +75,7 @@ describe("challenge reducer test", () => {
     test("should handle pending state", () => {
       const updatedState = reducer(
         { ...initialState, isChallengeLoading: false },
-        fetchChallenge.pending(),
+        fetchChallenge.pending(undefined, { id: tutorialData._id }),
       );
 
       expect(updatedState.isChallengeLoading).toEqual(true);
@@ -84,10 +84,12 @@ describe("challenge reducer test", () => {
     test("should handle reject state", () => {
       const updatedState = reducer(
         { ...initialState, isChallengeLoading: true },
-        fetchChallenge.rejected(),
+        fetchChallenge.rejected(undefined, null, { id: tutorialData._id }),
       );
 
       expect(updatedState.isChallengeLoading).toEqual(false);
+      expect(updatedState.challenges[0].hasError).toEqual(true);
+      expect(updatedState.challenges[0].isLoaded).toEqual(false);
     });
   });
 

@@ -15,6 +15,7 @@ function Tutorial() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const stage = useSelector((state) => selectStageByParams(state, { index: 0, id }));
+  const canRender = stage.hasPreviousData && !stage.hasChanged;
   const handleDrop = ({
     itemId, containerId, index: containerIndex, prevContainerId,
   }) => {
@@ -30,10 +31,8 @@ function Tutorial() {
   const isInOrderStage = stage._id === "tutorial-in-order";
 
   useEffect(() => {
-    const notifyError = (err) => dispatch(setError(err));
-
     if (!stage.isValid) {
-      notifyError({ message: MESSAGE.INVALID_STAGE_ID, stageId: stage._id });
+      dispatch(setError({ message: MESSAGE.INVALID_STAGE_ID, stageId: stage._id }));
       return;
     }
 
@@ -81,13 +80,7 @@ function Tutorial() {
             </Guide>
           )}
       </div>
-      {stage.hasPreviousData && (
-      <DndInterface
-        tagBlockContainer={stage.tagBlockContainer}
-        boilerplate={stage.boilerplate}
-        onDrop={handleDrop}
-      />
-      )}
+      {canRender && <DndInterface onDrop={handleDrop} />}
     </TutorialWrapper>
   );
 }

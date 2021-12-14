@@ -9,32 +9,22 @@ const fetchChallengeList = createAsyncThunk(
 
       return challenges;
     } catch (err) {
-      if (process.env.NODE_ENV === "development") {
-        console.error(err);
-      }
-
       notifyError(err);
 
-      return Promise.reject();
+      return Promise.reject(err);
     }
   },
 );
 
 const fetchChallenge = createAsyncThunk(
   "challenge/fetchChallenge",
-  async ({ id, notifyError }) => {
+  async ({ id }) => {
     try {
       const { elementTree } = await getChallenge(id);
 
       return { id, elementTree };
     } catch (err) {
-      if (process.env.NODE_ENV === "development") {
-        console.error(err);
-      }
-
-      notifyError(err);
-
-      return Promise.reject();
+      return Promise.reject(err);
     }
   },
 );

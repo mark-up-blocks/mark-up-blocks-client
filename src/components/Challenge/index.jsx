@@ -18,7 +18,7 @@ function Challenge() {
   const dispatch = useDispatch();
   const { index, id } = useParams();
   const stage = useSelector((state) => selectStageByParams(state, { index: Number(index), id }));
-  const canRender = stage.isValid && stage.isLoaded && stage.hasPreviousData;
+  const canRender = stage.isValid && stage.isLoaded && stage.hasPreviousData && !stage.hasError;
 
   const handleDrop = ({
     itemId, containerId, index: containerIndex, prevContainerId,
@@ -35,8 +35,6 @@ function Challenge() {
   const handleReset = () => dispatch(resetStage(stage._id));
 
   useEffect(() => {
-    const notifyError = (err) => dispatch(setError(err));
-
     if (stage.isListLoading) {
       dispatch(setLoading({ message: MESSAGE.LOADING_LIST }));
       return;
@@ -46,14 +44,13 @@ function Challenge() {
       return;
     }
 
-    if (!stage.isValid) {
-      notifyError({ message: MESSAGE.INVALID_STAGE_ID, stageId: stage._id });
+    if (stage.hasError) {
+      dispatch(setError({ message: MESSAGE.CHALLENGE_NOT_FOUND }));
       return;
     }
 
-    if (!stage.isLoaded) {
-      dispatch(setLoading({ message: MESSAGE.LOADING_CHALLENGE }));
-      dispatch(fetchChallenge({ id: stage.challengeId, notifyError }));
+    if (!stage.isValid) {
+      dispatch(setError({ message: MESSAGE.INVALID_STAGE_ID, stageId: stage._id }));
       return;
     }
 
@@ -61,7 +58,12 @@ function Challenge() {
       dispatch(changeStage({ stageId: stage._id, index: Number(index) }));
     }
 
-    if (!stage.hasPreviousData) {
+    if (!stage.isLoaded) {
+      dispatch(fetchChallenge({ id: stage.challengeId }));
+      return;
+    }
+
+    if (!stage.hasPreviousData && stage._id) {
       dispatch(initializeStage(stage._id));
       return;
     }
@@ -80,6 +82,7 @@ function Challenge() {
     stage.hasPreviousData,
     stage.hasChanged,
     stage.isCompleted,
+    stage.hasError,
     index,
   ]);
 
@@ -102,7 +105,7 @@ const ChallengeWrapper = styled.div`
   height: 100%;
   grid-template-rows: 60% minmax(40%, 100px);
 
-  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
+  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}) {
     grid-template-rows: unset;
     padding-bottom: 50px;
   }

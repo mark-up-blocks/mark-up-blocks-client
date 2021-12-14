@@ -122,11 +122,7 @@ const challengeSlice = createSlice({
 
       const stage = findBlockTreeById(challenge.elementTree, stageId);
 
-      if (!stage) {
-        return;
-      }
-
-      challenge.stageId = stageId;
+      challenge.stageId = stage ? stageId : challenge.elementTree?._id;
       Object.assign(state, { selectedIndex: index });
     },
   },
@@ -136,23 +132,33 @@ const challengeSlice = createSlice({
       const index = state.challenges.findIndex(({ _id }) => _id === id);
       const challenge = state.challenges[index];
 
-      Object.assign(state, { selectedIndex: index, isChallengeLoading: false });
+      Object.assign(state, { isChallengeLoading: false });
       challenge.elementTree = elementTree;
       challenge.stageId = challenge.elementTree._id;
       challenge.isLoaded = true;
     },
-    [fetchChallenge.pending]: (state) => {
-      Object.assign(state, { isChallengeLoading: true });
+    [fetchChallenge.pending]: (state, { meta }) => {
+      const { id } = meta.arg;
+
+      if (id === state.challenges[state.selectedIndex]._id) {
+        Object.assign(state, { isChallengeLoading: true });
+      }
     },
-    [fetchChallenge.rejected]: (state) => {
+    [fetchChallenge.rejected]: (state, { meta }) => {
+      const { id } = meta.arg;
+      const index = state.challenges.findIndex(({ _id }) => _id === id);
+      const challenge = state.challenges[index];
+
       Object.assign(state, { isChallengeLoading: false });
+      challenge.isLoaded = false;
+      challenge.hasError = true;
     },
     [fetchChallengeList.fulfilled]: (state, { payload }) => {
       const challenges = payload;
 
       Object.assign(state, {
         isListLoading: false,
-        challenges: state.challenges.concat(challenges),
+        challenges: [state.challenges[0], ...challenges],
       });
     },
     [fetchChallengeList.pending]: (state) => {

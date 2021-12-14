@@ -37,7 +37,7 @@ const Container = styled.div`
   height: 100%;
   grid-template-columns: 1fr 1fr;
 
-  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
+  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}) {
     grid-template-columns: auto;
     grid-template-rows: 1fr 1fr;
   }
@@ -52,7 +52,7 @@ const PageWrapper = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.color.border};
   background-color: ${({ theme }) => theme.color.inner};
 
-  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
+  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}) {
     max-height: 300px;
     overflow: auto;
     order: ${({ index }) => -index};

@@ -85,7 +85,7 @@ const Title = styled.h2`
   font-size: 1.2rem;
   cursor: pointer;
 
-  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
+  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}) {
     font-size: 1rem;
   }
 `;
