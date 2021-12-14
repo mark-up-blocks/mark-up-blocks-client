@@ -109,7 +109,7 @@ const DndInterfaceWrapper = styled.div`
   height: 100%;
   grid-template-columns: 1fr 1fr;
 
-  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
+  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}) {
     grid-template-columns: 1fr;
     grid-auto-flow: row;
   }
@@ -160,7 +160,7 @@ const HTMLViewer = styled.div`
   border-left: none;
   counter-reset: line;
 
-  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}), {
+  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}) {
     border-top: none;
   }
 
