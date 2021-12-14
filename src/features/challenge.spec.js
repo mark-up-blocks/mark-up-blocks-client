@@ -84,10 +84,12 @@ describe("challenge reducer test", () => {
     test("should handle reject state", () => {
       const updatedState = reducer(
         { ...initialState, isChallengeLoading: true },
-        fetchChallenge.rejected(),
+        fetchChallenge.rejected(undefined, null, { id: tutorialData._id }),
       );
 
       expect(updatedState.isChallengeLoading).toEqual(false);
+      expect(updatedState.challenges[0].hasError).toEqual(true);
+      expect(updatedState.challenges[0].isLoaded).toEqual(false);
     });
   });
 

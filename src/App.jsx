@@ -36,13 +36,6 @@ function App() {
       challenges[selectedIndex]?.elementTree, stageId,
     );
     const hasRemainingChallenge = challenges.length - 1 >= selectedIndex + 1;
-    const notifyError = (err) => {
-      if (process.env.NODE_ENV === "development") {
-        console.error(err);
-      }
-
-      dispatch(setError({ message: MESSAGE.CHALLENGE_NOT_FOUND }));
-    };
 
     if (isListLoading) {
       dispatch(setLoading({ message: MESSAGE.LOADING_LIST }));
@@ -53,7 +46,7 @@ function App() {
       const nextChallenge = challenge.challenges[selectedIndex + 1];
 
       if (!nextChallenge.isLoaded) {
-        dispatch(fetchChallenge({ id: nextChallenge._id, notifyError }));
+        dispatch(fetchChallenge({ id: nextChallenge._id }));
       }
     }
 

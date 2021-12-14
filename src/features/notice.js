@@ -31,6 +31,10 @@ const noticeSlice = createSlice({
       });
     },
     setLoading(state, { payload }) {
+      if (state.status === TYPE.ERROR) {
+        return;
+      }
+
       const message = payload?.message || MESSAGE.LOADING;
       const stageId = payload?.stageId || "";
 

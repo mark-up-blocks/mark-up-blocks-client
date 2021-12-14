@@ -15,6 +15,7 @@ function Tutorial() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const stage = useSelector((state) => selectStageByParams(state, { index: 0, id }));
+  const canRender = stage.hasPreviousData && !stage.hasChanged;
   const handleDrop = ({
     itemId, containerId, index: containerIndex, prevContainerId,
   }) => {
@@ -79,13 +80,7 @@ function Tutorial() {
             </Guide>
           )}
       </div>
-      {stage.hasPreviousData && (
-      <DndInterface
-        tagBlockContainer={stage.tagBlockContainer}
-        boilerplate={stage.boilerplate}
-        onDrop={handleDrop}
-      />
-      )}
+      {canRender && <DndInterface onDrop={handleDrop} />}
     </TutorialWrapper>
   );
 }

@@ -144,15 +144,21 @@ const challengeSlice = createSlice({
         Object.assign(state, { isChallengeLoading: true });
       }
     },
-    [fetchChallenge.rejected]: (state) => {
+    [fetchChallenge.rejected]: (state, { meta }) => {
+      const { id } = meta.arg;
+      const index = state.challenges.findIndex(({ _id }) => _id === id);
+      const challenge = state.challenges[index];
+
       Object.assign(state, { isChallengeLoading: false });
+      challenge.isLoaded = false;
+      challenge.hasError = true;
     },
     [fetchChallengeList.fulfilled]: (state, { payload }) => {
       const challenges = payload;
 
       Object.assign(state, {
         isListLoading: false,
-        challenges: state.challenges.concat(challenges),
+        challenges: [state.challenges[0], ...challenges],
       });
     },
     [fetchChallengeList.pending]: (state) => {

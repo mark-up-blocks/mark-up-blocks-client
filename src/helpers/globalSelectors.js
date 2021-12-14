@@ -44,6 +44,13 @@ function selectStageByParams(state, { index, id }) {
     return { isValid: false };
   }
 
+  if (requestedChallenge.hasError) {
+    return {
+      isValid: true,
+      hasError: true,
+    };
+  }
+
   if (index !== selectedIndex && !requestedChallenge.isLoaded) {
     return {
       isValid: true,

@@ -18,7 +18,7 @@ function Challenge() {
   const dispatch = useDispatch();
   const { index, id } = useParams();
   const stage = useSelector((state) => selectStageByParams(state, { index: Number(index), id }));
-  const canRender = stage.isValid && stage.isLoaded && stage.hasPreviousData;
+  const canRender = stage.isValid && stage.isLoaded && stage.hasPreviousData && !stage.hasError;
 
   const handleDrop = ({
     itemId, containerId, index: containerIndex, prevContainerId,
@@ -35,20 +35,17 @@ function Challenge() {
   const handleReset = () => dispatch(resetStage(stage._id));
 
   useEffect(() => {
-    const notifyError = (err) => {
-      if (process.env.NODE_ENV === "development") {
-        console.error(err);
-      }
-
-      dispatch(setError({ message: MESSAGE.CHALLENGE_NOT_FOUND }));
-    };
-
     if (stage.isListLoading) {
       dispatch(setLoading({ message: MESSAGE.LOADING_LIST }));
       return;
     }
 
     if (stage.isChallengeLoading) {
+      return;
+    }
+
+    if (stage.hasError) {
+      dispatch(setError({ message: MESSAGE.CHALLENGE_NOT_FOUND }));
       return;
     }
 
@@ -62,11 +59,11 @@ function Challenge() {
     }
 
     if (!stage.isLoaded) {
-      dispatch(fetchChallenge({ id: stage.challengeId, notifyError }));
+      dispatch(fetchChallenge({ id: stage.challengeId }));
       return;
     }
 
-    if (!stage.hasPreviousData) {
+    if (!stage.hasPreviousData && stage._id) {
       dispatch(initializeStage(stage._id));
       return;
     }
@@ -85,6 +82,7 @@ function Challenge() {
     stage.hasPreviousData,
     stage.hasChanged,
     stage.isCompleted,
+    stage.hasError,
     index,
   ]);
 
