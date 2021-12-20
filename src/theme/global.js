@@ -38,21 +38,9 @@ const GlobalStyle = createGlobalStyle`
     animation: 0.15s ease-in-out 0s infinite alternate swing;
   }
 
-  .correct {
-    animation: 0.2s ease-in-out 0.1s 2 correctBlink;
-  }
-
-  .wrong {
-    animation: 0.2s ease-in-out 0.1s 2 errorBlink;
-  }
-
   .grow-down {
     animation: 0.25s ease-in-out 0s 1 alternate growDown;
     transform-origin: top center;
-  }
-
-  .animation-none {
-    animation: none;
   }
 
   @keyframes blink {
@@ -65,29 +53,6 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
-  @keyframes correctBlink {
-    to {
-      background-color: transparent;
-      transform: scaleY(2);
-    }
-
-    to {
-      background-color: ${theme.color.dropGuide};
-      transform: scaleY(1);
-    }
-  }
-
-  @keyframes errorBlink {
-    to {
-      background-color: transparent;
-      transform: scaleY(2);
-    }
-
-    to {
-      background-color: ${theme.color.errorBackground};
-      transform: scaleY(1);
-    }
-  }
 
   @keyframes swing {
     0%, 25% {
