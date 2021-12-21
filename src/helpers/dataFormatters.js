@@ -31,15 +31,15 @@ function formatTagName(isContainer, tagName, text) {
     : `<${tagName}>${text}</${tagName}>`;
 }
 
-function getItemStyles(initialOffset, currentOffset) {
-  if (!initialOffset || !currentOffset) {
+function getItemStyles(initialOffset, clientOffset) {
+  if (!initialOffset || !clientOffset) {
     return {
       display: "none",
     };
   }
 
-  const { x, y } = currentOffset;
-  const transform = `translate(${x}px, ${y}px)`;
+  const { x, y } = clientOffset;
+  const transform = `translateX(calc(${x}px - 50%)) translateY(calc(${y}px - 50%))`;
 
   return {
     transform,

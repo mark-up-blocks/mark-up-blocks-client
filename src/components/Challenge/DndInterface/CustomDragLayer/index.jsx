@@ -9,12 +9,12 @@ import { getItemStyles } from "../../../../helpers/dataFormatters";
 
 function CustomDragLayer() {
   const {
-    isDragging, item, initialOffset, currentOffset,
+    isDragging, item, initialOffset, clientOffset,
   } = useDragLayer((monitor) => ({
     item: monitor.getItem(),
     itemType: monitor.getItemType(),
     initialOffset: monitor.getInitialSourceClientOffset(),
-    currentOffset: monitor.getSourceClientOffset(),
+    clientOffset: monitor.getClientOffset(),
     isDragging: monitor.isDragging(),
   }));
   const blockTree = useSelector(
@@ -27,7 +27,7 @@ function CustomDragLayer() {
 
   return (
     <Layer>
-      <span style={getItemStyles(initialOffset, currentOffset)}>
+      <TagWrapper style={getItemStyles(initialOffset, clientOffset)}>
         {blockTree && (
         <HighlightedTag
           tagType={blockTree.tagType}
@@ -35,7 +35,7 @@ function CustomDragLayer() {
           text={blockTree.tagType === "stage" ? blockTree.title : blockTree.block.property.text}
         />
         )}
-      </span>
+      </TagWrapper>
     </Layer>
   );
 }
@@ -49,6 +49,10 @@ const Layer = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
+`;
+
+const TagWrapper = styled.div`
+  position: fixed;
 `;
 
 export default CustomDragLayer;
