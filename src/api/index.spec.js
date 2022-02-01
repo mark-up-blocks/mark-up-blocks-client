@@ -1,42 +1,43 @@
-const mockGet = jest.fn();
-
-jest.mock("axios", () => ({
-  get: mockGet.mockReturnValue({ data: {} }),
-}));
-
-function setUp({ serverURI }) {
+function setUp({ serverURL }) {
   jest.resetModules();
-  process.env.REACT_APP_API_SERVER_URI = serverURI;
+  process.env.REACT_APP_API_SERVER_URI = serverURL;
 
-  // importing getChallengeList should be setting env
+  // re-import axios because of jest.resetModules();
+  // eslint-disable-next-line global-require
+  const axios = require("axios");
+
+  jest.spyOn(axios, "get")
+    .mockImplementation(() => ({ data: null }));
+
+  // importing getChallengeList should be going after setting env
   // eslint-disable-next-line global-require
   const { getChallengeList } = require(".");
 
-  return getChallengeList;
+  return { axios, getChallengeList };
 }
 
 describe("api isUsingGithubAPI option test", () => {
   it("getChallengeList get index file when isUsingGithubAPI is false", async () => {
-    const mockBaseURL = "https://original.url";
-    const getChallengeList = setUp({ serverURI: mockBaseURL });
+    const mockBaseURL = "https://localhost:3000";
+    const { axios, getChallengeList } = setUp({ serverURL: mockBaseURL });
 
-    expect(mockGet).toBeCalledTimes(0);
+    expect(axios.get).toBeCalledTimes(0);
 
     await getChallengeList();
 
-    expect(mockGet).toBeCalledTimes(1);
-    expect(mockGet).toBeCalledWith(`${mockBaseURL}/challenges`);
+    expect(axios.get).toBeCalledTimes(1);
+    expect(axios.get).toBeCalledWith(`${mockBaseURL}/challenges`);
   });
 
   it("getChallengeList get index file when isUsingGithubAPI is true", async () => {
     const mockBaseURL = "https://raw.githubusercontent.com";
-    const getChallengeList = setUp({ serverURI: mockBaseURL });
+    const { axios, getChallengeList } = setUp({ serverURL: mockBaseURL });
 
-    expect(mockGet).toBeCalledTimes(0);
+    expect(axios.get).toBeCalledTimes(0);
 
     await getChallengeList();
 
-    expect(mockGet).toBeCalledTimes(1);
-    expect(mockGet).toBeCalledWith(`${mockBaseURL}/challenges/index`);
+    expect(axios.get).toBeCalledTimes(1);
+    expect(axios.get).toBeCalledWith(`${mockBaseURL}/challenges/index`);
   });
 });
