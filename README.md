@@ -122,8 +122,11 @@ HTML 중에서는 태그 종류를 익힌 후 찾아오는 어려움인 계층 �
 - Netlify
 
 ### Server
-
-- AWS elastic beanstalk
+- 별도의 배포 없이 클라이언트에서 Server Repository의 json 파일을 읽어옵니다.
+- History
+    - 최초 배포시 데이터 변동 가능성과 확장성을 고려해 AWS elastic beanstalk으로 배포하였으나, 실제 퀴즈 데이터 업데이트가 예상만큼 잦지 않아 정적 데이터로 관리해도 충분했습니다.
+    - 따라서 서버 비용 및 관리 포인트 절감을 위해 깃허브의 raw githubusercontent에서 데이터를 받아오도록 변경하였습니다.
+    - 관련 내용은 [#89](https://github.com/mark-up-blocks/mark-up-blocks-client/issues/89)에 기록되어 있습니다.
 
 <br />
 
@@ -213,6 +216,7 @@ interface BlockTree {
 #### Losses
 - 데이터 요청 시 서버에서 populate 과정을 거쳐야 해서 처리 시간이 늘어났습니다.
   - 다만 한번 작성되고 나면 자주 수정되는 데이터가 아니어서, 이후 완성된 트리 데이터를 캐싱해두는 방식으로 어느 정도 해결할 수 있지 않을까 합니다.
+  - 2022-02-02 기준 데이터가 정적으로 서비스되고 있습니다. 관련 이슈 [#89](https://github.com/mark-up-blocks/mark-up-blocks-client/issues/89)
 - 데이터 생성 로직이 복잡해졌습니다.
   - 트리 구조일 때는 최상위 태그부터 차례차례 작성하면 되었는데, 개별 태그를 생성하고 ObjectId를 부모의 childTrees에 추가해주는 작업이 추가되었습니다. 다만 전체적으로 봤을 때 중복 처리 로직이 간결해지면서 생긴 트레이드오프니, 수용 가능한 수준이라고 생각됩니다.
 
