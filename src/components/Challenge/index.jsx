@@ -92,7 +92,7 @@ function Challenge() {
         <>
           <Display />
           <DndInterface onDrop={handleDrop} />
-          <ResetButton value="reset" onClick={handleReset} />
+          <ResetButton value="Reset" onClick={handleReset} />
         </>
       )}
     </ChallengeWrapper>
@@ -107,7 +107,7 @@ const ChallengeWrapper = styled.div`
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}) {
     grid-template-rows: unset;
-    padding-bottom: 50px;
+    padding-bottom: 250px;
   }
 `;
 
@@ -124,6 +124,11 @@ const ResetButton = styled(Button)`
 
   :hover {
     background-color: ${({ theme }) => theme.color.point};
+  }
+
+  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}) {
+    position: unset;
+    margin: 20px 2px 0 auto;
   }
 `;
 
