@@ -62,7 +62,7 @@ const Area = styled.div`
 
   ::after {
     position: absolute;
-    width: 100%;
+    width: calc(100% - 4px);
     padding: 2px;
     margin-top: -2px;
     background-color: ${({ isHighlighted, theme }) => (isHighlighted ? theme.color.preview : "transparent")};

@@ -109,11 +109,11 @@ DropContainer.defaultProps = {
 };
 
 const FirstDropArea = styled(DropArea)`
-  margin: 4px 20px;
+  margin: 4px 24px 4px 20px;
 `;
 
 const BackwardDropArea = styled(DropArea)`
-  margin: 4px 0;
+  margin: 4px 4px 4px 0;
 `;
 
 const TextTag = styled.div`
