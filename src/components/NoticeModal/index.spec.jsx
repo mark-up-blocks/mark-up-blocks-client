@@ -1,6 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { render, fireEvent } from "@testing-library/react";
+import {
+  render, fireEvent, screen, cleanup,
+} from "@testing-library/react";
 import MockTheme from "../../helpers/test/mockTheme";
 import NoticeModal from "./index";
 import { MESSAGE } from "../../constants";
@@ -10,6 +12,28 @@ jest.mock("react-redux", () => ({
 }));
 
 describe("NoticeModal Component", () => {
+  const onFinish = jest.fn();
+  const onReset = jest.fn();
+  const onRestart = jest.fn();
+
+  const setup = () => render(
+    <MockTheme>
+      <NoticeModal
+        onFinish={onFinish}
+        onReset={onReset}
+        onRestart={onRestart}
+      />
+    </MockTheme>,
+  );
+
+  beforeEach(() => {
+    onFinish.mockClear();
+    onReset.mockClear();
+    onRestart.mockClear();
+  });
+
+  afterEach(cleanup);
+
   describe("error status", () => {
     beforeEach(async () => {
       useSelector.mockImplementation((selector) => selector({
@@ -19,40 +43,18 @@ describe("NoticeModal Component", () => {
           message: "error message",
         },
       }));
+      setup();
     });
+
     afterEach(() => useSelector.mockClear());
 
     test("should render error status", () => {
-      const onFinish = jest.fn();
-      const onReset = jest.fn();
-
-      const { getByText } = render(
-        <MockTheme>
-          <NoticeModal
-            onFinish={onFinish}
-            onReset={onReset}
-          />
-        </MockTheme>,
-      );
-
-      expect(getByText("error message")).toBeInTheDocument();
-      expect(getByText(MESSAGE.GO_HOME)).toBeInTheDocument();
+      expect(screen.getByText("error message")).toBeInTheDocument();
+      expect(screen.getByText(MESSAGE.GO_HOME)).toBeInTheDocument();
     });
 
     test("should call onReset when clicked", () => {
-      const onFinish = jest.fn();
-      const onReset = jest.fn();
-
-      const { getByText } = render(
-        <MockTheme>
-          <NoticeModal
-            onFinish={onFinish}
-            onReset={onReset}
-          />
-        </MockTheme>,
-      );
-
-      fireEvent.click(getByText(MESSAGE.GO_HOME));
+      fireEvent.click(screen.getByText(MESSAGE.GO_HOME));
       expect(onReset).toBeCalledTimes(1);
     });
   });
@@ -67,24 +69,13 @@ describe("NoticeModal Component", () => {
           needPreventClear: true,
         },
       }));
+      setup();
     });
     afterEach(() => useSelector.mockClear());
 
     test("should not render reset button when needPreventClear is true", () => {
-      const onFinish = jest.fn();
-      const onReset = jest.fn();
-
-      const { getByText, queryByText } = render(
-        <MockTheme>
-          <NoticeModal
-            onFinish={onFinish}
-            onReset={onReset}
-          />
-        </MockTheme>,
-      );
-
-      expect(getByText("error message")).toBeInTheDocument();
-      expect(queryByText(MESSAGE.GO_HOME)).toBeNull();
+      expect(screen.getByText("error message")).toBeInTheDocument();
+      expect(screen.queryByText(MESSAGE.GO_HOME)).toBeNull();
     });
   });
 
@@ -97,24 +88,13 @@ describe("NoticeModal Component", () => {
           message: "loading message",
         },
       }));
+      setup();
     });
     afterEach(() => useSelector.mockClear());
 
     test("should render loading status", () => {
-      const onFinish = jest.fn();
-      const onReset = jest.fn();
-
-      const { getByText, queryByText } = render(
-        <MockTheme>
-          <NoticeModal
-            onFinish={onFinish}
-            onReset={onReset}
-          />
-        </MockTheme>,
-      );
-
-      expect(getByText("loading message")).toBeInTheDocument();
-      expect(queryByText(MESSAGE.GO_HOME)).toBeNull();
+      expect(screen.getByText("loading message")).toBeInTheDocument();
+      expect(screen.queryByText(MESSAGE.GO_HOME)).toBeNull();
     });
   });
 
@@ -128,42 +108,19 @@ describe("NoticeModal Component", () => {
           message: "",
         },
       }));
+      setup();
     });
     afterEach(() => useSelector.mockClear());
 
     test("should render finish status", () => {
-      const onFinish = jest.fn();
-      const onReset = jest.fn();
-
-      const { container, getByText } = render(
-        <MockTheme>
-          <NoticeModal
-            onFinish={onFinish}
-            onReset={onReset}
-          />
-        </MockTheme>,
-      );
-
-      const success = container.querySelector(".success");
+      const success = document.querySelector(".success");
 
       expect(success).toBeInTheDocument();
-      expect(getByText(MESSAGE.NEXT_STAGE)).toBeInTheDocument();
+      expect(screen.getByText(MESSAGE.NEXT_STAGE)).toBeInTheDocument();
     });
 
     test("should call onFinish when clicked", () => {
-      const onFinish = jest.fn();
-      const onReset = jest.fn();
-
-      const { getByText } = render(
-        <MockTheme>
-          <NoticeModal
-            onFinish={onFinish}
-            onReset={onReset}
-          />
-        </MockTheme>,
-      );
-
-      fireEvent.click(getByText(MESSAGE.NEXT_STAGE));
+      fireEvent.click(screen.getByText(MESSAGE.NEXT_STAGE));
       expect(onFinish).toBeCalledTimes(1);
     });
   });
@@ -177,26 +134,20 @@ describe("NoticeModal Component", () => {
           message: "",
         },
       }));
+      setup();
     });
     afterEach(() => useSelector.mockClear());
 
     test("should render allDone status", () => {
-      const onFinish = jest.fn();
-      const onReset = jest.fn();
-
-      const { container, queryByText } = render(
-        <MockTheme>
-          <NoticeModal
-            onFinish={onFinish}
-            onReset={onReset}
-          />
-        </MockTheme>,
-      );
-
-      const success = container.querySelector(".success");
+      const success = document.querySelector(".success");
 
       expect(success).toBeInTheDocument();
-      expect(queryByText(MESSAGE.NEXT_STAGE)).toBeNull();
+      expect(screen.queryByText(MESSAGE.NEXT_STAGE)).toBeNull();
+    });
+
+    test("should call onRestart when clicked", () => {
+      fireEvent.click(screen.getByText(MESSAGE.RESTART));
+      expect(onRestart).toBeCalledTimes(1);
     });
   });
 });

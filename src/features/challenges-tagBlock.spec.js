@@ -1,4 +1,6 @@
-import reducer, { addChildTree, resetStage, initializeStage } from "./challenge";
+import reducer, {
+  addChildTree, resetStage, initializeStage, resetChallenges,
+} from "./challenge";
 import tutorialData, { sampleBlock } from "../components/Tutorial/tutorialData";
 import { flatChallenge, nestedChallenge, deeplyNestedChallenge } from "../helpers/test/mockData";
 
@@ -348,6 +350,66 @@ describe("challenge reducer test (handling block logic)", () => {
           },
         },
       });
+    });
+  });
+
+  describe("resetChallenges", () => {
+    const [targetChild, otherChild] = nestedChallenge.elementTree.childTrees;
+    const challenge = {
+      _id: "nestedChallenge",
+      name: "nested",
+      isLoaded: true,
+      stageId: "elementTree1",
+      elementTree: {
+        _id: "elementTree1",
+        isCompleted: false,
+        block: { _id: "elementTree1Block" },
+        childTrees: [targetChild, otherChild],
+        boilerplate: {
+          _id: "elementTree1",
+          block: { _id: "elementTree1Block" },
+          childTrees: [],
+        },
+        tagBlockContainer: {
+          _id: "tagBlockContainer",
+          childTrees: [targetChild, otherChild], // here
+        },
+      },
+    };
+    const playedChallenge = {
+      _id: "nestedChallenge",
+      name: "nested",
+      isLoaded: true,
+      stageId: "elementTree1",
+      elementTree: {
+        _id: "elementTree1",
+        isCompleted: true,
+        block: { _id: "elementTree1Block" },
+        childTrees: [targetChild, otherChild], // here
+        boilerplate: {
+          _id: "elementTree1",
+          block: { _id: "elementTree1Block" },
+          childTrees: [targetChild, otherChild],
+        },
+        tagBlockContainer: {
+          _id: "tagBlockContainer",
+          childTrees: [],
+        },
+      },
+    };
+
+    const prevState = {
+      isListLoading: false,
+      isChallengeLoading: false,
+      selectedIndex: 2,
+      challenges: [playedChallenge, playedChallenge, playedChallenge],
+    };
+
+    const updatedState = reducer(prevState, resetChallenges());
+
+    test("should reset challenges", () => {
+      expect(updatedState.selectedIndex).toEqual(0);
+      expect(updatedState.challenges).toMatchObject([challenge, challenge, challenge]);
     });
   });
 });

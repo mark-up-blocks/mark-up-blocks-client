@@ -2,6 +2,7 @@ const MESSAGE = {
   SUCCESS: "🎉  You did it! 🎉\nYou rock at MarkUp.",
   NEXT_STAGE: "next stage",
   GO_HOME: "go home",
+  RESTART: "처음부터 다시",
   LOADING: "Loading...",
   LOADING_LIST: "챌린지 목록을 불러오고 있습니다.",
   LOADING_CHALLENGE: "선택하신 챌린지 데이터를 불러오고 있습니다.",
