@@ -2,11 +2,27 @@ import { createSlice } from "@reduxjs/toolkit";
 import { fetchChallengeList, fetchChallenge } from "./challengeThunks";
 import { generateBlocks } from "../helpers/tagBlockGenerators";
 import {
-  findBlockTreeById, compareChildTreeByBlockIds, validatePosition, findNextUncompletedChallenge,
+  mapSubChallenge,
+  findBlockTreeById,
+  compareChildTreeByBlockIds,
+  validatePosition,
+  findNextUncompletedChallenge,
 } from "../helpers/blockTreeHandlers";
 import { selectContainer } from "../helpers/globalSelectors";
 import tutorialData from "../components/Tutorial/tutorialData";
 import { TYPE } from "../constants";
+
+function initialize(stage) {
+  const boilerplate = { ...stage, childTrees: [] };
+  const tagBlockContainer = {
+    _id: TYPE.TAG_BLOCK_CONTAINER,
+    childTrees: generateBlocks(stage),
+  };
+
+  return {
+    ...stage, boilerplate, tagBlockContainer, isCompleted: false,
+  };
+}
 
 const challengeSlice = createSlice({
   name: "challenge",
@@ -79,12 +95,10 @@ const challengeSlice = createSlice({
       const stageId = payload;
       const challenge = state.challenges[state.selectedIndex];
       const stage = findBlockTreeById(challenge.elementTree, stageId);
+      const { boilerplate, tagBlockContainer } = initialize(stage);
 
-      stage.boilerplate = { ...stage, childTrees: [] };
-      stage.tagBlockContainer = {
-        _id: TYPE.TAG_BLOCK_CONTAINER,
-        childTrees: generateBlocks(stage),
-      };
+      stage.boilerplate = boilerplate;
+      stage.tagBlockContainer = tagBlockContainer;
     },
     initializeStage(state, { payload }) {
       const stageId = payload;
@@ -99,12 +113,10 @@ const challengeSlice = createSlice({
         return;
       }
 
+      const { boilerplate, tagBlockContainer } = initialize(stage);
       stage.elementTree = { ...stage, childTrees: stage.childTrees };
-      stage.boilerplate = { ...stage, childTrees: [] };
-      stage.tagBlockContainer = {
-        _id: TYPE.TAG_BLOCK_CONTAINER,
-        childTrees: generateBlocks(stage),
-      };
+      stage.boilerplate = boilerplate;
+      stage.tagBlockContainer = tagBlockContainer;
       stage.hasPreviousData = true;
     },
     changeStage(state, { payload }) {
@@ -124,6 +136,21 @@ const challengeSlice = createSlice({
 
       challenge.stageId = stage ? stageId : challenge.elementTree?._id;
       Object.assign(state, { selectedIndex: index });
+    },
+    resetChallenges(state) {
+      const { challenges } = state;
+
+      return {
+        ...state,
+        selectedIndex: 0,
+        challenges: challenges.map(
+          (challenge) => ({
+            ...challenge,
+            elementTree: mapSubChallenge(challenge.elementTree, initialize),
+            stageId: challenge.elementTree._id,
+          }),
+        ),
+      };
     },
   },
   extraReducers: {
@@ -153,9 +180,7 @@ const challengeSlice = createSlice({
       challenge.isLoaded = false;
       challenge.hasError = true;
     },
-    [fetchChallengeList.fulfilled]: (state, { payload }) => {
-      const challenges = payload;
-
+    [fetchChallengeList.fulfilled]: (state, { payload: challenges }) => {
       Object.assign(state, {
         isListLoading: false,
         challenges: [state.challenges[0], ...challenges],
@@ -171,7 +196,7 @@ const challengeSlice = createSlice({
 });
 
 export const {
-  addChildTree, resetStage, initializeStage, changeStage,
+  addChildTree, resetStage, initializeStage, changeStage, resetChallenges,
 } = challengeSlice.actions;
 export { fetchChallengeList, fetchChallenge };
 export default challengeSlice.reducer;

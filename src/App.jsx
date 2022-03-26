@@ -8,7 +8,7 @@ import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
 import GlobalStyle from "./theme/global";
 
-import { fetchChallenge, fetchChallengeList } from "./features/challenge";
+import { fetchChallenge, fetchChallengeList, resetChallenges } from "./features/challenge";
 import {
   clearStatus, setError, setFinishPopup, setLoading,
 } from "./features/notice";
@@ -68,6 +68,11 @@ function App() {
     history.push(route.home);
     dispatch(clearStatus());
   };
+  const handleRestart = () => {
+    history.push(route.home);
+    dispatch(clearStatus());
+    dispatch(resetChallenges());
+  };
   const handleChallengeClick = (index) => {
     if (index === selectedIndex) {
       return;
@@ -108,7 +113,13 @@ function App() {
           onStageMenuClick={handleStageMenuClick}
           onChallengeClick={handleChallengeClick}
         />
-        {notice.status && <NoticeModal onFinish={handleFinishQuiz} onReset={handleReset} />}
+        {notice.status && (
+        <NoticeModal
+          onFinish={handleFinishQuiz}
+          onReset={handleReset}
+          onRestart={handleRestart}
+        />
+        )}
         {!notice.needPreventRender
           && (
           <Switch>

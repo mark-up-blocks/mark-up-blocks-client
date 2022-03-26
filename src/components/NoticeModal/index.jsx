@@ -7,7 +7,7 @@ import Modal from "../shared/Modal";
 
 import { MESSAGE, TYPE } from "../../constants";
 
-function NoticeModal({ onFinish, onReset }) {
+function NoticeModal({ onFinish, onReset, onRestart }) {
   const {
     status, message, stageId, needPreventClear,
   } = useSelector((state) => state.notice);
@@ -46,6 +46,9 @@ function NoticeModal({ onFinish, onReset }) {
         <>
           <p className="success">{MESSAGE.SUCCESS}</p>
           <p className="emphasis">{MESSAGE.ENDING}</p>
+          <ClickInterface onClick={onRestart}>
+            <p className="text">{MESSAGE.RESTART}</p>
+          </ClickInterface>
         </>
         )}
       </div>
@@ -56,6 +59,7 @@ function NoticeModal({ onFinish, onReset }) {
 NoticeModal.propTypes = {
   onFinish: PropTypes.func.isRequired,
   onReset: PropTypes.func.isRequired,
+  onRestart: PropTypes.func.isRequired,
 };
 
 const Wrapper = styled(Modal)`

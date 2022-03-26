@@ -1,3 +1,13 @@
+function mapSubChallenge(root, callback) {
+  const node = callback(root);
+
+  if (root.childTrees.length) {
+    node.childTrees = root.childTrees.map(((child) => mapSubChallenge(child, callback)));
+  }
+
+  return node;
+}
+
 function findBlockTree(root, callback) {
   const queue = [root];
 
@@ -106,6 +116,7 @@ function validatePosition({
 }
 
 export {
+  mapSubChallenge,
   findBlockTree,
   findBlockTreeById,
   findContainerByChildId,
