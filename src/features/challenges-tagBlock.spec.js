@@ -1,8 +1,8 @@
 import reducer, {
-  addChildTree, resetStage, initializeStage, resetChallenges,
+  addChildTree, resetStage, markStageAnswer, initializeStage, resetChallenges,
 } from "./challenge";
 import tutorialData, { sampleBlock } from "../components/Tutorial/tutorialData";
-import { flatChallenge, nestedChallenge, deeplyNestedChallenge } from "../helpers/test/mockData";
+import { flatChallenge, nestedChallenge, deeplyNestedChallenge } from "../../__mocks__/mockData";
 
 const initialState = {
   isListLoading: true,
@@ -347,6 +347,88 @@ describe("challenge reducer test (handling block logic)", () => {
           tagBlockContainer: {
             _id: "tagBlockContainer",
             childTrees: [targetChild, otherChild],
+          },
+        },
+      });
+    });
+  });
+
+  describe("markStageAnswer", () => {
+    const grandChild = {
+      _id: "grandChild",
+      block: {
+        _id: "grandChild",
+        tagName: "span",
+        isContainer: false,
+        property: {},
+      },
+      isSubChallenge: false,
+      childTrees: [],
+    };
+    const child = {
+      _id: "child",
+      block: {
+        _id: "child",
+        tagName: "div",
+        isContainer: true,
+        property: {},
+      },
+      isSubChallenge: false,
+      childTrees: [grandChild],
+    };
+    const parent = {
+      _id: "parent",
+      block: {
+        _id: "parent",
+        tagName: "div",
+        isContainer: true,
+        property: {},
+      },
+      isSubChallenge: false,
+      childTrees: [child],
+    };
+    const stage = {
+      _id: "markCorrectAnswer",
+      stageId: "parent",
+      elementTree: parent,
+    };
+    const state = {
+      isListLoading: false,
+      isChallengeLoading: false,
+      selectedIndex: 0,
+      challenges: [stage],
+    };
+
+    const initializedState = reducer(state, initializeStage("parent"));
+
+    expect(initializedState.challenges[0]).toMatchObject({
+      stageId: "parent",
+      elementTree: {
+        ...parent,
+        boilerplate: {
+          childTrees: [],
+        },
+        tagBlockContainer: {
+          childTrees: [{ ...child, childTrees: [] }, grandChild],
+        },
+      },
+    });
+
+    const updatedState = reducer(initializedState, markStageAnswer("parent"));
+
+    test("should mark correct answer", () => {
+      expect(updatedState.challenges[0]).toMatchObject({
+        stageId: "parent",
+        elementTree: {
+          ...parent,
+          boilerplate: {
+            childTrees: [{
+              ...child,
+              childTrees: [grandChild],
+            }],
+          },
+          tagBlockContainer: {
+            childTrees: [],
           },
         },
       });

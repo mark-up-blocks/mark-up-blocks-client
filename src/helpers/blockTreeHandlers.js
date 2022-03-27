@@ -1,7 +1,7 @@
 function mapSubChallenge(root, callback) {
   const node = callback(root);
 
-  if (root.childTrees.length) {
+  if (root?.childTrees.length) {
     node.childTrees = root.childTrees.map(((child) => mapSubChallenge(child, callback)));
   }
 

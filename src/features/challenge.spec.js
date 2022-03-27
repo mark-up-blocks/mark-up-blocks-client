@@ -3,7 +3,7 @@ import reducer, {
   initializeStage, changeStage,
 } from "./challenge";
 import tutorialData from "../components/Tutorial/tutorialData";
-import { mockChallengeList, flatChallenge, nestedChallenge } from "../helpers/test/mockData";
+import { mockChallengeList, flatChallenge, nestedChallenge } from "../../__mocks__/mockData";
 
 const initialState = {
   isListLoading: true,

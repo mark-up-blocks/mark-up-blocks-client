@@ -100,6 +100,16 @@ const challengeSlice = createSlice({
       stage.boilerplate = boilerplate;
       stage.tagBlockContainer = tagBlockContainer;
     },
+    markStageAnswer(state, { payload: stageId }) {
+      const challenge = state.challenges[state.selectedIndex];
+      const stage = findBlockTreeById(challenge.elementTree, stageId);
+
+      stage.boilerplate.childTrees = mapSubChallenge(
+        stage.elementTree, (copied) => ({ ...copied }),
+      ).childTrees;
+      stage.tagBlockContainer = { ...stage.tagBlockContainer, childTrees: [] };
+      stage.isCompleted = true;
+    },
     initializeStage(state, { payload }) {
       const stageId = payload;
       const challenge = state.challenges[state.selectedIndex];
@@ -196,7 +206,7 @@ const challengeSlice = createSlice({
 });
 
 export const {
-  addChildTree, resetStage, initializeStage, changeStage, resetChallenges,
+  addChildTree, resetStage, initializeStage, changeStage, resetChallenges, markStageAnswer,
 } = challengeSlice.actions;
 export { fetchChallengeList, fetchChallenge };
 export default challengeSlice.reducer;

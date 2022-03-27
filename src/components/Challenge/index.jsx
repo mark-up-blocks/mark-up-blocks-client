@@ -5,10 +5,9 @@ import styled from "styled-components";
 
 import Display from "./Display";
 import DndInterface from "./DndInterface";
-import Button from "../shared/Button";
 
 import {
-  fetchChallenge, addChildTree, resetStage, initializeStage, changeStage,
+  fetchChallenge, addChildTree, initializeStage, changeStage,
 } from "../../features/challenge";
 import { setError, setFinishPopup, setLoading } from "../../features/notice";
 import { selectStageByParams } from "../../helpers/globalSelectors";
@@ -32,7 +31,6 @@ function Challenge() {
       stageId: stage._id,
     }));
   };
-  const handleReset = () => dispatch(resetStage(stage._id));
 
   useEffect(() => {
     if (stage.isListLoading) {
@@ -92,7 +90,6 @@ function Challenge() {
         <>
           <Display />
           <DndInterface onDrop={handleDrop} />
-          <ResetButton value="Reset" onClick={handleReset} />
         </>
       )}
     </ChallengeWrapper>
@@ -103,32 +100,10 @@ const ChallengeWrapper = styled.div`
   display: grid;
   width: 100%;
   height: 100%;
-  grid-template-rows: 60% minmax(40%, 100px);
+  grid-template-rows: minmax(250px, 60vh) min(250px);
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}) {
     grid-template-rows: unset;
-    padding-bottom: 250px;
-  }
-`;
-
-const ResetButton = styled(Button)`
-  position: fixed;
-  top: 100%;
-  left: 100%;
-  margin-top: -50px;
-  margin-left: -90px;
-  width: 80px;
-  height: 40px;
-  border-radius: 2px;
-  background-color: ${({ theme }) => theme.color.inner};
-
-  :hover {
-    background-color: ${({ theme }) => theme.color.point};
-  }
-
-  @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}) {
-    position: unset;
-    margin: 20px 2px 0 auto;
   }
 `;
 

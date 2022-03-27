@@ -1,9 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { render, fireEvent } from "@testing-library/react";
-import MockTheme from "../../helpers/test/mockTheme";
 import Header from "./index";
-import { mockChallengeList, flatChallenge } from "../../helpers/test/mockData";
+import MockTheme from "../../../__mocks__/mockTheme";
+import { mockChallengeList, flatChallenge } from "../../../__mocks__/mockData";
 
 jest.mock("react-redux", () => ({
   useSelector: jest.fn(),
