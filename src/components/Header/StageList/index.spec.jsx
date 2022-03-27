@@ -1,8 +1,8 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import MockTheme from "../../../helpers/test/mockTheme";
 import StageList from "./index";
-import { flatChallenge, nestedChallenge, deeplyNestedChallenge } from "../../../helpers/test/mockData";
+import MockTheme from "../../../../__mocks__/mockTheme";
+import { flatChallenge, nestedChallenge, deeplyNestedChallenge } from "../../../../__mocks__/mockData";
 
 describe("StageList Component", () => {
   test("should pass flat challenge", () => {

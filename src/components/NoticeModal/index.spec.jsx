@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import {
   render, fireEvent, screen, cleanup,
 } from "@testing-library/react";
-import MockTheme from "../../helpers/test/mockTheme";
+import MockTheme from "../../../__mocks__/mockTheme";
 import NoticeModal from "./index";
 import { MESSAGE } from "../../constants";
 

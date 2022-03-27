@@ -2,7 +2,7 @@ import reducer, {
   addChildTree, resetStage, initializeStage, resetChallenges,
 } from "./challenge";
 import tutorialData, { sampleBlock } from "../components/Tutorial/tutorialData";
-import { flatChallenge, nestedChallenge, deeplyNestedChallenge } from "../helpers/test/mockData";
+import { flatChallenge, nestedChallenge, deeplyNestedChallenge } from "../../__mocks__/mockData";
 
 const initialState = {
   isListLoading: true,
