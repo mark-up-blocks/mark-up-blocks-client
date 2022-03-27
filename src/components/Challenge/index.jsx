@@ -100,7 +100,7 @@ const ChallengeWrapper = styled.div`
   display: grid;
   width: 100%;
   height: 100%;
-  grid-template-rows: 60% minmax(40%, 100px);
+  grid-template-rows: minmax(250px, 60vh) min(250px);
 
   @media screen and (max-width: ${({ theme }) => theme.screenSize.maxWidth.mobile}) {
     grid-template-rows: unset;

@@ -89,7 +89,6 @@ const TutorialWrapper = styled.div`
   display: grid;
   width: 100%;
   height: 100%;
-  grid-template-rows: 2fr 3fr;
   align-items: center;
 `;
 

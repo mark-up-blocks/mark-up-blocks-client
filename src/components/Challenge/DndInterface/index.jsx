@@ -123,6 +123,8 @@ DndInterface.defaultProps = {
 
 const Wrapper = styled.div`
   display: grid;
+  width: 100%;
+  height: 100%;
 `;
 
 const DndInterfaceWrapper = styled.div`
@@ -149,7 +151,7 @@ const DndInterfaceWrapper = styled.div`
 const TagBlockShowcase = styled.div`
   position: relative;
   display: flex;
-  padding: 10px;
+  padding: 25px 10px;
   justify-content: center;
   align-items: center;
   border: 1px solid ${({ theme }) => theme.color.border};
@@ -178,6 +180,7 @@ const HTMLViewer = styled.div`
   display: grid;
   grid-template-columns: 30px auto;
   align-items: center;
+  padding: 25px 0;
   border: 1px solid ${({ theme }) => theme.color.border};
   border-left: none;
   counter-reset: line;
