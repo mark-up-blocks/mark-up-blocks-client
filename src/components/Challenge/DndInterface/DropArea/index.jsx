@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { DRAGGABLE_TYPE } from "../../../../constants";
 
 function DropArea({
-  _id, index, onDrop, onClick, className, needHighlight,
+  _id, index, onDrop, onClick, highlightClassName, className, needHighlight,
 }) {
   const [{ hovered }, dropRef] = useDrop(() => ({
     accept: Object.values(DRAGGABLE_TYPE),
@@ -34,9 +34,10 @@ function DropArea({
     <Area
       ref={dropRef}
       className={className}
-      isHighlighted={hovered && needHighlight}
       onClick={handleClick}
-    />
+    >
+      <Highlight className={highlightClassName} isHighlighted={hovered && needHighlight} />
+    </Area>
   );
 }
 
@@ -45,29 +46,26 @@ DropArea.propTypes = {
   index: PropTypes.number,
   onDrop: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
+  highlightClassName: PropTypes.string,
   className: PropTypes.string,
   needHighlight: PropTypes.bool,
 };
 
 DropArea.defaultProps = {
   index: -1,
+  highlightClassName: "",
   className: "",
   needHighlight: false,
 };
 
 const Area = styled.div`
-  position: relative;
-  padding: 2px 0;
   cursor: pointer;
+`;
 
-  ::after {
-    position: absolute;
-    width: calc(100% - 4px);
-    padding: 2px;
-    margin-top: -2px;
-    background-color: ${({ isHighlighted, theme }) => (isHighlighted ? theme.color.preview : "transparent")};
-    content: " ";
-  }
+const Highlight = styled.div`
+  padding: 2px;
+  margin-top: -3px;
+  background-color: ${({ isHighlighted, theme }) => (isHighlighted ? theme.color.preview : "transparent")};
 `;
 
 export default DropArea;
