@@ -34,7 +34,7 @@ function DropContainer({
         onDrop={onDrop}
         index={0}
         onClick={onClick}
-        className={isDropAreaActive ? "drop-guide" : ""}
+        highlightClassName={isDropAreaActive ? "drop-guide" : ""}
         needHighlight
       />
       <>
@@ -78,7 +78,7 @@ function DropContainer({
               onDrop={onDrop}
               onClick={onClick}
               index={index + 1}
-              className={isDropAreaActive ? "drop-guide" : ""}
+              highlightClassName={isDropAreaActive ? "drop-guide" : ""}
               needHighlight
             />
           </Draggable>
@@ -109,11 +109,19 @@ DropContainer.defaultProps = {
 };
 
 const FirstDropArea = styled(DropArea)`
-  margin: 4px 24px 4px 20px;
+  ${({ needHighlight }) => (needHighlight
+    ? `position: relative;
+    margin: -8px;
+    padding: 12px 32px 12px 28px`
+    : "padding: 4px 24px 4px 20px")};
 `;
 
 const BackwardDropArea = styled(DropArea)`
-  margin: 4px 4px 4px 0;
+    ${({ needHighlight }) => (needHighlight
+    ? `position: relative;
+    margin: -8px;
+    padding: 12px 12px 12px 8px`
+    : "padding: 4px 4px 4px 0")}
 `;
 
 const TextTag = styled.div`
@@ -121,6 +129,7 @@ const TextTag = styled.div`
     position: absolute;
     right: 100%;
     margin-right: -20px;
+    margin-top: 3px;
     text-align: right;
     font-size: 0.8rem;
     counter-increment: line;
