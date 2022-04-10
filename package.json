@@ -14,7 +14,7 @@
     "url": "git+https://github.com/mark-up-blocks/mark-up-blocks-client.git"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.6.1",
+    "@reduxjs/toolkit": "^1.8.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^10.4.9",
     "@testing-library/user-event": "^7.2.1",
@@ -26,7 +26,7 @@
     "react-dnd-html5-backend": "^14.0.2",
     "react-dnd-touch-backend": "^14.1.1",
     "react-dom": "^18.0.0",
-    "react-redux": "^7.2.5",
+    "react-redux": "^7.2.8",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "redux-logger": "^3.0.6",
