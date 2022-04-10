@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import { DndProvider } from "react-dnd";
@@ -10,8 +10,9 @@ import store from "./app/store";
 import isTouchDevice from "./helpers/device";
 
 const backend = isTouchDevice() ? TouchBackend : HTML5Backend;
-
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container);
+root.render(
   <React.StrictMode>
     <Provider store={store}>
       <DndProvider backend={backend}>
@@ -21,5 +22,4 @@ ReactDOM.render(
       </DndProvider>
     </Provider>
   </React.StrictMode>,
-  document.getElementById("root"),
 );
