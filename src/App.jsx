@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Redirect, Route, Switch, useHistory,
+  Route, Routes, useNavigate, Navigate,
 } from "react-router-dom";
 
 import styled, { ThemeProvider } from "styled-components";
@@ -23,14 +23,14 @@ import { MESSAGE, TYPE } from "./constants";
 
 function App() {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const challenge = useSelector((state) => state.challenge);
   const notice = useSelector((state) => state.notice);
   const {
     isListLoading, isChallengeLoading, challenges, selectedIndex,
   } = challenge;
 
-  const handleStageMenuClick = (_id) => history.push(route.selectedChallenge(selectedIndex, _id));
+  const handleStageMenuClick = (_id) => navigate(route.selectedChallenge(selectedIndex, _id));
   const handleFinishQuiz = (stageId) => {
     const nextStageId = findNextUncompletedChallenge(
       challenges[selectedIndex]?.elementTree, stageId,
@@ -51,13 +51,13 @@ function App() {
     }
 
     if (nextStageId) {
-      history.push(route.selectedChallenge(selectedIndex, nextStageId));
+      navigate(route.selectedChallenge(selectedIndex, nextStageId));
       dispatch(clearStatus());
       return;
     }
 
     if (hasRemainingChallenge) {
-      history.push(route.nextIndex(selectedIndex));
+      navigate(route.nextIndex(selectedIndex));
       dispatch(clearStatus());
       return;
     }
@@ -65,11 +65,11 @@ function App() {
     dispatch(setFinishPopup({ isFinalChallenge: true }));
   };
   const handleReset = () => {
-    history.push(route.home);
+    navigate(route.home);
     dispatch(clearStatus());
   };
   const handleRestart = () => {
-    history.push(route.home);
+    navigate(route.home);
     dispatch(clearStatus());
     dispatch(resetChallenges());
   };
@@ -78,7 +78,7 @@ function App() {
       return;
     }
 
-    history.push(route.selectedPuzzle(index));
+    navigate(route.selectedPuzzle(index));
   };
 
   useEffect(() => {
@@ -122,20 +122,14 @@ function App() {
         )}
         {!notice.needPreventRender
           && (
-          <Switch>
-            <Route exact path={route.home}>
-              <Redirect to={route.tutorialMain} />
-            </Route>
-            <Route path={route.tutorial}>
-              <Tutorial />
-            </Route>
-            <Route exact path={route.puzzle}>
-              <Challenge />
-            </Route>
-            <Route path="*">
-              <div>{MESSAGE.NOT_FOUND}</div>
-            </Route>
-          </Switch>
+          <Routes>
+            <Route path="/" element={<Navigate to={route.tutorialMain} />} />
+            <Route path={route.tutorialMain} element={<Tutorial />} />
+            <Route path={route.tutorial} element={<Tutorial />} />
+            <Route path={route.puzzleMain} element={<Challenge />} />
+            <Route path={route.puzzle} element={<Challenge />} />
+            <Route path="*" element={<div>{MESSAGE.NOT_FOUND}</div>} />
+          </Routes>
           )}
       </AppWrapper>
       <GlobalStyle />
